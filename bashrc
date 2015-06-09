@@ -26,10 +26,10 @@ LITEBROWN="1;34"
 LITEBLUE="1;34"
 
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
-export CLICOLOR=2    
+export CLICOLOR=2  
 
 PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\].\[\e[\$CYAN m\]$ \[\e[m\]"
-PS2="\[\e[\$LITEGREEN m\]continue->"
+
 
 
  [ -f ~/.passwords ] && source ~/.passwords #&&&
@@ -39,10 +39,10 @@ PS2="\[\e[\$LITEGREEN m\]continue->"
 #-------------End Color Aliases------------
 
 #Other Get the aliases and functions
-alias lsf="ls -ad */" # List the directories only              
+alias lsf="ls -ad */" # List the directories only       
 alias e="vim"
 alias see="declare -f "
-alias apt="mysql --i-am-a-dummy --prompt 'cpines APTIBLE> ' -u $MYSQL_USERNAME --password=$MYSQL_PASS -h $MYSQL_HOST_PINES_DB"    
+alias apt="mysql --i-am-a-dummy --prompt 'cpines APTIBLE> ' -u $MYSQL_USERNAME --password=$MYSQL_PASS -h $MYSQL_HOST_PINES_DB"  
 alias rm='rm -i'
 alias misc='cd ~/Desktop/Misc'
 alias vrc='vim ~/.vimrc'
@@ -58,28 +58,42 @@ alias cs="cd ~/Desktop/Back_up_docs/CS Learning/"
 alias desk="cd ~/Desktop"
 alias ghc="cd /Users/colby/code/aptible"
 alias docs="cd /Users/colby/code/aptible/support/source/topics"
+alias atg="cd /Users/colby/code/aptible/aptible-tech-guide"
 alias dangerzone="aptible ssh --app api.aptible.com bundle exec script/management-console"
 alias auth="aptible ssh --app auth.aptible.com bundle exec rails console"
 alias tu="cat ~/thumb.txt"
-alias aa="ll -a"
-alias d="docker"
-
+alias aa="ll -ha"
+alias ah="ll -h"
+alias gpom="git push origin master"
+alias cg="curlget"
+alias wheres="find . -name *$1*"
 aptible-staging() {
-  remote=$(git remote -v | grep staging | head -n 1)
-  app=$(echo ${remote} | sed 's/.*aptible-staging\.com:\(.*\)\.git.*/\1/')
+ remote=$(git remote -v | grep staging | head -n 1)
+ app=$(echo ${remote} | sed 's/.*aptible-staging\.com:\(.*\)\.git.*/\1/')
 
-  if [ "$#" -eq 0 ] || [ "$1" = "help" ] || [ "$1" = "version" ]; then
-    aptible $@
-  elif [ -z "$app" ] || [ "$1" = "login" ] || [ "$1" = "apps:create" ] || \
-       [[ "$1" =~ "db" ]]; then
-    APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
-    APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
-    aptible $@
-  else
-    APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
-    APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
-    aptible $@ --app $app
-  fi
+ if [ "$#" -eq 0 ] || [ "$1" = "help" ] || [ "$1" = "version" ]; then
+  aptible $@
+ elif [ -z "$app" ] || [ "$1" = "login" ] || [ "$1" = "apps:create" ] || \
+    [[ "$1" =~ "db" ]]; then
+  APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
+  APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
+  aptible $@
+ else
+  APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
+  APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
+  aptible $@ --app $app
+ fi
+}
+
+db-launch() {
+ container=$(head -c 32 /dev/urandom | md5)
+ image="$1"
+ shift
+
+ docker create --name $container $image
+ docker run --volumes-from $container \
+  -e USERNAME=aptible -e PASSPHRASE=foobar -e DB=db $image --initialize
+ docker run $@ --volumes-from $container $image
 }
 
 #########################
@@ -88,4 +102,23 @@ aptible-staging() {
 export DOCKER_HOST=tcp://192.168.59.103:2376
 export DOCKER_CERT_PATH=/Users/colby/.boot2docker/certs/boot2docker-vm
 export DOCKER_TLS_VERIFY=1
+source /usr/local/etc/bash_completion.d/docker
 
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+ . $(brew --prefix)/etc/bash_completion
+fi
+#####################
+#*---Zendesk API---*#
+#####################
+
+alias zdesk="cd /Users/colby/.gem/ruby/2.1.3/gems/zendesk_api-1.9.3"
+
+function zd-auth(){
+echo "USING: curl -u USER/TOKEN https://aptible.zendesk.com/api/v2/users/me.json";
+curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN 'https://aptible.zendesk.com/api/v2/users/me.json'| jq .
+}
+
+function curlget(){
+echo "USING: curl https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json";
+curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json| jq .
+}

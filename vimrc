@@ -13,7 +13,11 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'bling/vim-airline'
+Plugin 'scrooloose/nerdtree'
+Plugin 'bronson/vim-visual-star-search'
 Plugin 'tpope/vim-fugitive' 
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
 call vundle#end()            
 
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
@@ -56,12 +60,13 @@ map <leader>l :set hlsearch!<CR>
 map <leader>ll :read !pbpaste<CR>
 map <leader>m :set mouse=a\|:se nu<CR>
 map <leader>mm :set mouse-=a\|:se nonu<CR>
-map <leader>n :set number!<CR>
+map <leader>n :NERDTreeToggle<CR>
 map <leader>o :only<CR>
-map <leader>p :set paste!<CR>
+map <leader>p "+p<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <leader>s :w<CR>
 map <leader>v :e ~/.vimrc<CR>
+map <leader>y "+y<CR>
 map <leader>z :setlocal spell!<CR>
 map <leader>= <c-w>=
 map <leader>/ /<C-p>
@@ -71,7 +76,6 @@ map <leader>nnn :%s/\n/,/g<CR>
 map <leader>rrr :%s/\r/\r/g<CR>
 nmap S :%s//g<LEFT><LEFT>
 imap hh <Esc>
-vmap hh <Esc>
 vmap // y/<C-R>"<CR> 
 "Note that the following meta commands for these don't work with Terminal.app due to existing application shortcuts
 vmap <D-j> gj
