@@ -100,7 +100,13 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 let g:sparkupExecuteMapping='<c-g>'
+                                                                                    
+                                                                                            "#############
+                                                                                            "*---Misc---*"
+                                                                                            "#############
 
+" disable auto-comment insertion (fuck that shit)
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Custom HL and colors for spellcheck and cursorline
 autocmd BufRead,BufNewFile *.phtml set filetype=html
 autocmd BufRead,BufNewFile markdown set filetype=markdown
