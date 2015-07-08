@@ -7,6 +7,7 @@ syntax on                                               " enable syntax highligh
 filetype off                                             " filetype detection[OFF] 
 filetype plugin indent on                               " filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 
+
 "  --  PLUGIN MANAGER --
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -18,6 +19,7 @@ Plugin 'bronson/vim-visual-star-search'
 Plugin 'tpope/vim-fugitive' 
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
+Plugin 'matchit.zip'
 call vundle#end()            
 
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
@@ -68,9 +70,10 @@ map <leader>s :w<CR>
 map <leader>v :e ~/.vimrc<CR>
 map <leader>y "+y<CR>
 map <leader>z :setlocal spell!<CR>
-map <leader>= <c-w>=
+map <leader>= z=
+map <leader>] ]s
 map <leader>/ /<C-p>
-map <leader>bbb /{"bid_request.*}}<CR>:v//d<CR>:noh<CR>
+map <leader>bbb :%s/\(.*\): .*$/\1/g<CR>
 map <leader>ccc :%s/,/\r/g<CR>                              
 map <leader>nnn :%s/\n/,/g<CR>
 map <leader>rrr :%s/\r/\r/g<CR>
@@ -110,6 +113,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Custom HL and colors for spellcheck and cursorline
 autocmd BufRead,BufNewFile *.phtml set filetype=html
 autocmd BufRead,BufNewFile markdown set filetype=markdown
+autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 highlight Pmenu guibg=brown gui=bold
 hi CursorLine   cterm=NONE ctermbg=darkgray guibg=darkgray guifg=white 
 hi clear SpellBad "clear spelling default highlight

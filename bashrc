@@ -30,9 +30,7 @@ export CLICOLOR=2
 
 PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\].\[\e[\$CYAN m\]$ \[\e[m\]"
 
-
-
- [ -f ~/.passwords ] && source ~/.passwords #&&&
+[ -f ~/.passwords ] && source ~/.passwords 
 
 
 
@@ -51,6 +49,7 @@ alias bp='vim ~/.bashrc'
 alias sbp='source ~/.bash_profile'
 alias cbp='cat ~/.bash_profile'
 alias ls='ls -GFaSh'
+alias grep='grep --color=auto'
 alias hg='history|grep' $1
 alias wh="say -v Whisper"
 alias no='echo "https://www.youtube.com/watch?v=WOE1-2Fza5Q&t=2m20s"'
@@ -59,7 +58,7 @@ alias desk="cd ~/Desktop"
 alias ghc="cd /Users/colby/code/aptible"
 alias docs="cd /Users/colby/code/aptible/support/source/topics"
 alias atg="cd /Users/colby/code/aptible/aptible-tech-guide"
-alias dangerzone="aptible ssh --app api.aptible.com bundle exec script/management-console"
+alias api="aptible ssh --app api.aptible.com bundle exec script/management-console"
 alias auth="aptible ssh --app auth.aptible.com bundle exec rails console"
 alias tu="cat ~/thumb.txt"
 alias aa="ll -ha"
@@ -67,6 +66,7 @@ alias ah="ll -h"
 alias gpom="git push origin master"
 alias cg="curlget"
 alias wheres="find . -name *$1*"
+
 aptible-staging() {
  remote=$(git remote -v | grep staging | head -n 1)
  app=$(echo ${remote} | sed 's/.*aptible-staging\.com:\(.*\)\.git.*/\1/')
@@ -96,9 +96,44 @@ db-launch() {
  docker run $@ --volumes-from $container $image
 }
 
-#########################
+###########################
+#*---Aptible Specifics---*#
+###########################
+
+aptible-clone() {
+  if [ -z "$1" ]; then
+    echo "Usage: aptible-clone APP_HANDLE"
+    return 1
+  fi
+
+  GIT_INSTANCE=54.85.132.36  # aptible-production master1
+
+  ssh -p 2222 $GIT_INSTANCE rm -rf $1
+  ssh -p 2222 $GIT_INSTANCE sudo git clone /mnt/primetime/git/$1.git && \
+    ssh -p 2222 $GIT_INSTANCE sudo chown -R \$USER:opsworks $1 && \
+    rsync -az --progress -e "ssh -p 2222" $GIT_INSTANCE:$1 .
+  ssh -p 2222 $GIT_INSTANCE rm -rf $1
+}
+
+opsworks-ssh() {
+  if [ "$#" -gt 1 ]; then
+    STACK=$1
+    shift
+    HOST=$1
+    shift
+    ssh -o ProxyCommand="ssh -p 2222 $STACK.ssh.aptible.com nc $HOST 2222" \
+      $STACK-$HOST $@ 2> /dev/null || \
+    ssh -o ProxyCommand="ssh -p 2222 $STACK.ssh.aptible.com nc $HOST 22" \
+      $STACK-$HOST $@
+  elif [ "$#" -eq 1 ]; then
+    ssh -p 2222 $1.ssh.aptible.com
+  else
+    echo "Usage: opsworks-ssh STACK [HOST] [CMD ...]"
+    return 1
+  fi
+}
 #*---Docker Settings---*#
-#########################
+
 export DOCKER_HOST=tcp://192.168.59.103:2376
 export DOCKER_CERT_PATH=/Users/colby/.boot2docker/certs/boot2docker-vm
 export DOCKER_TLS_VERIFY=1
@@ -107,9 +142,8 @@ source /usr/local/etc/bash_completion.d/docker
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
  . $(brew --prefix)/etc/bash_completion
 fi
-#####################
-#*---Zendesk API---*#
-#####################
+
+#*---Zendesk API Nonsense---*#
 
 alias zdesk="cd /Users/colby/.gem/ruby/2.1.3/gems/zendesk_api-1.9.3"
 
@@ -122,3 +156,4 @@ function curlget(){
 echo "USING: curl https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json";
 curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json| jq .
 }
+
