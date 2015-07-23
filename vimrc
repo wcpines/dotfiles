@@ -1,10 +1,10 @@
-                                                                                    "#########################"
-                                                                                    "*---Startup Settings---*"
-                                                                                    "#########################"
-                                                                                    
+"#########################"
+"*---Startup Settings---*"
+"#########################"
+
 set nocompatible                                        " get rid of Vi compatibility mode. SET FIRST!
 syntax on                                               " enable syntax highlighting
-filetype off                                             " filetype detection[OFF] 
+filetype off                                            " filetype detection[OFF] 
 filetype plugin indent on                               " filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 
 
@@ -20,6 +20,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
 Plugin 'matchit.zip'
+Plugin 'altercation/vim-colors-solarized'
 call vundle#end()            
 
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
@@ -31,11 +32,11 @@ set nohlsearch                                          " Do not highlight all m
 set incsearch                                           " Dynamic search (search and refine as you type)
 set autoindent                                          " Copy indent of previous line
 set smartindent                                         " Changes indent based on file extension         
-set tabstop=4                                           " Set number of columns inserted with tab key
-set softtabstop=4                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
-set shiftwidth=4                                        " Number of characters for indentation made in normal mode ('>)
+set tabstop=2                                           " Set number of columns inserted with tab key
+set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
+set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
 set expandtab                                           " Use spaces when tab is hit 
-set ignorecase                                           " Ignore case for search patterns
+set ignorecase                                          " Ignore case for search patterns
 set nowrap                                              " Do not wrap lines of text by default
 set ttyfast                                             " Set fast scroll
 set textwidth=0                                         " Controls the wrap width you would like to use (character length).  Setting it to default: disabled
@@ -46,9 +47,9 @@ set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these
 set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
 "set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%) 
 
-                                                                                    "####################"
-                                                                                    "*---My Mappings*---*"
-                                                                                    "####################"
+"####################"
+"*---My Mappings*---*"
+"####################"
 
 let mapleader = ","
 nnoremap ; :
@@ -67,8 +68,9 @@ map <leader>o :only<CR>
 map <leader>p "+p<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <leader>s :w<CR>
+map <leader>d :set background=dark<CR>
 map <leader>v :e ~/.vimrc<CR>
-map <leader>y "+y<CR>
+map <leader>y "+y
 map <leader>z :setlocal spell!<CR>
 map <leader>= z=
 map <leader>] ]s
@@ -122,9 +124,10 @@ hi SpellBad cterm=underline ctermfg=brown
 :highlight Pmenu ctermbg=238 gui=bold
 
 " Source upon save
-if has("autocmd")
-      autocmd bufwritepost .vimrc source $MYVIMRC
-endif
+augroup myvimrc
+    au!
+    au BufWritePost .vimrc,.gvimrc, so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+augroup END
 
 " Markdown
 autocmd BufNewFile,BufRead *.md set filetype=markdown
@@ -148,6 +151,15 @@ let g:airline_symbols.paste = 'ρ'
 let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
+
+"GUI settings
+if has('gui_running')
+  colorscheme solarized
+  set guifont=Menlo:h18
+  let g:solarized_contrast="high"    "default value is normal 
+  let g:solarized_visibility="high"    "default value is normal 
+  set background=light
+end
                                                                                     "########################
                                                                                     "*---Custom Commands---*"
                                                                                     "########################

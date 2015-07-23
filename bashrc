@@ -1,4 +1,5 @@
 PATH=$PATH:$HOME/bin:/usr/local/git/bin/
+
 export PATH
 export EDITOR=vim
 export VIMRUNTIME=/usr/share/vim/vim73
@@ -43,9 +44,9 @@ alias see="declare -f "
 alias apt="mysql --i-am-a-dummy --prompt 'cpines APTIBLE> ' -u $MYSQL_USERNAME --password=$MYSQL_PASS -h $MYSQL_HOST_PINES_DB"  
 alias rm='rm -i'
 alias misc='cd ~/Desktop/Misc'
-alias vrc='vim ~/.vimrc'
+alias vrc='mvim ~/.vimrc'
 alias nb='ipython notebook --pylab=inline'
-alias bp='vim ~/.bashrc'
+alias bp='mvim ~/.bashrc'
 alias sbp='source ~/.bash_profile'
 alias cbp='cat ~/.bash_profile'
 alias ls='ls -GFaSh'
