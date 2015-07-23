@@ -23,28 +23,29 @@ Plugin 'matchit.zip'
 Plugin 'altercation/vim-colors-solarized'
 call vundle#end()            
 
-set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
-set ruler                                               " Always show line/column info at bottom
-set number                                              " Set line numbering
-set mouse=a                                             " Mouse scroll
-set showmatch                                           " Highlight search match as you type
-set nohlsearch                                          " Do not highlight all matches (you can toggle this as needed with command below)
-set incsearch                                           " Dynamic search (search and refine as you type)
 set autoindent                                          " Copy indent of previous line
-set smartindent                                         " Changes indent based on file extension         
-set tabstop=2                                           " Set number of columns inserted with tab key
-set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
-set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
+set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
 set expandtab                                           " Use spaces when tab is hit 
 set ignorecase                                          " Ignore case for search patterns
+set incsearch                                           " Dynamic search (search and refine as you type)
+set hidden                                              " switch buffers and preserve changes w/o saving
+set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
+set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
+set mouse=a                                             " Mouse scroll
+set nohlsearch                                          " Do not highlight all matches (you can toggle this as needed with command below)
 set nowrap                                              " Do not wrap lines of text by default
-set ttyfast                                             " Set fast scroll
+set number                                              " Set line numbering
+set ruler                                               " Always show line/column info at bottom
+set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
+set showmatch                                           " Highlight search match as you type
+set smartindent                                         " Changes indent based on file extension         
+set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
+set tabstop=2                                           " Set number of columns inserted with tab key
 set textwidth=0                                         " Controls the wrap width you would like to use (character length).  Setting it to default: disabled
-set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
+set ttyfast                                             " Set fast scroll
+set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these filetypes and extensions
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
-set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these filetypes and extensions
-set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
 "set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%) 
 
 "####################"
@@ -152,6 +153,11 @@ let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
 
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
 "GUI settings
 if has('gui_running')
   colorscheme solarized

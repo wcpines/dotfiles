@@ -33,7 +33,8 @@ PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m
 
 [ -f ~/.passwords ] && source ~/.passwords 
 
-
+$MYVIMRC = ~/.vimrc
+$MYGVIMRC = ~/.vimrc
 
 #-------------End Color Aliases------------
 
