@@ -33,16 +33,12 @@ PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m
 
 [ -f ~/.passwords ] && source ~/.passwords 
 
-$MYVIMRC = ~/.vimrc
-$MYGVIMRC = ~/.vimrc
-
 #-------------End Color Aliases------------
 
 #Other Get the aliases and functions
 alias lsf="ls -ad */" # List the directories only       
 alias e="vim"
 alias see="declare -f "
-alias apt="mysql --i-am-a-dummy --prompt 'cpines APTIBLE> ' -u $MYSQL_USERNAME --password=$MYSQL_PASS -h $MYSQL_HOST_PINES_DB"  
 alias rm='rm -i'
 alias misc='cd ~/Desktop/Misc'
 alias vrc='mvim ~/.vimrc'
@@ -65,10 +61,12 @@ alias auth="aptible ssh --app auth.aptible.com bundle exec rails console"
 alias tu="cat ~/thumb.txt"
 alias aa="ll -ha"
 alias ah="ll -h"
+alias grebase="git rebase -i HEAD~"
 alias gpom="git push origin master"
+alias gforce="git push --force origin master"
 alias cg="curlget"
 alias wheres="find . -name *$1*"
-
+alias mario_creepy="$ say -v whisper I\'m uh watchinguh yuu"
 aptible-staging() {
  remote=$(git remote -v | grep staging | head -n 1)
  app=$(echo ${remote} | sed 's/.*aptible-staging\.com:\(.*\)\.git.*/\1/')
@@ -104,17 +102,18 @@ db-launch() {
 
 aptible-clone() {
   if [ -z "$1" ]; then
-    echo "Usage: aptible-clone APP_HANDLE"
+    echo "Usage: aptible-clone APP_ID"
     return 1
   fi
 
   GIT_INSTANCE=54.85.132.36  # aptible-production master1
 
-  ssh -p 2222 $GIT_INSTANCE rm -rf $1
-  ssh -p 2222 $GIT_INSTANCE sudo git clone /mnt/primetime/git/$1.git && \
-    ssh -p 2222 $GIT_INSTANCE sudo chown -R \$USER:opsworks $1 && \
-    rsync -az --progress -e "ssh -p 2222" $GIT_INSTANCE:$1 .
-  ssh -p 2222 $GIT_INSTANCE rm -rf $1
+  repo="app-$1"
+  ssh -p 2222 $GIT_INSTANCE rm -rf $repo
+  ssh -p 2222 $GIT_INSTANCE sudo git clone /mnt/primetime/git/$repo && \
+    ssh -p 2222 $GIT_INSTANCE sudo chown -R \$USER:opsworks $repo && \
+    rsync -az --progress -e "ssh -p 2222" $GIT_INSTANCE:$repo .
+  ssh -p 2222 $GIT_INSTANCE rm -rf $repo
 }
 
 opsworks-ssh() {

@@ -1,14 +1,7 @@
-"#########################"
-"*---Startup Settings---*"
-"#########################"
+"# ######################"
+ "*---Custom Plugins---*"
+"## #####################"
 
-set nocompatible                                        " get rid of Vi compatibility mode. SET FIRST!
-syntax on                                               " enable syntax highlighting
-filetype off                                            " filetype detection[OFF] 
-filetype plugin indent on                               " filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
-
-
-"  --  PLUGIN MANAGER --
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -19,10 +12,20 @@ Plugin 'bronson/vim-visual-star-search'
 Plugin 'tpope/vim-fugitive' 
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-endwise'
 Plugin 'matchit.zip'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'kien/ctrlp.vim'
 call vundle#end()            
 
+"##########################"
+ "*---Startup Settings---*"
+"##########################"
+
+set nocompatible                                        " get rid of Vi compatibility mode. SET FIRST!
+syntax on                                               " enable syntax highlighting
+filetype off                                            " filetype detection[OFF] 
+filetype plugin indent on                               " filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 set autoindent                                          " Copy indent of previous line
 set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
 set expandtab                                           " Use spaces when tab is hit 
@@ -48,41 +51,45 @@ set wildmenu                                            " Make use of the status
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
 "set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%) 
 
-"####################"
-"*---My Mappings*---*"
-"####################"
+"######################"
+ "*---My Mappings*---*"
+"######################"
 
 let mapleader = ","
 nnoremap ; :
 nnoremap <CR> <C-^> 
 nnoremap <leader>' viw<esc>a"<esc>hbi"<esc>lel
-"fix crappy copy due to clipboard absence (only works on local)
+"quickly copy entire file using system clipboard
 map <leader>c :%w !pbcopy<CR>
 map <leader>cl :set cursorline!<CR>
 map <leader>l :set hlsearch!<CR>  
-"fix crappy paste due to clipboard absence (only works on local)
+"quickly copy entire file using system clipboard
 map <leader>ll :read !pbpaste<CR>
 map <leader>m :set mouse=a\|:se nu<CR>
 map <leader>mm :set mouse-=a\|:se nonu<CR>
 map <leader>n :NERDTreeToggle<CR>
 map <leader>o :only<CR>
-map <leader>p "+p<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <leader>s :w<CR>
 map <leader>d :set background=dark<CR>
 map <leader>v :e ~/.vimrc<CR>
-map <leader>y "+y
+map <leader>k :%s/\s\+$//e
 map <leader>z :setlocal spell!<CR>
 map <leader>= z=
 map <leader>] ]s
 map <leader>/ /<C-p>
-map <leader>bbb :%s/\(.*\): .*$/\1/g<CR>
 map <leader>ccc :%s/,/\r/g<CR>                              
 map <leader>nnn :%s/\n/,/g<CR>
 map <leader>rrr :%s/\r/\r/g<CR>
 nmap S :%s//g<LEFT><LEFT>
 imap hh <Esc>
+map <S-space> o<esc>
 vmap // y/<C-R>"<CR> 
+" fixing copy/paste
+imap <D-v> <C-r>+
+map <D-v> "+Pa
+vmap <D-c> "+y
+
 "Note that the following meta commands for these don't work with Terminal.app due to existing application shortcuts
 vmap <D-j> gj
 vmap <D-k> gk
@@ -98,20 +105,23 @@ nmap <D-Up> ddkP
 nmap <D-Down> ddp
 imap <C-d> <esc>ddi
 
-                                                                                    "################################"
-                                                                                    "*---Easier splits navigation---*"
-                                                                                    "################################"
+"###################################"
+ "*---Aesthetics and navigation---*"
+"###################################"
+
+" Window splits convenience
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+nnoremap <C-=> <C-w>=
 let g:sparkupExecuteMapping='<c-g>'
                                                                                     
-                                                                                            "#############
-                                                                                            "*---Misc---*"
-                                                                                            "#############
+"##############"
+ "*---Misc---*"
+"##############"
 
-" disable auto-comment insertion (fuck that shit)
+" disable auto-comment (#) insertion (fuck that shit)
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Custom HL and colors for spellcheck and cursorline
 autocmd BufRead,BufNewFile *.phtml set filetype=html
@@ -123,15 +133,6 @@ hi clear SpellBad "clear spelling default highlight
 hi SpellBad cterm=underline ctermfg=brown           
 "Change autocomplete color
 :highlight Pmenu ctermbg=238 gui=bold
-
-" Source upon save
-augroup myvimrc
-    au!
-    au BufWritePost .vimrc,.gvimrc, so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
-augroup END
-
-" Markdown
-autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " Airline Settings
 
@@ -153,8 +154,8 @@ let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
 
-" Enable the list of buffers
-let g:airline#extensions#tabline#enabled = 1
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬
 
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
@@ -166,9 +167,16 @@ if has('gui_running')
   let g:solarized_visibility="high"    "default value is normal 
   set background=light
 end
-                                                                                    "########################
-                                                                                    "*---Custom Commands---*"
-                                                                                    "########################
+
+" This should source .vimrc on each write 
+augroup reload_vimrc " {
+    autocmd!
+    autocmd BufWritePost $MYVIMRC source $MYVIMRC
+augroup END " }
+
+" Markdown
+autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " used for opening markdown files in Mark2
 command! Marked silent! !open -a "/Applications/Marked 2.app" "%:p" 
+
