@@ -33,10 +33,14 @@ PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m
 
 [ -f ~/.passwords ] && source ~/.passwords 
 
+# from BEWD course, using rbenv: https://gist.github.com/bobbytables/dcd589bf911c1cff9851 
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
 #-------------End Color Aliases------------
 
 #Other Get the aliases and functions
-alias lsf="ls -ad */" # List the directories only       
+
+alias lsf="ls -lad */" # List the directories only       
 alias e="vim"
 alias see="declare -f "
 alias rm='rm -i'
@@ -55,18 +59,20 @@ alias cs="cd ~/Desktop/Back_up_docs/CS Learning/"
 alias desk="cd ~/Desktop"
 alias ghc="cd /Users/colby/code/aptible"
 alias docs="cd /Users/colby/code/aptible/support/source/topics"
+alias tam="cd /Users/colby/code/aptible/aptible-tam-guide"
 alias atg="cd /Users/colby/code/aptible/aptible-tech-guide"
-alias api="aptible ssh --app api.aptible.com bundle exec script/management-console"
-alias auth="aptible ssh --app auth.aptible.com bundle exec rails console"
+alias api="aptible ssh --app dangerzone bundle exec script/management-console"
 alias tu="cat ~/thumb.txt"
 alias aa="ll -ha"
 alias ah="ll -h"
+alias sf="mdfind"
 alias grebase="git rebase -i HEAD~"
 alias gpom="git push origin master"
 alias gforce="git push --force origin master"
 alias cg="curlget"
 alias wheres="find . -name *$1*"
-alias mario_creepy="$ say -v whisper I\'m uh watchinguh yuu"
+alias mario_creepy="say -v whisper I\'m uh watchinguh yuu"
+
 aptible-staging() {
  remote=$(git remote -v | grep staging | head -n 1)
  app=$(echo ${remote} | sed 's/.*aptible-staging\.com:\(.*\)\.git.*/\1/')
@@ -106,11 +112,22 @@ aptible-clone() {
     return 1
   fi
 
-  GIT_INSTANCE=54.85.132.36  # aptible-production master1
+  GIT_INSTANCE=beta.aptible.com  # aptible-production master1
 
   repo="app-$1"
+  shift
+
+  # file:// protocol is necessary for --depth clones, but for cloning all
+  # objects (including those not on any branch), we need to clone the path
+  # directly
+  if [ -z "$@" ]; then
+    url=/mnt/primetime/git/$repo
+  else
+    url=file:///mnt/primetime/git/$repo
+  fi
+
   ssh -p 2222 $GIT_INSTANCE rm -rf $repo
-  ssh -p 2222 $GIT_INSTANCE sudo git clone /mnt/primetime/git/$repo && \
+  ssh -p 2222 $GIT_INSTANCE sudo git clone $url $@ && \
     ssh -p 2222 $GIT_INSTANCE sudo chown -R \$USER:opsworks $repo && \
     rsync -az --progress -e "ssh -p 2222" $GIT_INSTANCE:$repo .
   ssh -p 2222 $GIT_INSTANCE rm -rf $repo
@@ -158,3 +175,7 @@ echo "USING: curl https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json";
 curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json| jq .
 }
 
+# this doesn't work yet :( :( 
+function curlput(){
+curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json -H "Content-Type: application/json" -v -X PUT -d $3|jq.
+}

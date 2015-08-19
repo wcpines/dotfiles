@@ -1,6 +1,6 @@
-"# ######################"
- "*---Custom Plugins---*"
-"## #####################"
+"########################"
+"*---Custom Plugins---*"
+"########################"
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -16,18 +16,21 @@ Plugin 'tpope/vim-endwise'
 Plugin 'matchit.zip'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'kien/ctrlp.vim'
+Plugin 'terryma/vim-multiple-cursors'
 call vundle#end()            
 
 "##########################"
- "*---Startup Settings---*"
+"*---Startup Settings---*"
 "##########################"
 
+autocmd BufEnter * lcd %:p:h 
 set nocompatible                                        " get rid of Vi compatibility mode. SET FIRST!
 syntax on                                               " enable syntax highlighting
 filetype off                                            " filetype detection[OFF] 
 filetype plugin indent on                               " filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 set autoindent                                          " Copy indent of previous line
 set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
+set cursorline
 set expandtab                                           " Use spaces when tab is hit 
 set ignorecase                                          " Ignore case for search patterns
 set incsearch                                           " Dynamic search (search and refine as you type)
@@ -49,29 +52,24 @@ set ttyfast                                             " Set fast scroll
 set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these filetypes and extensions
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
+set lcs=tab:>>,trail:_                                  " Show trailing ws
 "set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%) 
-
 "######################"
- "*---My Mappings*---*"
+"*---My Mappings*---*"
 "######################"
 
 let mapleader = ","
 nnoremap ; :
-nnoremap <CR> <C-^> 
+nnoremap <CR> :bn<CR>
 nnoremap <leader>' viw<esc>a"<esc>hbi"<esc>lel
-"quickly copy entire file using system clipboard
 map <leader>c :%w !pbcopy<CR>
-map <leader>cl :set cursorline!<CR>
 map <leader>l :set hlsearch!<CR>  
-"quickly copy entire file using system clipboard
+noremap <leader>h ls<CR>  
 map <leader>ll :read !pbpaste<CR>
-map <leader>m :set mouse=a\|:se nu<CR>
-map <leader>mm :set mouse-=a\|:se nonu<CR>
-map <leader>n :NERDTreeToggle<CR>
+map <leader>n :NERDTreeCWD<CR>
 map <leader>o :only<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <leader>s :w<CR>
-map <leader>d :set background=dark<CR>
 map <leader>v :e ~/.vimrc<CR>
 map <leader>k :%s/\s\+$//e
 map <leader>z :setlocal spell!<CR>
@@ -80,15 +78,44 @@ map <leader>] ]s
 map <leader>/ /<C-p>
 map <leader>ccc :%s/,/\r/g<CR>                              
 map <leader>nnn :%s/\n/,/g<CR>
-map <leader>rrr :%s/\r/\r/g<CR>
-nmap S :%s//g<LEFT><LEFT>
+map <leader>rrr :%s/\\n/\r/g<CR>
+map <leader>m :CtrlPMRUFiles<CR>
+map <leader>b :CtrlPBuffer<CR>
+map <leader>d :bd<CR>
+
+"autosurround stuff
 imap hh <Esc>
+imap [] []<Left>
+imap {} {}<Left>
+imap () ()<Left>
+imap "" ""<Left>
+nmap S :%s//g<LEFT><LEFT>
+map <C-S-space> O<esc>
 map <S-space> o<esc>
 vmap // y/<C-R>"<CR> 
-" fixing copy/paste
+
+"Autocenter stuff
+nmap G Gzz
+nmap n nzz
+nmap N Nzz
+
+"Multi-cursor settings
+
+let g:multi_cursor_next_key='<C-n>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
+
+" Adding in standard mac commands for copy/paste and tabs.  Makes it a bit less vim-y (in a good way)
 imap <D-v> <C-r>+
-map <D-v> "+Pa
+map <D-v> "+P
 vmap <D-c> "+y
+imap <D-t> <esc>:tabnew<CR>
+map <D-t> :tabnew<CR>
+map <D-w> :clo<CR>
+map <C-Tab> gt
+map <C-S-Tab> gT
 
 "Note that the following meta commands for these don't work with Terminal.app due to existing application shortcuts
 vmap <D-j> gj
@@ -104,10 +131,11 @@ map <D-0> g^
 nmap <D-Up> ddkP
 nmap <D-Down> ddp
 imap <C-d> <esc>ddi
-
-"###################################"
- "*---Aesthetics and navigation---*"
-"###################################"
+map j gj
+map k gk
+"###########################################"
+ "*---Aesthetics and window navigation---*"
+"##########################################"
 
 " Window splits convenience
 nnoremap <C-h> <C-w>h
@@ -116,12 +144,16 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 nnoremap <C-=> <C-w>=
 let g:sparkupExecuteMapping='<c-g>'
-                                                                                    
+
+" Move between windows and tabs.  Function at bottom
+nnoremap mt :call MoveToNextTab()<CR><C-w>H  
+nnoremap mT :call MoveToPrevTab()<CR><C-w>H  
+
 "##############"
  "*---Misc---*"
 "##############"
 
-" disable auto-comment (#) insertion (fuck that shit)
+" disable auto-comment (#) insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Custom HL and colors for spellcheck and cursorline
 autocmd BufRead,BufNewFile *.phtml set filetype=html
@@ -154,8 +186,6 @@ let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
 
-" Use the same symbols as TextMate for tabstops and EOLs
-set listchars=tab:▸\ ,eol:¬
 
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
@@ -165,7 +195,7 @@ if has('gui_running')
   set guifont=Menlo:h18
   let g:solarized_contrast="high"    "default value is normal 
   let g:solarized_visibility="high"    "default value is normal 
-  set background=light
+  set background=dark
 end
 
 " This should source .vimrc on each write 
@@ -179,4 +209,5 @@ autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " used for opening markdown files in Mark2
 command! Marked silent! !open -a "/Applications/Marked 2.app" "%:p" 
+
 
