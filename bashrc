@@ -29,7 +29,16 @@ LITEBLUE="1;34"
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 export CLICOLOR=2  
 
-PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\].\[\e[\$CYAN m\]$ \[\e[m\]"
+# Setup for including current branch in prompt
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+# Bash prompt
+# \e[ = Start color scheme
+# \e[m = Stop color scheme.
+
+PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\].\$(parse_git_branch)\[\e[\$CYAN m\]$ \[\e[m\]"
 
 [ -f ~/.passwords ] && source ~/.passwords 
 
@@ -70,8 +79,13 @@ alias grebase="git rebase -i HEAD~"
 alias gpom="git push origin master"
 alias gforce="git push --force origin master"
 alias cg="curlget"
-alias wheres="find . -name *$1*"
 alias mario_creepy="say -v whisper I\'m uh watchinguh yuu"
+alias rs="rails server"
+alias rc="rails console"
+alias tg="gvim ~/code/aptible/aptible-tam-guide"
+alias al="aptible login"
+
+
 
 aptible-staging() {
  remote=$(git remote -v | grep staging | head -n 1)
@@ -134,28 +148,27 @@ aptible-clone() {
 }
 
 opsworks-ssh() {
-  if [ "$#" -gt 1 ]; then
-    STACK=$1
+  if [[ "$1" =~ ":" ]]; then
+    IFS=':' read -a stackhost <<< "$1"
+    stack=${stackhost[0]}
+    host=${stackhost[1]}
     shift
-    HOST=$1
-    shift
-    ssh -o ProxyCommand="ssh -p 2222 $STACK.ssh.aptible.com nc $HOST 2222" \
-      $STACK-$HOST $@ 2> /dev/null || \
-    ssh -o ProxyCommand="ssh -p 2222 $STACK.ssh.aptible.com nc $HOST 22" \
-      $STACK-$HOST $@
-  elif [ "$#" -eq 1 ]; then
-    ssh -p 2222 $1.ssh.aptible.com
+    ssh -o ProxyCommand="ssh -p 2222 bastion-layer-$stack.aptible.in nc $host 2222" \
+      $stack-$host $@ 2> /dev/null || \
+    ssh -o ProxyCommand="ssh -p 2222 bastion-layer-$stack.aptible.in nc $host 22" \
+      $stack-$host $@
   else
-    echo "Usage: opsworks-ssh STACK [HOST] [CMD ...]"
-    return 1
+    stack=$1
+    shift
+    ssh -p 2222 bastion-layer-$stack.aptible.in $@
   fi
 }
 #*---Docker Settings---*#
 
-export DOCKER_HOST=tcp://192.168.59.103:2376
-export DOCKER_CERT_PATH=/Users/colby/.boot2docker/certs/boot2docker-vm
-export DOCKER_TLS_VERIFY=1
-source /usr/local/etc/bash_completion.d/docker
+# export DOCKER_HOST=tcp://192.168.59.103:2376
+# export DOCKER_CERT_PATH=/Users/colby/.boot2docker/certs/boot2docker-vm
+# export DOCKER_TLS_VERIFY=1
+# source /usr/local/etc/bash_completion.d/docker
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
  . $(brew --prefix)/etc/bash_completion
@@ -177,5 +190,9 @@ curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.co
 
 # this doesn't work yet :( :( 
 function curlput(){
-curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json -H "Content-Type: application/json" -v -X PUT -d $3|jq.
+curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json -H "Content-Type: application/json" -v -X PUT -d $3
+}
+
+function bit(){
+curl -vL "http://api.bandsintown.com/artists/$1/events.json?api_version=2.0&app_id=test" | jq .
 }
