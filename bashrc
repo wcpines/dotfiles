@@ -9,7 +9,12 @@ export VIMRUNTIME=/usr/share/vim/vim73
 source /usr/local/opt/chruby/share/chruby/chruby.sh
 chruby ruby-2.1.3
 
+
 [ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
+
+#docker-machine configuration?
+
+eval "$(docker-machine env default)"
 
 #------------Start Color Aliases------------
 
@@ -42,7 +47,7 @@ PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m
 [ -f ~/.passwords ] && source ~/.passwords 
 
 # from BEWD course, using rbenv: https://gist.github.com/bobbytables/dcd589bf911c1cff9851 
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+# if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 #-------------End Color Aliases------------
 
@@ -50,118 +55,136 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 
 #alias myip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*"
-alias aa="ll -ha"
-alias ah="ll -h"
+alias ah="ls -lah"
 alias al="aptible login"
 alias api="aptible ssh --app dangerzone bundle exec script/management-console"
-alias atg="cd /Users/colby/code/aptible/aptible-tech-guide"
-alias bp='gvim ~/.bashrc'
+alias atg="cd /users/colby/code/aptible/aptible-tech-guide"
+alias bp="gvim ~/.bashrc"
+alias burp="java -Xmx2g -jar ~/burpsuite_free_v1.6.32.jar"
 alias cg="curlget"
-alias cs="cd ~/Desktop/Back_up_docs/CS Learning/"
-alias desk="cd ~/Desktop"
-alias dm="docker-machine"
-alias docs="cd /Users/colby/code/aptible/support/source/topics"
+alias cs="cd ~/desktop/back_up_docs/cs learning/"
+alias desk="cd ~/desktop"
+alias dms="docker-machine status default"
+alias dmst="docker-machine start default"
+alias dmop="docker-machine stop default"
+alias docs="cd /users/colby/code/aptible/support/source/topics"
 alias gforce="git push --force origin master"
-alias ghc="cd /Users/colby/code/aptible"
+alias ghc="cd /users/colby/code/aptible"
 alias gpom="git push origin master"
-alias grebase="git rebase -i HEAD~"
-alias grep='grep --color=auto'
-alias hg='history|grep' $1
-alias ls='ls -GFaSh'
-alias lsf="ls -lad */" # List the directories only       
-alias misc='cd ~/Desktop/Misc'
-alias no='echo "https://www.youtube.com/watch?v=WOE1-2Fza5Q&t=2m20s"'
+alias grebase="git rebase -i head~"
+alias grep="grep --color=auto"
+alias hg="history|grep" $1
+alias ls="ls -gfash"
+alias lsf="ls -lad */" # list the directories only       
+alias misc="cd ~/desktop/misc"
+alias no="echo 'https://www.youtube.com/watch?v=woe1-2fza5q&t=2m20s'"
 alias rc="rails console"
-alias rm='rm -i'
+alias rm="rm -i"
 alias rs="rails server"
-alias sbp='source ~/.bash_profile'
+alias sbp="source ~/.bash_profile"
 alias sf="mdfind"
-alias tam="cd /Users/colby/code/aptible/aptible-tam-guide"
-alias wh="say -v Whisper"
-# aptible-staging() {
-#  remote=$(git remote -v | grep staging | head -n 1)
-#  app=$(echo ${remote} | sed 's/.*aptible-staging\.com:\(.*\)\.git.*/\1/')
+alias tam="cd /users/colby/code/aptible/aptible-tam-guide"
+alias wh="say -v whisper"
 
-#  if [ "$#" -eq 0 ] || [ "$1" = "help" ] || [ "$1" = "version" ]; then
-#   aptible $@
-#  elif [ -z "$app" ] || [ "$1" = "login" ] || [ "$1" = "apps:create" ] || \
-  #     [[ "$1" =~ "db" ]]; then
-#   APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
-  #   APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
-  #   aptible $@
-#  else
-#   APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
-  #   APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
-  #   aptible $@ --app $app
-#  fi
-# }
 
-db-launch() {
-container=$(head -c 32 /dev/urandom | md5)
-image="$1"
-shift
-
-docker create --name $container $image
-docker run --volumes-from $container \
-  -e USERNAME=aptible -e PASSPHRASE=foobar -e DB=db $image --initialize
-docker run $@ --volumes-from $container $image
-}
 
 ###########################
 #*---Aptible Specifics---*#
 ###########################
 
-aptible-clone() {
-if [ -z "$1" ]; then
-  echo "Usage: aptible-clone APP_ID"
-  return 1
-fi
+# Go to segment warehouse
 
-GIT_INSTANCE=beta.aptible.com  # aptible-production master1
-
-repo="app-$1"
-shift
-
-# file:// protocol is necessary for --depth clones, but for cloning all
-# objects (including those not on any branch), we need to clone the path
-# directly
-if [ -z "$@" ]; then
-  url=/mnt/primetime/git/$repo
-else
-  url=file:///mnt/primetime/git/$repo
-fi
-
-ssh -p 2222 $GIT_INSTANCE rm -rf $repo
-ssh -p 2222 $GIT_INSTANCE sudo git clone $url $@ && \
-  ssh -p 2222 $GIT_INSTANCE sudo chown -R \$USER:opsworks $repo && \
-  rsync -az --progress -e "ssh -p 2222" $GIT_INSTANCE:$repo .
-ssh -p 2222 $GIT_INSTANCE rm -rf $repo
+warehouse() {
+  aws:aptible pancake stack:ssh production --layer bastion sudo docker run -i -t quay.io/aptible/postgresql:9.4 --client $1
 }
 
+
+# opsworks-ssh aptible-production
+# opsworks-ssh aptible-production:10.0.1.195 sudo restart cron
 opsworks-ssh() {
-if [[ "$1" =~ ":" ]]; then
-  IFS=':' read -a stackhost <<< "$1"
-  stack=${stackhost[0]}
-  host=${stackhost[1]}
-  shift
-  ssh -o ProxyCommand="ssh -p 2222 bastion-layer-$stack.aptible.in nc $host 2222" \
-    $stack-$host $@ 2> /dev/null || \
+  if [[ "$1" =~ ":" ]]; then
+    IFS=':' read -a stackhost <<< "$1"
+    stack=${stackhost[0]}
+    host=${stackhost[1]}
+    shift
+    ssh -o ProxyCommand="ssh -p 2222 bastion-layer-$stack.aptible.in nc $host 2222" \
+      $stack-$host $@ 2> /dev/null || \
     ssh -o ProxyCommand="ssh -p 2222 bastion-layer-$stack.aptible.in nc $host 22" \
-    $stack-$host $@
-else
-  stack=$1
-  shift
-  ssh -p 2222 bastion-layer-$stack.aptible.in $@
-fi
+      $stack-$host $@
+  else
+    stack=$1
+    shift
+    ssh -p 2222 bastion-layer-$stack.aptible.in $@
+  fi
 }
 
-#docker-machine configuration?
+# Opens multiple terminal tabs, one for each argument
+# opsworks-ssh-multi shared staging redox ...
+opsworks-ssh-multi() {
+  for host in $@ ; do
+    newtab opsworks-ssh $host
+    sleep 0.5
+  done
+}
 
-# eval "$(docker-machine env default)"
+# aptible-clone APP_ID
+# Clones Aptible app locally, from beta.aptible.com
+# e.g. aptible-clone 1422
+
+aptible-clone() {
+  if [ -z "$1" ]; then
+    echo "Usage: aptible-clone APP_ID"
+    return 1
+  fi
+
+  GIT_INSTANCE=beta.aptible.com  # aptible-production master1
+
+  repo="app-$1"
+  shift
+
+  # file:// protocol is necessary for --depth clones, but for cloning all
+  # objects (including those not on any branch), we need to clone the path
+  # directly
+  if [ -z "$@" ]; then
+    url=/mnt/primetime/git/$repo
+  else
+    url=file:///mnt/primetime/git/$repo
+  fi
+
+  ssh -p 2222 $GIT_INSTANCE rm -rf $repo
+  ssh -p 2222 $GIT_INSTANCE sudo git clone $url $@ && \
+    ssh -p 2222 $GIT_INSTANCE sudo chown -R \$USER:opsworks $repo && \
+    rsync -az --progress -e "ssh -p 2222" $GIT_INSTANCE:$repo .
+  ssh -p 2222 $GIT_INSTANCE rm -rf $repo
+
+}
+
+
+# db-launch IMAGE [OPTIONS]
+# Launches a container from standardized database container, with username
+# "aptible" and password "foobar" by default. Options are passed directly to
+# `docker run`.
+db-launch() {
+  container=$(head -c 32 /dev/urandom | md5)
+  passphrase=${PASSPHRASE:-foobar}
+  image="${@: -1}"
+
+  docker create --name $container $image
+  docker run --volumes-from $container \
+    -e USERNAME=aptible -e PASSPHRASE=$passphrase -e DB=db $@ --initialize
+  docker run --volumes-from $container $@
+}
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
  . $(brew --prefix)/etc/bash_completion
 fi
+
+function aws:aptible () {
+  (
+    eval $(aws-creds env default)
+    "$@"
+  )
+}
 
 #*---Zendesk API Nonsense---*#
 
@@ -181,3 +204,4 @@ curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.co
 function curlput(){
 curl -u $ZENDESK_USER/token:$ZENDESK_TOKEN https://$ZENDESK_SUBDOMAIN.zendesk.com/api/v2/$1/$2.json -H "Content-Type: application/json" -v -X PUT -d $3
 }
+

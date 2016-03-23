@@ -8,6 +8,7 @@ call vundle#begin()
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-visual-star-search'
+Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'elzr/vim-json'
 Plugin 'ervandew/supertab'
 Plugin 'kien/ctrlp.vim'
@@ -21,13 +22,14 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tmhedberg/matchit'
 Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-fugitive' 
+Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/ZoomWin'
 Plugin 'vim-scripts/visSum.vim'
-call vundle#end()            
+Plugin 'yggdroot/indentline'
+call vundle#end()
 
 "#########################"
 "*---Basic  Settings---*"
@@ -35,13 +37,14 @@ call vundle#end()
 
 autocmd BufEnter * lcd %:p:h                            " Set working directory to that of the current file
 syntax on                                               " Enable syntax highlighting
-filetype off                                            " Filetype detection[OFF] 
+filetype off                                            " Filetype detection[OFF]
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 set autoindent                                          " Copy indent of previous line
 set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
-set cursorline                                          " Show cursor line 
-set expandtab                                           " Use spaces when tab is hit 
+set cursorline                                          " Show cursor line
+set expandtab                                           " Use spaces when tab is hit
 set hidden                                              " Switch buffers and preserve changes w/o saving
+set gcr=n:blinkon0                                      " Turn off cursor blink
 set ignorecase                                          " Ignore case for search patterns
 set incsearch                                           " Dynamic search (search and refine as you type)
 set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
@@ -55,7 +58,7 @@ set number                                              " Set line numbering
 set ruler                                               " Always show line/column info at bottom
 set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
 set showmatch                                           " Highlight search match as you type
-set smartindent                                         " Changes indent based on file extension         
+set smartindent                                         " Changes indent based on file extension
 set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
 set tabstop=2                                           " Set number of columns inserted with tab key
 set textwidth=0                                         " Controls the wrap width you would like to use (character length).  Setting it to default: disabled
@@ -64,7 +67,7 @@ set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
 set t_vb=
-"set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%) 
+"set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 
 "#####################"
 "*---My Mappings*---*"
@@ -73,7 +76,7 @@ set t_vb=
 let mapleader = ","
 nnoremap ; :
 
-" ** Buffer management ** 
+" ** Buffer management **
 
 nnoremap <CR> :bn<CR>
 nnoremap <S-CR> :bp<CR>
@@ -85,6 +88,9 @@ map <leader>f :bd!<CR>
 
 let g:NERDSpaceDelims=1
 
+" ** CtrlP Settings **
+
+
 " Ignoring shit with CtrlP
 let g:ctrlp_custom_ignore = {
                        \ 'dir':  '\.git$\|\.hg$\|\.svn$',
@@ -95,7 +101,36 @@ let g:ctrlp_custom_ignore = {
 if executable("ag")
     set grepprg=ag\ --nogroup\ --nocolor
     let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
+  else
+    " Fall back to using git ls-files if Ag is not available
+    let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
 endif
+
+
+
+"Cmd-Shift-(M)ethod - jump to a method (tag in current file)
+"Ctrl-m is not good - it overrides behavior of Enter
+nnoremap <leader>t :CtrlPBufTag<CR>
+
+
+" search by filename
+" let g:ctrlp_by_filename = 1
+
+" Close buffer via <C-@> using CtrlP SOURCE: https://gist.github.com/rainerborene/8074898
+let g:ctrlp_buffer_func = { 'enter': 'CtrlPMappings' }
+
+function! CtrlPMappings()
+  nnoremap <buffer> <silent> <C-@> :call <sid>DeleteBuffer()<cr>
+endfunction
+
+function! s:DeleteBuffer()
+  let path = fnamemodify(getline('.')[2:], ':p')
+  let bufn = matchstr(path, '\v\d+\ze\*No Name')
+  exec "bd" bufn ==# "" ? path : bufn
+  exec "norm \<F5>"
+endfunction
+
 
 " ** Window/workspace management **
 
@@ -108,7 +143,7 @@ imap <C-Tab> <esc>gt
 map <C-S-Tab> gT
 imap <C-S-Tab> <esc>gT
 map <leader>o :only<CR>
-map <leader>bt :bufdo tab split<CR>
+map <leader><tab> :bufdo tab split<CR>
 
 " Window splits convenience
 nnoremap <C-h> <C-w>h
@@ -119,7 +154,7 @@ nnoremap <leader>\ :vnew<CR>
 set splitbelow
 set splitright
 
-" ** Project workflow ** 
+" ** Project workflow **
 map <leader>m :CtrlPMRUFiles<CR>
 map <leader>n :NERDTreeToggle<CR>
 
@@ -135,15 +170,15 @@ imap <S-LEFT> <esc>v<LEFT>
 imap <S-RIGHT> <esc>v<RIGHT>
 imap hh <Esc>
 imap <leader>s <Esc>:w<CR>
-imap <D-s> <Esc>:w<CR>  
-map <D-s> :w<CR>  
-map <D-a> gg<S-v>G<CR>  
-map <leader>l :set hlsearch!<CR>  
+imap <D-s> <Esc>:w<CR>
+map <D-s> :w<CR>
+map <D-a> gg<S-v>G<CR>
+map <leader>l :set hlsearch!<CR>
 map <leader>v :e ~/.vimrc<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <C-S-space> O<esc>
 map <S-space> o<esc>
-vmap // y/<C-R>"<CR> 
+vmap // y/<C-R>"<CR>
 map <leader>/ :%s/<C-R>///g<CR>
 nmap S :%s//g<LEFT><LEFT>
 nnoremap Q <nop>
@@ -151,25 +186,25 @@ nnoremap Q <nop>
 " Spell checking
 map <leader>z :setlocal spell!<CR>
 map <leader>= z=
-map <leader>] ]s 
+map <leader>] ]s
 
 " Easy copy/paste of entire files
 map <leader>ll :read !pbpaste<CR>
 map <leader>c :%w !pbcopy<CR>
 
-" Quick formatting 
-map <leader>ccc :%s/,/\r/g<CR>                              
+" Quick formatting
+map <leader>ccc :%s/,/\r/g<CR>
 map <leader>nnn :%s/\n/,/g<CR>
 map <leader>rrr :%s/\\n/\r/g<CR>
 map <leader>k :%s/\s\+$//e
-map <leader>ttt :%s/\|/ /g<CR>                             
+map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
 
 " Autosurround stuff
 imap [] []<Left>
 imap {} {}<Left>
 imap () ()<Left>
-imap "" ""<Left>  
-imap <% <%<space>%><Left><Left><Left> 
+imap "" ""<Left>
+imap <% <%<space>%><Left><Left><Left>
 imap <%= <%=<space>%><Left><Left><Left>
 
 "Autocenter file jumps
@@ -185,7 +220,7 @@ let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
 
-" Enable standard mac commands for copy/paste 
+" Enable standard mac commands for copy/paste
 imap <D-v> <C-r>+
 map <D-v> "+P
 vmap <D-c> "+y
@@ -199,8 +234,8 @@ imap <C-d> <esc>ddi
 let g:sparkupExecuteMapping='<c-g>'
 
 " Move between windows and tabs.  Function at bottom
-nnoremap mt :call MoveToNextTab()<CR><C-w>H  
-nnoremap mT :call MoveToPrevTab()<CR><C-w>H  
+nnoremap mt :call MoveToNextTab()<CR><C-w>H
+nnoremap mT :call MoveToPrevTab()<CR><C-w>H
 
  "#########################"
  "*---Display Settings---*"
@@ -214,15 +249,20 @@ autocmd BufRead,BufNewFile *.phtml set filetype=html
 autocmd BufRead,BufNewFile markdown set filetype=markdown
 autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 " highlight Pmenu guibg=brown gui=bold
-hi CursorLine   cterm=NONE ctermbg=darkgray guibg=darkgray guifg=white 
+hi CursorLine   cterm=NONE ctermbg=darkgray guibg=darkgray guifg=white
 hi clear SpellBad "clear spelling default highlight
-hi SpellBad cterm=underline ctermfg=brown           
+hi SpellBad cterm=underline ctermfg=brown
 "Change autocomplete color
 :highlight Pmenu ctermbg=238 gui=bold
+
 
 " highlight stuff after 80 chacters
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
+
+" indent guides like subl
+let g:indentLine_fileTypeExclude = ['text', 'sh', 'help']
+let g:indentLine_char = '┊'
 
 " ** Airline Settings **
 
@@ -251,8 +291,8 @@ au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 if has('gui_running')
   colorscheme solarized
   set guifont=Menlo:h18
-  let g:solarized_contrast="high"    "default value is normal 
-  let g:solarized_visibility="high"    "default value is normal 
+  let g:solarized_contrast="high"    "default value is normal
+  let g:solarized_visibility="high"  "default value is normal
   set background=dark
 end
 
@@ -262,16 +302,18 @@ if has('autocmd')
   autocmd GUIEnter * set visualbell t_vb=
 endif
 
-" Source .vimrc on each write 
+" Source .vimrc on save
 augroup reload_vimrc " {
     autocmd!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
 augroup END " }
 
-" Markdown
+" Markdown for `.md` file extensions
 autocmd BufNewFile,BufRead *.md set filetype=markdown
 let g:vim_markdown_folding_disabled = 1
 
 
 " Used for opening markdown files in Marked2
-command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p" 
+command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
+
+"g:SuperTabNoCompleteAfter <S->
