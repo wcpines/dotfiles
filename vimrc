@@ -10,8 +10,11 @@ Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-visual-star-search'
 Plugin 'elzr/vim-json'
 Plugin 'ervandew/supertab'
-Plugin 'gmarik/Vundle.vim'
 Plugin 'kien/ctrlp.vim'
+Plugin 'gmarik/Vundle.vim'
+Plugin 'godlygeek/tabular'
+Plugin 'joker1007/vim-markdown-quote-syntax'
+Plugin 'nelstrom/vim-markdown-folding'
 Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
@@ -22,15 +25,15 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
-Plugin 'vim-ipython'
 Plugin 'vim-scripts/ZoomWin'
+Plugin 'vim-scripts/visSum.vim'
 call vundle#end()            
 
 "#########################"
 "*---Basic  Settings---*"
 "#########################"
 
-autocmd BufEnter * lcd %:p:h                            " Set working directory to current file
+autocmd BufEnter * lcd %:p:h                            " Set working directory to that of the current file
 syntax on                                               " Enable syntax highlighting
 filetype off                                            " Filetype detection[OFF] 
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
@@ -78,9 +81,10 @@ map <leader>b :CtrlPBuffer<CR>
 
 " easy buffer closing, and force closing
 map <leader>d :bd<CR>
-map <leader>df :bdf<CR>
+map <leader>f :bd!<CR>
 
 let g:NERDSpaceDelims=1
+
 " Ignoring shit with CtrlP
 let g:ctrlp_custom_ignore = {
                        \ 'dir':  '\.git$\|\.hg$\|\.svn$',
@@ -120,12 +124,17 @@ map <leader>m :CtrlPMRUFiles<CR>
 map <leader>n :NERDTreeToggle<CR>
 
 " Misc
+
+" Set movement to be intuitive for wrapped lines
 map j gj
 map k gk
+
+" Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
 imap <S-LEFT> <esc>v<LEFT>
 imap <S-RIGHT> <esc>v<RIGHT>
 imap hh <Esc>
+imap <leader>s <Esc>:w<CR>
 imap <D-s> <Esc>:w<CR>  
 map <D-s> :w<CR>  
 map <D-a> gg<S-v>G<CR>  
@@ -135,14 +144,14 @@ map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <C-S-space> O<esc>
 map <S-space> o<esc>
 vmap // y/<C-R>"<CR> 
-map <leader>/ /<C-p>
+map <leader>/ :%s/<C-R>///g<CR>
 nmap S :%s//g<LEFT><LEFT>
 nnoremap Q <nop>
 
 " Spell checking
 map <leader>z :setlocal spell!<CR>
-"map <leader>= z=
-map <leader>] ]s z=
+map <leader>= z=
+map <leader>] ]s 
 
 " Easy copy/paste of entire files
 map <leader>ll :read !pbpaste<CR>
@@ -155,12 +164,12 @@ map <leader>rrr :%s/\\n/\r/g<CR>
 map <leader>k :%s/\s\+$//e
 map <leader>ttt :%s/\|/ /g<CR>                             
 
-" Autosurround stuff-- some covered by _atext_ settings
+" Autosurround stuff
 imap [] []<Left>
-" imap {} {}<Left>
+imap {} {}<Left>
 imap () ()<Left>
-imap "" ""<Left>
-imap <% <%<space>%><Left><Left><Left>
+imap "" ""<Left>  
+imap <% <%<space>%><Left><Left><Left> 
 imap <%= <%=<space>%><Left><Left><Left>
 
 "Autocenter file jumps
@@ -211,6 +220,10 @@ hi SpellBad cterm=underline ctermfg=brown
 "Change autocomplete color
 :highlight Pmenu ctermbg=238 gui=bold
 
+" highlight stuff after 80 chacters
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
+
 " ** Airline Settings **
 
 if !exists('g:airline_symbols')
@@ -231,8 +244,8 @@ let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
 
 
-" Show just the filename
-let g:airline#extensions#tabline#fnamemod = ':t'
+" .md as markdown
+au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 
 "GUI settings
 if has('gui_running')
@@ -243,6 +256,12 @@ if has('gui_running')
   set background=dark
 end
 
+" Stop the beeping
+set noerrorbells visualbell t_vb=
+if has('autocmd')
+  autocmd GUIEnter * set visualbell t_vb=
+endif
+
 " Source .vimrc on each write 
 augroup reload_vimrc " {
     autocmd!
@@ -251,6 +270,8 @@ augroup END " }
 
 " Markdown
 autocmd BufNewFile,BufRead *.md set filetype=markdown
+let g:vim_markdown_folding_disabled = 1
+
 
 " Used for opening markdown files in Marked2
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p" 
