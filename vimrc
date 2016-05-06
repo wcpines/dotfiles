@@ -150,6 +150,9 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
+
+
 nnoremap <leader>\ :vnew<CR>
 set splitbelow
 set splitright
@@ -163,6 +166,8 @@ map <leader>n :NERDTreeToggle<CR>
 " Set movement to be intuitive for wrapped lines
 map j gj
 map k gk
+map $ g$
+map 0 g0
 
 " Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
@@ -256,7 +261,7 @@ hi SpellBad cterm=underline ctermfg=brown
 :highlight Pmenu ctermbg=238 gui=bold
 
 
-" highlight stuff after 80 chacters
+" highlight stuff after 80 chacters  UPDATE 4/28/2016 I don't think this works..
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
 
