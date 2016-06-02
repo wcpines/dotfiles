@@ -2,35 +2,48 @@
 "*---Custom Plugins---*"
 "#######################"
 
-" set the runtime path to include Vundle and initialize
+
+" Set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-visual-star-search'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'elzr/vim-json'
 Plugin 'ervandew/supertab'
-Plugin 'kien/ctrlp.vim'
+Plugin 'gioele/vim-autoswap'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'joker1007/vim-markdown-quote-syntax'
+Plugin 'kana/vim-textobj-user'
+Plugin 'mattn/emmet-vim'
+Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'mzlogin/vim-markdown-toc'
 Plugin 'nelstrom/vim-markdown-folding'
 Plugin 'rking/ag.vim'
+Plugin 'ryanss/vim-hackernews'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tmhedberg/matchit'
+Plugin 'tommcdo/vim-exchange'
+Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-surround'
+Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-scripts/ZoomWin'
+Plugin 'vim-scripts/textobj-rubyblock'
 Plugin 'vim-scripts/visSum.vim'
+Plugin 'vim-scripts/zoom.vim'
 Plugin 'yggdroot/indentline'
 call vundle#end()
-
 "#########################"
 "*---Basic  Settings---*"
 "#########################"
@@ -41,16 +54,14 @@ filetype off                                            " Filetype detection[OFF
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 set autoindent                                          " Copy indent of previous line
 set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
-set cursorline                                          " Show cursor line
 set expandtab                                           " Use spaces when tab is hit
 set hidden                                              " Switch buffers and preserve changes w/o saving
 set gcr=n:blinkon0                                      " Turn off cursor blink
 set ignorecase                                          " Ignore case for search patterns
 set incsearch                                           " Dynamic search (search and refine as you type)
 set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
-set lcs=tab:>>,trail:_                                  " Show trailing ws
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
-set mouse=a                                             " Mouse scroll
+set mouse=a                                             " Enable mouse (NB: SIMBL + MouseTerm enabled for teminal vim)
 set nohlsearch                                          " Do not highlight all matches (you can toggle this as needed with command below)
 set nocompatible                                        " Get rid of Vi compatibility mode. SET FIRST!
 set nowrap                                              " Do not wrap lines of text by default
@@ -66,56 +77,58 @@ set ttyfast                                             " Set fast scroll
 set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these filetypes and extensions
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
-set t_vb=
+set t_vb=                                               " No visual bell
 "set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
+
 
 "#####################"
 "*---My Mappings*---*"
 "#####################"
 
 let mapleader = ","
+
 nnoremap ; :
 
 " ** Buffer management **
-
-nnoremap <CR> :bn<CR>
-nnoremap <S-CR> :bp<CR>
-map <leader>b :CtrlPBuffer<CR>
-
-" easy buffer closing, and force closing
+nnoremap <CR> :bp<CR>
+nnoremap <S-CR> :bn<CR>
 map <leader>d :bd<CR>
 map <leader>f :bd!<CR>
 
+let g:mustache_abbreviations = 1
 let g:NERDSpaceDelims=1
 
-" ** CtrlP Settings **
+" **CtrlP Settings**
+map <leader>b :CtrlPBuffer<CR>
+map <leader>m :CtrlPMRUFiles<CR>
+map <leader>p :CtrlP<CR>
+nnoremap <leader>t :CtrlPBufTag<CR>
 
-
-" Ignoring shit with CtrlP
+imap <C-S-n> <Nop>
+imap <C-N> <Nop>
+" Ignoring files with CtrlP
 let g:ctrlp_custom_ignore = {
-                       \ 'dir':  '\.git$\|\.hg$\|\.svn$',
-                       \ 'file': '\.pyc$\|\.pyo$\|\.rbc$|\.rbo$\|\.class$\|\.o$\|\~$\',
-                       \ }
+      \ 'dir':  '\.git$\|\.hg$\|\.svn$\|/Users/colby$\|\',
+      \ 'file': '\.pyc$\|\.pyo$\|\.so$\|\.dll$\|\.png$\|\.jpg\|\.jpeg\|\.svg$\|\.rbc$\|\.rbo$\|\.class$\|\.o$\|\~$\',
+      \ }
 
 " If ag is available use it as filename list generator instead of 'find'
 if executable("ag")
-    set grepprg=ag\ --nogroup\ --nocolor
-    let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
-  else
-    " Fall back to using git ls-files if Ag is not available
-    let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
-    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
+else
+  " Fall back to using git ls-files if Ag is not available
+  let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
 endif
 
 
 
-"Cmd-Shift-(M)ethod - jump to a method (tag in current file)
-"Ctrl-m is not good - it overrides behavior of Enter
-nnoremap <leader>t :CtrlPBufTag<CR>
+" user_emmet_leader_key
+map <leader>y <C-y>,
 
-
-" search by filename
-" let g:ctrlp_by_filename = 1
+" Search by filename
+" Let g:ctrlp_by_filename = 1
 
 " Close buffer via <C-@> using CtrlP SOURCE: https://gist.github.com/rainerborene/8074898
 let g:ctrlp_buffer_func = { 'enter': 'CtrlPMappings' }
@@ -131,8 +144,98 @@ function! s:DeleteBuffer()
   exec "norm \<F5>"
 endfunction
 
+" configure ag.vim to always start searching project root instead of the cwd
+let g:ag_working_path_mode="r"
 
-" ** Window/workspace management **
+map <leader>o :ZoomWin<CR>
+map <leader><tab> :bufdo tab split<CR>
+
+" Window splits convenience
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-l> <C-w>l
+nnoremap <D-L> <C-w>L
+nnoremap <D-H> <C-w>H
+nnoremap <D-J> <C-w>J
+nnoremap <D-K> <C-w>K
+
+nmap <leader>- :! open -a Terminal.app .<CR>
+nmap <leader>_ :! open .<CR>
+nnoremap <leader>\ :vnew<CR>
+
+set splitbelow
+set splitright
+
+
+" Set movement to be intuitive for wrapped lines
+map j gj
+map k gk
+
+"###############################################
+"*--Add standard key mappings to vim paradigm--*
+"###############################################
+
+" Shift enables visual select
+imap <S-A-Left> <esc>vb
+imap <S-A-Right> <esc>ve
+imap <S-D-Left> <esc>v0
+imap <S-D-Right> <esc>v$
+imap <S-Down> <esc>v<Down>
+imap <S-LEFT> <esc>v<LEFT>
+imap <S-RIGHT> <esc>v<RIGHT>
+imap <S-Up> <esc>v<Up>
+nmap <S-A-Left> vb
+nmap <S-A-Right> ve
+nmap <S-D-Left> v0
+nmap <S-D-Right> v$
+nmap <S-Down> v<Down>
+nmap <S-Left> v<Left>
+nmap <S-Right> v<Right>
+nmap <S-Up> v<Up>
+smap <S-Down> <Down>
+vmap <S-A-Left> b
+vmap <S-A-Right> e
+vmap <S-D-Left> 0
+vmap <S-D-Right> $
+vmap <S-Down> <Down>
+vmap <S-Left> <Left>
+vmap <S-Right> <Right>
+vmap <S-Up> <Up>
+vmap <S-Down> <Down>
+vmap <S-A-Up> {
+vmap <S-A-Down> }
+imap <S-A-Up> <esc>v{
+imap <S-A-Down> <esc>v}
+nmap <S-A-Up> v{
+nmap <S-A-Down> v}
+vmap <S-D-Up> gg
+vmap <S-D-Down> G
+imap <S-D-Up> <esc>vgg
+imap <S-D-Down> <esc>vG
+nmap <S-D-Up> vgg
+nmap <S-D-Down> vG
+
+"Standard save and select-all + appending, undoing
+
+imap <C-a> <D-Left>
+imap <C-e> <D-Right>
+imap <D-z> <C-o>u
+nmap <D-z> u
+imap <D-Z> <C-o><C-r>
+nmap <D-Z> <C-r>
+map <D-s> :w<CR>
+imap <D-s> <Esc>:w<CR>
+map <D-a> gg<S-v>G<CR>
+nmap <D-=> :ZoomIn<CR>
+nmap <D-_> :ZoomOut<CR>
+
+" Enable copy/paste
+imap <D-v> <C-r>+
+map <D-v> "+P
+vmap <D-c> "+y
+cnoremap <D-v> <C-r>+
 
 " Enable standard tab navigation
 imap <D-t> <esc>:tabnew<CR>
@@ -142,49 +245,31 @@ map <C-Tab> gt
 imap <C-Tab> <esc>gt
 map <C-S-Tab> gT
 imap <C-S-Tab> <esc>gT
-map <leader>o :only<CR>
-map <leader><tab> :bufdo tab split<CR>
 
-" Window splits convenience
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
-
-
-nnoremap <leader>\ :vnew<CR>
-set splitbelow
-set splitright
-
-" ** Project workflow **
-map <leader>m :CtrlPMRUFiles<CR>
-map <leader>n :NERDTreeToggle<CR>
-
-" Misc
-
-" Set movement to be intuitive for wrapped lines
-map j gj
-map k gk
-map $ g$
-map 0 g0
+" Sublime text muscle memory
+map <D-P> :
 
 " Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
-imap <S-LEFT> <esc>v<LEFT>
-imap <S-RIGHT> <esc>v<RIGHT>
+
+" Easy copy/paste of entire files (that preserves formatting)
+map <leader>ll :read !pbpaste<CR>
+map <leader>c :%w !pbcopy<CR>
 imap hh <Esc>
-imap <leader>s <Esc>:w<CR>
-imap <D-s> <Esc>:w<CR>
-map <D-s> :w<CR>
-map <D-a> gg<S-v>G<CR>
+
 map <leader>l :set hlsearch!<CR>
+map <leader>q :set syntax=markdown<CR>
 map <leader>v :e ~/.vimrc<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
-map <C-S-space> O<esc>
-map <S-space> o<esc>
+map <leader>s :w<CR>
+nmap <C-S-space> O<esc>
+nmap <S-space> o<esc>
+imap <D-CR> <esc>o
+nmap <D-CR> <esc>o
 vmap // y/<C-R>"<CR>
-map <leader>/ :%s/<C-R>///g<CR>
+map <leader>n :NERDTreeToggle<CR>
+
+" Change indents from 2 to 4 spaces for python TODO: make less crappy?
 nmap S :%s//g<LEFT><LEFT>
 nnoremap Q <nop>
 
@@ -193,16 +278,16 @@ map <leader>z :setlocal spell!<CR>
 map <leader>= z=
 map <leader>] ]s
 
-" Easy copy/paste of entire files
-map <leader>ll :read !pbpaste<CR>
-map <leader>c :%w !pbcopy<CR>
 
-" Quick formatting
+" Quick formatting and common replacements
 map <leader>ccc :%s/,/\r/g<CR>
 map <leader>nnn :%s/\n/,/g<CR>
 map <leader>rrr :%s/\\n/\r/g<CR>
 map <leader>k :%s/\s\+$//e
 map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
+vmap <leader>gu :s/\<./\u&/g<CR>
+map <leader>/ :%s/<C-R>///g<CR>
+
 
 " Autosurround stuff
 imap [] []<Left>
@@ -224,27 +309,16 @@ let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
-
-" Enable standard mac commands for copy/paste
-imap <D-v> <C-r>+
-map <D-v> "+P
-vmap <D-c> "+y
-
 " Easily shift line positions
 nmap <D-Up> ddkP
 nmap <D-Down> ddp
 imap <C-d> <esc>ddi
 
-
 let g:sparkupExecuteMapping='<c-g>'
 
-" Move between windows and tabs.  Function at bottom
-nnoremap mt :call MoveToNextTab()<CR><C-w>H
-nnoremap mT :call MoveToPrevTab()<CR><C-w>H
-
- "#########################"
- "*---Display Settings---*"
- "#########################"
+"#########################"
+"*---Display Settings---*"
+"#########################"
 
 " disable auto-comment (#) insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -256,14 +330,8 @@ autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 " highlight Pmenu guibg=brown gui=bold
 hi CursorLine   cterm=NONE ctermbg=darkgray guibg=darkgray guifg=white
 hi clear SpellBad "clear spelling default highlight
-hi SpellBad cterm=underline ctermfg=brown
-"Change autocomplete color
-:highlight Pmenu ctermbg=238 gui=bold
+" hi SpellBad cterm=underline ctermfg=brown
 
-
-" highlight stuff after 80 chacters  UPDATE 4/28/2016 I don't think this works..
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
 
 " indent guides like subl
 let g:indentLine_fileTypeExclude = ['text', 'sh', 'help']
@@ -289,17 +357,22 @@ let g:airline_symbols.paste = '∥'
 let g:airline_symbols.whitespace = 'Ξ'
 
 
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 0
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
+
 " .md as markdown
 au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 
-"GUI settings
+set guifont=Menlo:h13
 if has('gui_running')
   colorscheme solarized
-  set guifont=Menlo:h18
   let g:solarized_contrast="high"    "default value is normal
   let g:solarized_visibility="high"  "default value is normal
   set background=dark
-end
+endif
 
 " Stop the beeping
 set noerrorbells visualbell t_vb=
@@ -309,16 +382,20 @@ endif
 
 " Source .vimrc on save
 augroup reload_vimrc " {
-    autocmd!
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC
+  autocmd!
+  autocmd BufWritePost $MYVIMRC source $MYVIMRC
 augroup END " }
 
 " Markdown for `.md` file extensions
 autocmd BufNewFile,BufRead *.md set filetype=markdown
+
 let g:vim_markdown_folding_disabled = 1
 
 
 " Used for opening markdown files in Marked2
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
 
-"g:SuperTabNoCompleteAfter <S->
+" On save, preserve folds and cursor positions 
+set viewoptions=cursor,folds
+autocmd BufWinLeave *.* mkview!
+autocmd BufWinEnter *.* silent loadview
