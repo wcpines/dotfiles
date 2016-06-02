@@ -42,7 +42,13 @@ export CLICOLOR=2
 # \e[ = Start color scheme
 # \e[m = Stop color scheme.
 
-PS1="\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\].\[\e[\$CYAN m\]$ \[\e[m\]"
+parse_aptible_token() {
+  if [[ -n "$APTIBLE_ACCESS_TOKEN" ]]; then
+    echo "(IMPERSONATING) "
+  fi
+}
+
+PS1="\$(parse_aptible_token)\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\].\[\e[\$CYAN m\]$ \[\e[m\]"
 
 [ -f ~/.passwords ] && source ~/.passwords 
 
@@ -74,7 +80,7 @@ alias gpom="git push origin master"
 alias grebase="git rebase -i head~"
 alias grep="grep --color=auto"
 alias hg="history|grep" $1
-alias ls="ls -gfash"
+alias ls="ls -gfaSh"
 alias lsf="ls -lad */" # list the directories only       
 alias misc="cd ~/desktop/misc"
 alias no="echo 'https://www.youtube.com/watch?v=woe1-2fza5q&t=2m20s'"
