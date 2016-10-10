@@ -1,4 +1,4 @@
-"#######################"
+"######################b"
 "*---Custom Plugins---*"
 "#######################"
 
@@ -17,6 +17,7 @@ Plugin 'ervandew/supertab'
 Plugin 'gioele/vim-autoswap'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
+Plugin 'hallison/vim-ruby-sinatra'
 Plugin 'joker1007/vim-markdown-quote-syntax'
 Plugin 'kana/vim-textobj-user'
 Plugin 'mattn/emmet-vim'
@@ -34,11 +35,16 @@ Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-rake'
+Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-ruby/vim-ruby'
+Plugin 'vim-scripts/dbext.vim'
 Plugin 'vim-scripts/ZoomWin'
+Plugin 'vim-scripts/sql_iabbr.vim'
+Plugin 'vim-scripts/sqlcomplete.vim'
 Plugin 'vim-scripts/textobj-rubyblock'
 Plugin 'vim-scripts/visSum.vim'
 Plugin 'vim-scripts/zoom.vim'
@@ -69,6 +75,7 @@ set number                                              " Set line numbering
 set ruler                                               " Always show line/column info at bottom
 set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
 set showmatch                                           " Highlight search match as you type
+set clipboard=unnamed
 set smartindent                                         " Changes indent based on file extension
 set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
 set tabstop=2                                           " Set number of columns inserted with tab key
@@ -109,8 +116,22 @@ imap <C-N> <Nop>
 " Ignoring files with CtrlP
 let g:ctrlp_custom_ignore = {
       \ 'dir':  '\.git$\|\.hg$\|\.svn$\|/Users/colby$\|\',
-      \ 'file': '\.pyc$\|\.pyo$\|\.so$\|\.dll$\|\.png$\|\.jpg\|\.jpeg\|\.svg$\|\.rbc$\|\.rbo$\|\.class$\|\.o$\|\~$\',
+      \ 'file': '\.pyc$\|\.pyo$\|\.so$\|\.dll$\|\.png$\|\.jpg\|\.jpeg\|\.svg$\|\.rbc$\|\.rbo$\|\.class$\|\.o$\|\.swp$\',
       \ }
+
+" try to prevent indexing $HOME dir:
+
+nnoremap <LEADER>p :call RunCtrlP()<CR>
+
+fun! RunCtrlP()
+  lcd %:p:h
+  if (getcwd() == $HOME)
+    echo "Can't run in \$HOME"
+    return
+  endif
+  CtrlP
+endfunc
+
 
 " If ag is available use it as filename list generator instead of 'find'
 if executable("ag")
@@ -160,6 +181,9 @@ nnoremap <D-L> <C-w>L
 nnoremap <D-H> <C-w>H
 nnoremap <D-J> <C-w>J
 nnoremap <D-K> <C-w>K
+nnoremap <leader><Down> <C-w>r
+nnoremap <leader><Up> <C-w>R
+nnoremap <leader>. <C-w>=
 
 nmap <leader>- :! open -a Terminal.app .<CR>
 nmap <leader>_ :! open .<CR>
@@ -281,7 +305,7 @@ map <leader>] ]s
 
 " Quick formatting and common replacements
 map <leader>ccc :%s/,/\r/g<CR>
-map <leader>nnn :%s/\n/,/g<CR>
+map <leader>N :%s/\n/,/g<CR>
 map <leader>rrr :%s/\\n/\r/g<CR>
 map <leader>k :%s/\s\+$//e
 map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
@@ -388,6 +412,7 @@ augroup END " }
 
 " Markdown for `.md` file extensions
 autocmd BufNewFile,BufRead *.md set filetype=markdown
+" pascal formatting a thing? ? 
 
 let g:vim_markdown_folding_disabled = 1
 
