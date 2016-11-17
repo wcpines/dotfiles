@@ -1,3 +1,4 @@
-./vim/view
 .DS_Store
 vim/.netrwhist
+/vim/view
+~/.vim/view

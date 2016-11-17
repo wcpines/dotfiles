@@ -55,18 +55,20 @@ LITEBROWN="1;34"
 LITEBLUE="1;34"
 
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
-export CLICOLOR=2  
+export CLICOLOR=2
 
 ####################################
 #----------Prompt settings----------
 ####################################
-function parse_git_branch { 
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/' 
+function parse_git_branch {
+git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
 PS1="\\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\]\[\e[\$BROWN m\] \$(parse_git_branch)\n\[\e[\$CYAN m\]== $ \[\e[m\]"
 
-[ -f ~/.passwords ] && source ~/.passwords 
+[ -f ~/.passwords ] && source ~/.passwords
+
+eval "$(thefuck --alias "fuck")"
 
 #-------------End Color Aliases------------
 
@@ -90,7 +92,7 @@ alias grebase="git rebase -i head~"
 alias grep="grep --color=auto"
 alias hg="history|grep" $1
 alias ls="ls -gfaSh"
-alias lsf="ls -lad */" # list the directories only       
+alias lsf="ls -lad */" # list the directories only
 alias misc="cd ~/desktop/misc"
 alias no="echo 'https://www.youtube.com/watch?v=woe1-2fza5q&t=2m20s'"
 alias rc="rails console"
@@ -100,38 +102,41 @@ alias sbp="source ~/.bashrc"
 alias sf="mdfind"
 alias wh="say -v whisper"
 alias mk="open -a Marked\ 2.app"$1
+alias ssu="spotify share url"
 
 # since flatiron
 alias sq="sqlite3 c.db" $1
-alias lff="learn --fail-fast" 
-alias go="git open" 
-alias rake="bundle exec rake" 
-alias be="bundle exec" 
+alias lff="learn --fail-fast"
+alias go="git open"
+alias rake="bundle exec rake"
+alias be="bundle exec"
 alias code="cd ~/development/code"
+alias yrb="yarn run bundle"
+alias yrt="yarn run test"
+alias yi="yarn install"
+alias ya="yarn add"
+alias pys="python_server"
 
 
-function kbp {
-
+function kbp(){
 lsof -wni tcp:$1
-
 }
 
-function ber {
-  bundle exec rake $@
+function ber(){
+bundle exec rake $@
 }
 
 
-function dun {
-  mv $1 ~/development/done
-} 
+function dun(){
+mv $1 ~/development/done
+}
 
 [ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-function green_light {
-
+function green_light(){
 if [ ! -d ./node_modules/ ]; then
   yarn install;
 fi
@@ -139,7 +144,7 @@ fi
 if [ -d ./test/ ]; then
   learn;
   learn submit;
-else 
+else
   mkdir ./test;
   touch ./test/test.js;
   learn;
@@ -147,10 +152,18 @@ else
 fi
 }
 
-function clone_and_cd () {
-  url=$(eval pbpaste)
-  base=$(echo $url | awk -F '\/' '{print $2}')
-  directory=$(echo $base | awk -F '\.' '{print $1}')
-  git clone $url
-  cd $directory
+
+function clone_and_cd(){
+
+url=$(eval pbpaste)
+base=$(echo $url | awk -F '\/' '{print $2}')
+directory=$(echo $base | awk -F '\.' '{print $1}')
+git clone $url && \
+  cd $directory && \
+  yarn install && \
+  gvim .;
+}
+
+function python_server(){
+python -m SimpleHTTPServer; 
 }
