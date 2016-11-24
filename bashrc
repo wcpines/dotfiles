@@ -160,8 +160,7 @@ base=$(echo $url | awk -F '\/' '{print $2}')
 directory=$(echo $base | awk -F '\.' '{print $1}')
 git clone $url && \
   cd $directory && \
-  yarn install && \
-  gvim .;
+  yarn install;
 }
 
 function python_server(){
