@@ -35,6 +35,7 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'hallison/vim-ruby-sinatra'
 Plugin 'joker1007/vim-markdown-quote-syntax'
+Plugin 'kana/vim-textobj-user'
 Plugin 'mattn/emmet-vim'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'mxw/vim-jsx'
@@ -156,6 +157,7 @@ imap [] []<Left>
 imap {} {}<Left>
 imap () ()<Left>
 imap "" ""<Left>
+imap '' ''<Left>
 imap <% <%<space>%><Left><Left><Left>
 imap <%= <%=<space>%><Left><Left><Left>
 

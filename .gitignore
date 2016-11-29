@@ -1,4 +1,5 @@
+# Not sure why vim lines aren't working...
 .DS_Store
-vim/.netrwhist
-/vim/view
-~/.vim/view
+vim/
+~/.vim/
+

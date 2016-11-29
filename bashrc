@@ -115,6 +115,7 @@ alias yrb="yarn run bundle"
 alias yrt="yarn run test"
 alias yi="yarn install"
 alias ya="yarn add"
+alias ys="yarn start"
 alias pys="python_server"
 
 
