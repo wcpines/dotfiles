@@ -22,11 +22,14 @@
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+
+Plugin 'Olical/vim-enmasse'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'asux/vim-capybara'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-visual-star-search'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'chun-yang/vim-action-ag'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'elzr/vim-json'
 Plugin 'ervandew/supertab'
@@ -36,41 +39,43 @@ Plugin 'godlygeek/tabular'
 Plugin 'hallison/vim-ruby-sinatra'
 Plugin 'joker1007/vim-markdown-quote-syntax'
 Plugin 'kana/vim-textobj-user'
+Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'lepture/vim-jinja'
 Plugin 'mattn/emmet-vim'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'mxw/vim-jsx'
 Plugin 'mzlogin/vim-markdown-toc'
 Plugin 'nelstrom/vim-markdown-folding'
 Plugin 'pangloss/vim-javascript'
+Plugin 'plasticboy/vim-markdown'
 Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'terryma/vim-multiple-cursors'
+Plugin 'thoughtbot/vim-rspec'
 Plugin 'tmhedberg/matchit'
 Plugin 'tommcdo/vim-exchange'
-Plugin 'thoughtbot/vim-rspec'
 Plugin 'tpope/vim-abolish'
-Plugin 'asux/vim-capybara'
+Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-rake'
-Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-ruby/vim-ruby'
-Plugin 'vim-scripts/dbext.vim'
 Plugin 'vim-scripts/ZoomWin'
+Plugin 'vim-scripts/dbext.vim'
+Plugin 'vim-scripts/Jinja'
+Plugin 'vim-scripts/indentpython.vim'
 Plugin 'vim-scripts/sql_iabbr.vim'
 Plugin 'vim-scripts/sqlcomplete.vim'
 Plugin 'vim-scripts/textobj-rubyblock'
 Plugin 'vim-scripts/visSum.vim'
 Plugin 'vim-scripts/zoom.vim'
 Plugin 'yggdroot/indentline'
-
 call vundle#end()
-
 "###########################################################################################################################################################################
                                                                      "*---Basic  Settings---*"
 "###########################################################################################################################################################################
@@ -79,7 +84,7 @@ syntax on                                               " Enable syntax highligh
 filetype off                                            " Filetype detection[OFF]
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 set autoindent                                          " Copy indent of previous line
-set bs=2                                                " Backspace with this value allows to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
+set bs=2                                                " Backspace with this value allows you to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
 set expandtab                                           " Use spaces when tab is hit
 set hidden                                              " Switch buffers and preserve changes w/o saving
 set gcr=n:blinkon0                                      " Turn off cursor blink
@@ -123,11 +128,10 @@ let mapleader = ","
 " Easy esc for Dvorak
 imap hh <Esc>
 
-" Easy copy/paste of entire files (that preserves formatting)
-
 map <leader>l :set hlsearch!<CR>
 map <leader>q :set syntax=markdown<CR>
-map <leader>v :e ~/.vimrc<CR>
+map <leader>v :tabe ~/.vimrc<CR>
+map <leader>0 :tabe ~/samples.css<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <leader>s :w<CR>
 vmap // y/<C-R>"<CR>
@@ -135,7 +139,7 @@ vmap // y/<C-R>"<CR>
 nmap S :%s//g<LEFT><LEFT>
 nnoremap Q <nop>
 nnoremap Q: <nop>
-nnoremap q: <nop>
+" nnoremap q: <nop>
 
 " Spell checking
 map <leader>z :setlocal spell!<CR>
@@ -143,14 +147,16 @@ map <leader>= z=
 map <leader>] ]s
 
 " Quick formatting and common replacements
+nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR>
 map <leader>ccc :%s/,/\r/g<CR>
 map <leader>N :%s/\n/,/g<CR>
 map <leader>rrr :%s/\\n/\r/g<CR>
-map <leader>k :%s/\s\+$//e
+map <leader>k :bufdo %s/\s\+$//e<CR>
 map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
 vmap <leader>gu :s/\<./\u&/g<CR>
 map <leader>/ :%s/<C-R>///g<CR>
 imap <C-d> <esc>ddi
+nmap =j :%!python -m json.tool
 
 " Autosurround stuff
 imap [] []<Left>
@@ -158,13 +164,15 @@ imap {} {}<Left>
 imap () ()<Left>
 imap "" ""<Left>
 imap '' ''<Left>
-imap <% <%<space>%><Left><Left><Left>
+imap <% <%<space>%><left><left><left>
 imap <%= <%=<space>%><Left><Left><Left>
-
+imap {% {%<space>%}<Left><Left><Left>
+imap {{ {{<space>}}<Left><Left><Left>
 "Autocenter file jumps
 nmap G Gzz
 nmap n nzz
 nmap N Nzz
+
 
 " ** Buffer management **
 nnoremap <CR> :bn<CR>
@@ -216,6 +224,9 @@ imap <C-N> <Nop>
 " Set working directory to that of the current file
 autocmd BufEnter * lcd %:p:h
 
+" kill trailing whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
+
 " Stop the beeping
 set noerrorbells visualbell t_vb=
 if has('autocmd')
@@ -231,11 +242,6 @@ augroup END " }
 " Markdown for `.md` file extensions
 autocmd BufNewFile,BufRead *.md set filetype=markdown
 
-" Not sure what diff is here...
-
-" .md as markdown
-au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
-
 " On save, preserve folds and cursor positions
 set viewoptions=cursor,folds
 autocmd BufWinLeave *.* mkview!
@@ -246,7 +252,7 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 
 "###########################################################################################################################################################################
-"*---Non/less-portable Settings---*"
+                                                              "*---Non/less-portable Settings---*"
 "###########################################################################################################################################################################
 
 " NOTE: The following settings depend on plugins, guis, or have other dependencies that may cause issues if running on a fresh system or remote server.
@@ -258,8 +264,6 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 let g:syntastic_javascript_checkers = ['eslint']
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
-let g:indentLine_noConcealCursor=""
-let g:vim_json_syntax_conceal = 0
 let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
@@ -267,6 +271,9 @@ let g:mustache_abbreviations = 1
 let g:NERDSpaceDelims=1
 let g:sparkupExecuteMapping='<c-g>'
 let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+let g:vim_json_syntax_conceal = 1
+let g:vim_markdown_new_list_item_indent = 2
 
 
 map <leader>n :NERDTreeToggle<CR>
@@ -334,6 +341,25 @@ function! s:DeleteBuffer()
   exec "norm \<F5>"
 endfunction
 
+
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
 
 "======================================
 "     *---Display Settings---*"
@@ -415,10 +441,6 @@ endif
 " Doesn't seem to work in terminal
 nmap <C-S-space> O<esc>
 nmap <S-space> o<esc>
-
-" pbpaste mac dependent?
-map <leader>ll :read !pbpaste<CR>
-map <leader>c :%w !pbcopy<CR>
 
 " Easily open files with other apps
 nmap <leader>- :! open -a Terminal.app .<CR>

@@ -15,6 +15,8 @@ export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
 export VISUAL="gvim"
 export PATH="/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH"
 
+export FLASK_APP=app.py
+export FLASK_DEBUG=1
 
 # info from `brew info nvm`
 export NVM_DIR="$HOME/.nvm"
@@ -32,6 +34,15 @@ chruby ruby-2.3.1
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
+
+
+if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+  . /usr/local/bin/virtualenvwrapper.sh
+fi
+
+
+[ -f ~/.passwords ] && source ~/.passwords
+
 
 ##################################
 #----------Color Aliases----------
@@ -66,7 +77,6 @@ git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 
 PS1="\\[\e[\$GREEN m\]\h\[\]@\[\e[\$GREEN m\]\u\[\e[m\].\[\e[\$YELLOW m\]\w\[\e[m\]\[\e[\$BROWN m\] \$(parse_git_branch)\n\[\e[\$CYAN m\]== $ \[\e[m\]"
 
-[ -f ~/.passwords ] && source ~/.passwords
 
 eval "$(thefuck --alias "fuck")"
 
@@ -80,6 +90,7 @@ alias aliases="list_aliases"
 alias ah="ls -lah"
 alias bp="gvim ~/.bashrc"
 alias cbp="cat ~/.bashrc"
+alias blog="cd ~/Desktop/Blog/"
 alias burp="java -Xmx2g -jar ~/burpsuite_free_v1.6.32.jar"
 alias cg="curlget"
 alias desk="cd ~/Desktop"
@@ -119,9 +130,16 @@ alias ys="yarn start"
 alias pys="python_server"
 
 
-function kbp(){
-lsof -wni tcp:$1
+function lbp(){
+lsof -wni tcp:$@
 }
+
+# NR is number of record i.e. row
+
+function kbp(){
+lsof -wni tcp:$@ | awk 'NR!=1 {print $2}' | xargs kill
+}
+
 
 function ber(){
 bundle exec rake $@
@@ -154,6 +172,13 @@ fi
 }
 
 
+
+
+function run_project(){
+(cd /Users/colby/development/youragora/your-agora-api && exec rails server & ) && (cd /Users/colby/development/youragora/your-agora-fe && exec yarn start & )
+}
+
+
 function clone_and_cd(){
 
 url=$(eval pbpaste)
@@ -165,5 +190,14 @@ git clone $url && \
 }
 
 function python_server(){
-python -m SimpleHTTPServer; 
+python -m SimpleHTTPServer;
+}
+
+
+function get_key(){
+  cat .passwords | grep $@ | awk -F '=' '{print $2}' | pbcopy
+}
+
+function get_pubkey(){
+  cat ~/.ssh/id_rsa.pub | pbcopy
 }
