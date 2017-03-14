@@ -23,8 +23,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 
-Plugin 'Olical/vim-enmasse'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'ap/vim-css-color'
 Plugin 'asux/vim-capybara'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-visual-star-search'
@@ -37,15 +37,20 @@ Plugin 'gioele/vim-autoswap'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'hallison/vim-ruby-sinatra'
+Plugin 'hdima/python-syntax'
 Plugin 'joker1007/vim-markdown-quote-syntax'
 Plugin 'kana/vim-textobj-user'
 Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'leafgarland/typescript-vim'
 Plugin 'lepture/vim-jinja'
 Plugin 'mattn/emmet-vim'
+Plugin 'mkomitee/vim-gf-python'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'mxw/vim-jsx'
 Plugin 'mzlogin/vim-markdown-toc'
 Plugin 'nelstrom/vim-markdown-folding'
+Plugin 'nvie/vim-flake8'
+Plugin 'olical/vim-enmasse'
 Plugin 'pangloss/vim-javascript'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'rking/ag.vim'
@@ -65,16 +70,19 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-ruby/vim-ruby'
+Plugin 'vim-scripts/Jinja'
 Plugin 'vim-scripts/ZoomWin'
 Plugin 'vim-scripts/dbext.vim'
-Plugin 'vim-scripts/Jinja'
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'vim-scripts/sql_iabbr.vim'
 Plugin 'vim-scripts/sqlcomplete.vim'
 Plugin 'vim-scripts/textobj-rubyblock'
 Plugin 'vim-scripts/visSum.vim'
 Plugin 'vim-scripts/zoom.vim'
+Plugin 'vim-syntastic/syntastic'
 Plugin 'yggdroot/indentline'
+
+
 call vundle#end()
 "###########################################################################################################################################################################
                                                                      "*---Basic  Settings---*"
@@ -89,6 +97,7 @@ set expandtab                                           " Use spaces when tab is
 set hidden                                              " Switch buffers and preserve changes w/o saving
 set gcr=n:blinkon0                                      " Turn off cursor blink
 set ignorecase                                          " Ignore case for search patterns
+set smartcase                                           " Respect cases in search when mixed case detected
 set incsearch                                           " Dynamic search (search and refine as you type)
 set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
@@ -110,6 +119,7 @@ set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
 set t_vb=                                               " No visual bell
+set tags=./tags,tags;$HOME                              " Vim to search for Ctags file in current file's directory, moving up the directory structure until found/home is hit
 " set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 
 
@@ -135,6 +145,7 @@ map <leader>0 :tabe ~/samples.css<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 map <leader>s :w<CR>
 vmap // y/<C-R>"<CR>
+nmap <leader>L ^y$
 
 nmap S :%s//g<LEFT><LEFT>
 nnoremap Q <nop>
@@ -147,16 +158,16 @@ map <leader>= z=
 map <leader>] ]s
 
 " Quick formatting and common replacements
-nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR>
-map <leader>ccc :%s/,/\r/g<CR>
+nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR>
+map <leader>C :%s/,/\r/g<CR>
 map <leader>N :%s/\n/,/g<CR>
-map <leader>rrr :%s/\\n/\r/g<CR>
+map <leader>R :%s/\\n/\r/g<CR>
 map <leader>k :bufdo %s/\s\+$//e<CR>
 map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
 vmap <leader>gu :s/\<./\u&/g<CR>
 map <leader>/ :%s/<C-R>///g<CR>
 imap <C-d> <esc>ddi
-nmap =j :%!python -m json.tool
+nmap <leader>} gg=G<C-o><C-o>zz
 
 " Autosurround stuff
 imap [] []<Left>
@@ -190,7 +201,7 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 nnoremap <C-l> <C-w>l
 
-" s/D/M for linux:
+" s/D/M/g for linux:
 nnoremap <D-L> <C-w>L
 nnoremap <D-H> <C-w>H
 nnoremap <D-J> <C-w>J
@@ -224,6 +235,7 @@ imap <C-N> <Nop>
 " Set working directory to that of the current file
 autocmd BufEnter * lcd %:p:h
 
+
 " kill trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
 
@@ -251,6 +263,19 @@ autocmd BufWinEnter *.* silent loadview
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 
+" not sure this really works...
+" add python modules to path to make `gf` work
+python << EOF
+import os
+import sys
+import vim
+for p in sys.path:
+    # Add each directory in sys.path, if it exists.
+    if os.path.isdir(p):
+        # Command 'set' needs backslash before each space.
+        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+EOF
+
 "###########################################################################################################################################################################
                                                               "*---Non/less-portable Settings---*"
 "###########################################################################################################################################################################
@@ -262,9 +287,8 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 "   *--Plugin-dependent mappings--*
 "=======================================
 
-let g:syntastic_javascript_checkers = ['eslint']
-let g:jsx_ext_required = 0 " Allow JSX in normal JS files
-let g:multi_cursor_prev_key='<C-p>'
+" misc
+let g:multi_cursor_prev_key='<C-S-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 let g:mustache_abbreviations = 1
@@ -273,10 +297,28 @@ let g:sparkupExecuteMapping='<c-g>'
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 let g:vim_json_syntax_conceal = 1
-let g:vim_markdown_new_list_item_indent = 2
+let g:vim_markdown_new_list_item_indent = 0
 
 
-map <leader>n :NERDTreeToggle<CR>
+
+" syntastic
+let g:syntastic_javascript_checkers = ['eslint']
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+
+let g:syntastic_python_checkers = ['python']
+let python_highlight_all = 1
+let g:syntastic_python_python_exec = '/Users/colby/.pyenv/shims/python3.6'
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" /syntastic
 
 map <leader>o :ZoomWin<CR>
 
@@ -438,6 +480,12 @@ if has('gui_running')
   set guifont=Menlo:h13
 endif
 
+nmap <leader><left> :vertical
+
+
+nmap <leader><left> :vertical resize +10<cr>
+nmap <leader><right> :vertical resize -10<cr>
+
 " Doesn't seem to work in terminal
 nmap <C-S-space> O<esc>
 nmap <S-space> o<esc>
@@ -447,7 +495,7 @@ nmap <leader>- :! open -a Terminal.app .<CR>
 nmap <leader>_ :! open .<CR>
 nmap <leader>% :! open %<CR>
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
-
+command! LintJS execute "%!python -m json.tool"
 
 " Shift enables visual select
 imap <S-A-Left> <esc>vb
