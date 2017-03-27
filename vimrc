@@ -22,11 +22,11 @@
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'ap/vim-css-color'
 Plugin 'asux/vim-capybara'
 Plugin 'bling/vim-airline'
+Plugin 'bps/vim-textobj-python'
 Plugin 'bronson/vim-visual-star-search'
 Plugin 'chun-yang/vim-action-ag'
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -38,11 +38,13 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'hallison/vim-ruby-sinatra'
 Plugin 'hdima/python-syntax'
+Plugin 'jelera/vim-javascript-syntax'
 Plugin 'joker1007/vim-markdown-quote-syntax'
+Plugin 'kana/vim-textobj-line'
 Plugin 'kana/vim-textobj-user'
-Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'lepture/vim-jinja'
+Plugin 'luochen1990/rainbow'
 Plugin 'mattn/emmet-vim'
 Plugin 'mkomitee/vim-gf-python'
 Plugin 'mustache/vim-mustache-handlebars'
@@ -51,11 +53,12 @@ Plugin 'mzlogin/vim-markdown-toc'
 Plugin 'nelstrom/vim-markdown-folding'
 Plugin 'nvie/vim-flake8'
 Plugin 'olical/vim-enmasse'
-Plugin 'pangloss/vim-javascript'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'poetic/vim-textobj-javascript'
 Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'sjl/gundo.vim'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'thoughtbot/vim-rspec'
 Plugin 'tmhedberg/matchit'
@@ -80,8 +83,8 @@ Plugin 'vim-scripts/textobj-rubyblock'
 Plugin 'vim-scripts/visSum.vim'
 Plugin 'vim-scripts/zoom.vim'
 Plugin 'vim-syntastic/syntastic'
+Plugin 'wellle/targets.vim'
 Plugin 'yggdroot/indentline'
-
 
 call vundle#end()
 "###########################################################################################################################################################################
@@ -143,12 +146,12 @@ map <leader>q :set syntax=markdown<CR>
 map <leader>v :tabe ~/.vimrc<CR>
 map <leader>0 :tabe ~/samples.css<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
-map <leader>s :w<CR>
+nmap <leader>s :w<CR>
 vmap // y/<C-R>"<CR>
 nmap <leader>L ^y$
 
 nmap S :%s//g<LEFT><LEFT>
-nnoremap Q <nop>
+nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
 nnoremap Q: <nop>
 " nnoremap q: <nop>
 
@@ -158,7 +161,7 @@ map <leader>= z=
 map <leader>] ]s
 
 " Quick formatting and common replacements
-nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR>
+nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR><C-o>
 map <leader>C :%s/,/\r/g<CR>
 map <leader>N :%s/\n/,/g<CR>
 map <leader>R :%s/\\n/\r/g<CR>
@@ -168,6 +171,8 @@ vmap <leader>gu :s/\<./\u&/g<CR>
 map <leader>/ :%s/<C-R>///g<CR>
 imap <C-d> <esc>ddi
 nmap <leader>} gg=G<C-o><C-o>zz
+nmap <leader>f /function\s\{1\}
+nmap <leader>V vi"p
 
 " Autosurround stuff
 imap [] []<Left>
@@ -183,13 +188,16 @@ imap {{ {{<space>}}<Left><Left><Left>
 nmap G Gzz
 nmap n nzz
 nmap N Nzz
+nmap * *zz
+nmap <C-o> <C-o>zz
+nmap <C-i> <C-i>zz
 
 
 " ** Buffer management **
 nnoremap <CR> :bn<CR>
 nnoremap <S-CR> :bp<CR>
-map <leader>d :bd<CR>
-map <leader>f :bd!<CR>
+nmap <leader>d :bd<CR>
+nmap <leader>F :bd!<CR>
 
 " Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
@@ -228,12 +236,12 @@ map k gk
 imap <C-S-n> <Nop>
 imap <C-N> <Nop>
 
-"=======================================
-"     *---Useful AutoCmds---*"
-"=======================================
+"========================================
+"     *---AutoCmds and functions---*
+"========================================
 
 " Set working directory to that of the current file
-autocmd BufEnter * lcd %:p:h
+" autocmd BufEnter * lcd %:p:h
 
 
 " kill trailing whitespace on save
@@ -255,9 +263,9 @@ augroup END " }
 autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " On save, preserve folds and cursor positions
-set viewoptions=cursor,folds
-autocmd BufWinLeave *.* mkview!
-autocmd BufWinEnter *.* silent loadview
+" set viewoptions=cursor,folds
+" autocmd BufWinLeave *.* mkview!
+" autocmd BufWinEnter *.* silent loadview
 
 " disable auto-comment (#) insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -300,7 +308,7 @@ let g:vim_json_syntax_conceal = 1
 let g:vim_markdown_new_list_item_indent = 0
 
 
-
+let g:rainbow_active = 1
 " syntastic
 let g:syntastic_javascript_checkers = ['eslint']
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
@@ -309,9 +317,9 @@ let g:syntastic_python_checkers = ['python']
 let python_highlight_all = 1
 let g:syntastic_python_python_exec = '/Users/colby/.pyenv/shims/python3.6'
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 " let g:syntastic_auto_loc_list = 0
@@ -325,6 +333,7 @@ map <leader>o :ZoomWin<CR>
 " user_emmet_leader_key
 map <leader>y <C-y>,
 
+nmap <leader>r :RainbowToggle<CR>
 
 " --------------------
 " ** CtrlP Settings **
@@ -491,9 +500,9 @@ nmap <C-S-space> O<esc>
 nmap <S-space> o<esc>
 
 " Easily open files with other apps
-nmap <leader>- :! open -a Terminal.app .<CR>
-nmap <leader>_ :! open .<CR>
-nmap <leader>% :! open %<CR>
+nmap <leader>- :! open -a Terminal.app .<CR><CR>
+nmap <leader>_ :! open .<CR><CR>
+nmap <leader>% :! open %<CR><CR>
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
 command! LintJS execute "%!python -m json.tool"
 
@@ -546,8 +555,9 @@ imap <D-z> <C-o>u
 nmap <D-z> u
 imap <D-Z> <C-o><C-r>
 nmap <D-Z> <C-r>
-map <D-s> :w<CR>
-imap <D-s> <Esc>:w<CR>
+imap <D-s> hh:w<CR>
+nmap <D-s> <Esc>:w<CR>
+vmap <D-s> <Esc>:w<CR>
 map <D-a> gg<S-v>G<CR>
 nmap <D-=> :ZoomIn<CR>
 nmap <D-_> :ZoomOut<CR>
