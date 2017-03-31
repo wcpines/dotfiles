@@ -394,7 +394,7 @@ function clone_and_cd(){
     curl $github_gist_url -o $output_file
   }
 
-function gothere(){
+function teleport(){
   last_command=$(fc -ln | tail -2 | head -1)
   cd `$last_command | awk -F '\/' '{OFS="\/"; $NF=""; print $0}'`
 }

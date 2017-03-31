@@ -14,7 +14,7 @@
 "   c) Mac-specific mappings
 
 "###########################################################################################################################################################################
-                                                                    "*---All Plugins---*"
+"*---All Plugins---*"
 "###########################################################################################################################################################################
 
 
@@ -25,7 +25,8 @@ call vundle#begin()
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'ap/vim-css-color'
 Plugin 'asux/vim-capybara'
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'bps/vim-textobj-python'
 Plugin 'bronson/vim-visual-star-search'
 Plugin 'chun-yang/vim-action-ag'
@@ -88,7 +89,7 @@ Plugin 'yggdroot/indentline'
 
 call vundle#end()
 "###########################################################################################################################################################################
-                                                                     "*---Basic  Settings---*"
+"*---Basic  Settings---*"
 "###########################################################################################################################################################################
 
 syntax on                                               " Enable syntax highlighting
@@ -127,7 +128,7 @@ set tags=./tags,tags;$HOME                              " Vim to search for Ctag
 
 
 "###########################################################################################################################################################################
-                                                                 "*---Portable Settings---*"
+"*---Portable Settings---*"
 "###########################################################################################################################################################################
 
 " comma as mod key
@@ -146,9 +147,16 @@ map <leader>q :set syntax=markdown<CR>
 map <leader>v :tabe ~/.vimrc<CR>
 map <leader>0 :tabe ~/samples.css<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
-nmap <leader>s :w<CR>
+noremap <leader>s :w<CR>
 vmap // y/<C-R>"<CR>
 nmap <leader>L ^y$
+nmap <leader>a gg<S-v>G<CR>
+nmap <leader>A ggyG
+inoremap <C-a> <esc>I
+inoremap <C-e> <esc>A
+
+nmap L gt
+nmap H gT
 
 nmap S :%s//g<LEFT><LEFT>
 nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
@@ -165,25 +173,31 @@ nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*
 map <leader>C :%s/,/\r/g<CR>
 map <leader>N :%s/\n/,/g<CR>
 map <leader>R :%s/\\n/\r/g<CR>
-map <leader>k :bufdo %s/\s\+$//e<CR>
 map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
 vmap <leader>gu :s/\<./\u&/g<CR>
 map <leader>/ :%s/<C-R>///g<CR>
-imap <C-d> <esc>ddi
-nmap <leader>} gg=G<C-o><C-o>zz
-nmap <leader>f /function\s\{1\}
-nmap <leader>V vi"p
+nmap <leader>f /\cfunction\s\{1\}
+nmap <leader>Z V$%zf
+
+" Easily swap line positions
+nmap gK ddkP
+nmap gJ ddjP
+
+nmap [<space> O<esc>
+nmap ]<space> o<esc>
+
+imap <S-CR> <esc>o
 
 " Autosurround stuff
-imap [] []<Left>
-imap {} {}<Left>
-imap () ()<Left>
-imap "" ""<Left>
-imap '' ''<Left>
-imap <% <%<space>%><left><left><left>
-imap <%= <%=<space>%><Left><Left><Left>
-imap {% {%<space>%}<Left><Left><Left>
-imap {{ {{<space>}}<Left><Left><Left>
+inoremap [] []<esc>i
+inoremap {} {}<esc>i
+inoremap () ()<esc>i
+inoremap "" ""<esc>i
+inoremap '' ''<esc>i
+inoremap <% <%<space>%><esc>hhi
+inoremap <%= <%=<space>%><esc>hhi
+inoremap {% {%<space>%}<esc>hhi
+inoremap {{ {{<space>}}<esc>hhi
 "Autocenter file jumps
 nmap G Gzz
 nmap n nzz
@@ -194,8 +208,6 @@ nmap <C-i> <C-i>zz
 
 
 " ** Buffer management **
-nnoremap <CR> :bn<CR>
-nnoremap <S-CR> :bp<CR>
 nmap <leader>d :bd<CR>
 nmap <leader>F :bd!<CR>
 
@@ -203,26 +215,23 @@ nmap <leader>F :bd!<CR>
 imap <esc> <esc>l
 
 " Window splits convenience
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <C-l> <C-w>l
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
 
-" s/D/M/g for linux:
-nnoremap <D-L> <C-w>L
-nnoremap <D-H> <C-w>H
-nnoremap <D-J> <C-w>J
-nnoremap <D-K> <C-w>K
+nnoremap <leader><right> <C-w>L
+nnoremap <leader><left> <C-w>H
+nnoremap <leader><down> <C-w>J
+nnoremap <leader><up> <C-w>K
 
-nnoremap <leader><Down> <C-w>r
-nnoremap <leader><Up> <C-w>R
+" nmap <leader><left> :vertical resize +10<cr>
+" nmap <leader><right> :vertical resize -10<cr>
+
 nmap <leader>. <C-w>=
 
 nnoremap <leader>\ :vnew<CR>
 
-nmap L gt
-nmap H gT
 set splitbelow
 set splitright
 
@@ -241,7 +250,7 @@ imap <C-N> <Nop>
 "========================================
 
 " Set working directory to that of the current file
-" autocmd BufEnter * lcd %:p:h
+autocmd BufEnter * lcd %:p:h
 
 
 " kill trailing whitespace on save
@@ -263,9 +272,9 @@ augroup END " }
 autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " On save, preserve folds and cursor positions
-" set viewoptions=cursor,folds
-" autocmd BufWinLeave *.* mkview!
-" autocmd BufWinEnter *.* silent loadview
+set viewoptions=cursor,folds
+autocmd BufWinLeave *.* mkview! " NOTE -- this breaks with fugitive Glog
+autocmd BufWinEnter *.* silent loadview
 
 " disable auto-comment (#) insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -302,13 +311,15 @@ let g:multi_cursor_quit_key='<Esc>'
 let g:mustache_abbreviations = 1
 let g:NERDSpaceDelims=1
 let g:sparkupExecuteMapping='<c-g>'
-let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_disabled = 0
 let g:vim_markdown_conceal = 0
 let g:vim_json_syntax_conceal = 1
 let g:vim_markdown_new_list_item_indent = 0
 
 
-let g:rainbow_active = 1
+" rainbow parens off by default
+let g:rainbow_active = 0
+
 " syntastic
 let g:syntastic_javascript_checkers = ['eslint']
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
@@ -449,23 +460,29 @@ let g:airline#extensions#tabline#enabled = 0
 
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
-
+let g:airline_theme='dark'
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
+" unicode symbols
+" let g:airline_left_sep = '▶'
+" let g:airline_right_sep = '◀'
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:airline_symbols.crypt = '🔒'
 let g:airline_symbols.linenr = '␊'
 let g:airline_symbols.linenr = '␤'
 let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.maxlinenr = '☰'
+let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.branch = '⎇'
 let g:airline_symbols.paste = 'ρ'
 let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
 let g:airline_symbols.whitespace = 'Ξ'
 
 
@@ -488,16 +505,6 @@ if has('gui_running')
   set background=dark
   set guifont=Menlo:h13
 endif
-
-nmap <leader><left> :vertical
-
-
-nmap <leader><left> :vertical resize +10<cr>
-nmap <leader><right> :vertical resize -10<cr>
-
-" Doesn't seem to work in terminal
-nmap <C-S-space> O<esc>
-nmap <S-space> o<esc>
 
 " Easily open files with other apps
 nmap <leader>- :! open -a Terminal.app .<CR><CR>
@@ -547,21 +554,6 @@ imap <S-D-Down> <esc>vG
 nmap <S-D-Up> vgg
 nmap <S-D-Down> vG
 
-"Standard save and select-all + appending, undoing
-
-imap <C-a> <D-Left>
-imap <C-e> <D-Right>
-imap <D-z> <C-o>u
-nmap <D-z> u
-imap <D-Z> <C-o><C-r>
-nmap <D-Z> <C-r>
-imap <D-s> hh:w<CR>
-nmap <D-s> <Esc>:w<CR>
-vmap <D-s> <Esc>:w<CR>
-map <D-a> gg<S-v>G<CR>
-nmap <D-=> :ZoomIn<CR>
-nmap <D-_> :ZoomOut<CR>
-
 " Enable copy/paste w/o using unnamed register
 imap <D-v> <C-r>+
 map <D-v> "+P
@@ -577,13 +569,3 @@ imap <C-Tab> <esc>gt
 map <C-S-Tab> gT
 imap <C-S-Tab> <esc>gT
 
-
-
-" Easily shift line positions
-nmap <D-Up> ddkP
-nmap <D-Down> ddp
-
-
-" Misc
-imap <D-CR> <esc>o
-nmap <D-CR> <esc>o
