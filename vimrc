@@ -3,33 +3,200 @@
 
 " sections:
 
-" 1. All Plugins
-" 2. Basic Settings
-" 3. Portable Settings
-"   a) Mappings
-"   b) Autocmds
-" 4. Non-portable Settings
-"   a) Plugin-dependent mappings
-"   b) Display Settings
-"   c) Mac-specific mappings
+" 1. Basic Settings
+" 2. Vanilla Mappings
+" 3. Autocmds & Functions
+" 4. Plugins
+" 5. Plugin Settings & Mappings
+" 6. Display Settings
 
-"###########################################################################################################################################################################
-"*---All Plugins---*"
-"###########################################################################################################################################################################
+" *====================================*
+" *----------|Basic Settings|----------*
+" *====================================*
 
+syntax on                                               " Enable syntax highlighting
+filetype off                                            " Filetype detection[OFF]
+filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
+
+set autochdir                                           " Set working dir to current file
+set autoindent                                          " Copy indent of previous line
+set bs=2                                                " Backspace with this value allows you to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
+set clipboard^=unnamed,unnamedplus                      " Use system clipboard as the yank register
+set expandtab                                           " Use spaces when tab is hit
+set gcr=n:blinkon0                                      " Turn off cursor blink
+set hidden                                              " Switch buffers and preserve changes w/o saving
+set ignorecase                                          " Ignore case for search patterns
+set incsearch                                           " Dynamic search (search and refine as you type)
+set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
+set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
+set mouse=a                                             " Enable mouse (NB: SIMBL + MouseTerm enabled for teminal vim)
+set nocompatible                                        " Get rid of Vi compatibility mode. SET FIRST!
+set nohlsearch                                          " Do not highlight all matches (you can toggle this as needed with command below)
+set nowrap                                              " Do not wrap lines of text by default
+set number                                              " Set line numbering
+set ruler                                               " Always show line/column info at bottom
+set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
+set showmatch                                           " Highlight search match as you type
+set smartcase                                           " Respect cases in search when mixed case detected
+set smartindent                                         " Changes indent based on file extension
+set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
+set splitbelow                                          " default horizontal split below
+set splitright                                          " default vertical split right
+set t_vb=                                               " No visual bell
+set tabstop=2                                           " Set number of columns inserted with tab key
+set tags=./tags,tags;$HOME                              " Vim to search for Ctags file in current file's directory, moving up the directory structure until found/home is hit
+set textwidth=0                                         " Controls the wrap width you would like to use (character length).  Setting it to default: disabled
+set ttyfast                                             " Set fast scroll
+set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these filetypes and extensions
+set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
+set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
+
+
+" *=======================================*
+" *----------|Portable Mappings|----------*
+" *=======================================*
+
+
+" comma as mod key
+let mapleader = ","
+
+
+" escape (dvorak)
+imap hh <Esc>
+
+" Prevent vim from moving cursor after returning to normal mode
+imap <esc> <esc>l
+
+nnoremap Q: <nop>
+noremap <leader>s :w<CR>
+map <leader>l :set hlsearch!<CR>
+map <leader>v :tabe ~/.vimrc<CR>
+map <leader>w :set wrap!<CR>:set linebreak<CR>
+vmap // y/<C-R>"<CR>
+nmap <leader>L ^y$
+nmap <leader>a gg<S-v>G<CR>
+nmap <leader>A ggyG
+inoremap <C-a> <esc>I
+inoremap <C-e> <esc>A
+
+"Autocenter file jumps
+nmap G Gzz
+nmap n nzz
+nmap N Nzz
+nmap * *zz
+nmap <C-o> <C-o>zz
+nmap <C-i> <C-i>zz
+
+
+" Spell checking
+map <leader>z :setlocal spell!<CR>
+map <leader>= z=
+map <leader>] ]s
+
+" Quick formatting, searching, and common replacements
+nmap S :%s//g<LEFT><LEFT>
+map <leader>C :%s/,/\r/g<CR>
+map <leader>N :%s/\n/,/g<CR>
+map <leader>R :%s/\\n/\r/g<CR>
+map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
+vmap <leader>gu :s/\<./\u&/g<CR>
+map <leader>/ :%s/<C-R>///g<CR>
+nmap <leader>f /\cfunction\s\{1\}
+nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR><C-o>
+nmap <leader>Z V$%zf
+
+" inserting blank lines
+nmap [<space> O<esc>
+nmap ]<space> o<esc>
+
+
+" Autosurround stuff
+inoremap [] []<esc>i
+inoremap {} {}<esc>i
+inoremap () ()<esc>i
+inoremap "" ""<esc>i
+inoremap '' ''<esc>i
+inoremap <% <%<space>%><esc>hhi
+inoremap <%= <%=<space>%><esc>hhi
+inoremap {% {%<space>%}<esc>hhi
+inoremap {{ {{<space>}}<esc>hhi
+
+" --- windows, buffers, tabs ---
+nmap <leader>d :bd<CR>
+nmap <leader>F :bd!<CR>
+
+nmap L gt
+nmap H gT
+
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+nnoremap <leader><right> <C-w>L
+nnoremap <leader><left> <C-w>H
+nnoremap <leader><down> <C-w>J
+nnoremap <leader><up> <C-w>K
+noremap <leader>h :clo<CR>
+noremap <leader>e :tabe<CR>
+
+nmap <leader>. <C-w>=
+nmap <leader>\ :Term<CR>
+
+" Open all buffers in tabs
+map <leader><tab> :bufdo tab split<CR>
+
+imap <C-S-n> <Nop>
+imap <C-N> <Nop>
+
+" *=================================================*
+" *----------|Auto-commands and functions|----------*
+" *=================================================*
+
+" kill trailing whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
+
+" Stop the beeping
+set noerrorbells visualbell t_vb=
+if has('autocmd')
+  autocmd GUIEnter * set visualbell t_vb=
+endif
+
+" Source .vimrc on save
+augroup reload_vimrc
+  autocmd!
+  autocmd BufWritePost $MYVIMRC source $MYVIMRC
+augroup END
+
+" Markdown for `.md` file extensions
+autocmd BufNewFile,BufRead *.md set filetype=markdown
+
+" On save, preserve folds and cursor positions
+set viewoptions=cursor,folds
+autocmd BufWinLeave *.* mkview! " NOTE -- this breaks with fugitive Glog
+autocmd BufWinEnter *.* silent loadview
+
+" disable auto-comment (#) insertion
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" *=============================*
+" *----------|Plugins|----------*
+" *=============================*
 
 " Set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+
+Plugin 'AndrewRadev/splitjoin.vim'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'vim-scripts/applescript.vim'
 Plugin 'ap/vim-css-color'
 Plugin 'asux/vim-capybara'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
 Plugin 'bps/vim-textobj-python'
 Plugin 'bronson/vim-visual-star-search'
 Plugin 'chun-yang/vim-action-ag'
+Plugin 'coderifous/textobj-word-column.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'elzr/vim-json'
@@ -39,12 +206,16 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'hallison/vim-ruby-sinatra'
 Plugin 'hdima/python-syntax'
+Plugin 'henrik/vim-indexed-search'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'joker1007/vim-markdown-quote-syntax'
+Plugin 'junegunn/goyo.vim'
+Plugin 'kana/vim-textobj-function'
 Plugin 'kana/vim-textobj-line'
 Plugin 'kana/vim-textobj-user'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'lepture/vim-jinja'
+Plugin 'lifepillar/vim-solarized8'
 Plugin 'luochen1990/rainbow'
 Plugin 'mattn/emmet-vim'
 Plugin 'mkomitee/vim-gf-python'
@@ -61,6 +232,7 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'sjl/gundo.vim'
 Plugin 'terryma/vim-multiple-cursors'
+Plugin 'thinca/vim-textobj-function-javascript'
 Plugin 'thoughtbot/vim-rspec'
 Plugin 'tmhedberg/matchit'
 Plugin 'tommcdo/vim-exchange'
@@ -73,282 +245,85 @@ Plugin 'tpope/vim-rake'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-surround'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-scripts/Jinja'
+Plugin 'vim-scripts/SearchComplete'
 Plugin 'vim-scripts/ZoomWin'
 Plugin 'vim-scripts/dbext.vim'
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'vim-scripts/sql_iabbr.vim'
 Plugin 'vim-scripts/sqlcomplete.vim'
+Plugin 'vim-scripts/sum.vim'
 Plugin 'vim-scripts/textobj-rubyblock'
-Plugin 'vim-scripts/visSum.vim'
 Plugin 'vim-scripts/zoom.vim'
 Plugin 'vim-syntastic/syntastic'
+Plugin 'vimlab/split-term.vim'
 Plugin 'wellle/targets.vim'
 Plugin 'yggdroot/indentline'
-
 call vundle#end()
-"###########################################################################################################################################################################
-"*---Basic  Settings---*"
-"###########################################################################################################################################################################
-
-syntax on                                               " Enable syntax highlighting
-filetype off                                            " Filetype detection[OFF]
-filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
-set autoindent                                          " Copy indent of previous line
-set bs=2                                                " Backspace with this value allows you to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
-set expandtab                                           " Use spaces when tab is hit
-set hidden                                              " Switch buffers and preserve changes w/o saving
-set gcr=n:blinkon0                                      " Turn off cursor blink
-set ignorecase                                          " Ignore case for search patterns
-set smartcase                                           " Respect cases in search when mixed case detected
-set incsearch                                           " Dynamic search (search and refine as you type)
-set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
-set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
-set mouse=a                                             " Enable mouse (NB: SIMBL + MouseTerm enabled for teminal vim)
-set nohlsearch                                          " Do not highlight all matches (you can toggle this as needed with command below)
-set nocompatible                                        " Get rid of Vi compatibility mode. SET FIRST!
-set nowrap                                              " Do not wrap lines of text by default
-set number                                              " Set line numbering
-set ruler                                               " Always show line/column info at bottom
-set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
-set showmatch                                           " Highlight search match as you type
-set clipboard^=unnamed,unnamedplus                      " Use system clipboard as the yank register
-set smartindent                                         " Changes indent based on file extension
-set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
-set tabstop=2                                           " Set number of columns inserted with tab key
-set textwidth=0                                         " Controls the wrap width you would like to use (character length).  Setting it to default: disabled
-set ttyfast                                             " Set fast scroll
-set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these filetypes and extensions
-set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
-set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
-set t_vb=                                               " No visual bell
-set tags=./tags,tags;$HOME                              " Vim to search for Ctags file in current file's directory, moving up the directory structure until found/home is hit
-" set statusline=%<\ [%n]:%F\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 
 
-"###########################################################################################################################################################################
-"*---Portable Settings---*"
-"###########################################################################################################################################################################
-
-" comma as mod key
-let mapleader = ","
-
-
-"=======================================
-"       *--Portable mappings--*
-"=======================================
-
-" Easy esc for Dvorak
-imap hh <Esc>
-
-map <leader>l :set hlsearch!<CR>
-map <leader>q :set syntax=markdown<CR>
-map <leader>v :tabe ~/.vimrc<CR>
-map <leader>0 :tabe ~/samples.css<CR>
-map <leader>w :set wrap!<CR>:set linebreak<CR>
-noremap <leader>s :w<CR>
-vmap // y/<C-R>"<CR>
-nmap <leader>L ^y$
-nmap <leader>a gg<S-v>G<CR>
-nmap <leader>A ggyG
-inoremap <C-a> <esc>I
-inoremap <C-e> <esc>A
-
-nmap L gt
-nmap H gT
-
-nmap S :%s//g<LEFT><LEFT>
-nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
-nnoremap Q: <nop>
-" nnoremap q: <nop>
-
-" Spell checking
-map <leader>z :setlocal spell!<CR>
-map <leader>= z=
-map <leader>] ]s
-
-" Quick formatting and common replacements
-nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR><C-o>
-map <leader>C :%s/,/\r/g<CR>
-map <leader>N :%s/\n/,/g<CR>
-map <leader>R :%s/\\n/\r/g<CR>
-map <leader>" :%s/^\(.*\)$/'\1'/g<CR>
-vmap <leader>gu :s/\<./\u&/g<CR>
-map <leader>/ :%s/<C-R>///g<CR>
-nmap <leader>f /\cfunction\s\{1\}
-nmap <leader>Z V$%zf
-
-" Easily swap line positions
-nmap gK ddkP
-nmap gJ ddjP
-
-nmap [<space> O<esc>
-nmap ]<space> o<esc>
-
-imap <S-CR> <esc>o
-
-" Autosurround stuff
-inoremap [] []<esc>i
-inoremap {} {}<esc>i
-inoremap () ()<esc>i
-inoremap "" ""<esc>i
-inoremap '' ''<esc>i
-inoremap <% <%<space>%><esc>hhi
-inoremap <%= <%=<space>%><esc>hhi
-inoremap {% {%<space>%}<esc>hhi
-inoremap {{ {{<space>}}<esc>hhi
-"Autocenter file jumps
-nmap G Gzz
-nmap n nzz
-nmap N Nzz
-nmap * *zz
-nmap <C-o> <C-o>zz
-nmap <C-i> <C-i>zz
-
-
-" ** Buffer management **
-nmap <leader>d :bd<CR>
-nmap <leader>F :bd!<CR>
-
-" Prevent vim from moving cursor after returning to normal mode
-imap <esc> <esc>l
-
-" Window splits convenience
-nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-l> <C-w>l
-
-nnoremap <leader><right> <C-w>L
-nnoremap <leader><left> <C-w>H
-nnoremap <leader><down> <C-w>J
-nnoremap <leader><up> <C-w>K
-
-" nmap <leader><left> :vertical resize +10<cr>
-" nmap <leader><right> :vertical resize -10<cr>
-
-nmap <leader>. <C-w>=
-
-nnoremap <leader>\ :vnew<CR>
-
-set splitbelow
-set splitright
-
-" Open all buffers in tabs
-map <leader><tab> :bufdo tab split<CR>
-
-" Wrapped movement to be intuitive
-map j gj
-map k gk
-
-imap <C-S-n> <Nop>
-imap <C-N> <Nop>
-
-"========================================
-"     *---AutoCmds and functions---*
-"========================================
-
-" Set working directory to that of the current file
-autocmd BufEnter * lcd %:p:h
-
-
-" kill trailing whitespace on save
-autocmd BufWritePre * :%s/\s\+$//e
-
-" Stop the beeping
-set noerrorbells visualbell t_vb=
-if has('autocmd')
-  autocmd GUIEnter * set visualbell t_vb=
-endif
-
-" Source .vimrc on save
-augroup reload_vimrc " {
-  autocmd!
-  autocmd BufWritePost $MYVIMRC source $MYVIMRC
-augroup END " }
-
-" Markdown for `.md` file extensions
-autocmd BufNewFile,BufRead *.md set filetype=markdown
-
-" On save, preserve folds and cursor positions
-set viewoptions=cursor,folds
-autocmd BufWinLeave *.* mkview! " NOTE -- this breaks with fugitive Glog
-autocmd BufWinEnter *.* silent loadview
-
-" disable auto-comment (#) insertion
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-
-
-" not sure this really works...
-" add python modules to path to make `gf` work
-python << EOF
-import os
-import sys
-import vim
-for p in sys.path:
-    # Add each directory in sys.path, if it exists.
-    if os.path.isdir(p):
-        # Command 'set' needs backslash before each space.
-        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
-EOF
-
-"###########################################################################################################################################################################
-                                                              "*---Non/less-portable Settings---*"
-"###########################################################################################################################################################################
-
-" NOTE: The following settings depend on plugins, guis, or have other dependencies that may cause issues if running on a fresh system or remote server.
-
-
-"=======================================
-"   *--Plugin-dependent mappings--*
-"=======================================
-
-" misc
-let g:multi_cursor_prev_key='<C-S-p>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
-let g:mustache_abbreviations = 1
-let g:NERDSpaceDelims=1
-let g:sparkupExecuteMapping='<c-g>'
-let g:vim_markdown_folding_disabled = 0
-let g:vim_markdown_conceal = 0
-let g:vim_json_syntax_conceal = 1
-let g:vim_markdown_new_list_item_indent = 0
-
-
-" rainbow parens off by default
-let g:rainbow_active = 0
-
-" syntastic
-let g:syntastic_javascript_checkers = ['eslint']
-let g:jsx_ext_required = 0 " Allow JSX in normal JS files
-
-let g:syntastic_python_checkers = ['python']
-let python_highlight_all = 1
-let g:syntastic_python_python_exec = '/Users/colby/.pyenv/shims/python3.6'
-
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-" /syntastic
-
-map <leader>o :ZoomWin<CR>
+" *==========================================================*
+" *----------|Plugin-dependent Settings & Mappings|----------*
+" *==========================================================*
 
 " user_emmet_leader_key
 map <leader>y <C-y>,
-
+map <leader>o :ZoomWin<CR>
 nmap <leader>r :RainbowToggle<CR>
 
-" --------------------
-" ** CtrlP Settings **
-" --------------------
+"  (The following settings depend on plugins, or macOS
+
+let g:NERDSpaceDelims=1
+let g:multi_cursor_prev_key='<C-S-p>'
+let g:multi_cursor_quit_key='<Esc>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:mustache_abbreviations = 1
+let g:sparkupExecuteMapping='<c-g>'
+let g:split_term_vertical=1
+let g:vim_json_syntax_conceal=1
+let g:vim_markdown_conceal=0
+let g:vim_markdown_folding_disabled = 0
+let g:vim_markdown_new_list_item_indent=0
+
+" *--- Syntastic ---*
+let g:syntastic_javascript_checkers = ['eslint']
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+let g:syntastic_python_checkers = ['python']
+let python_highlight_all = 1
+let g:syntastic_python_python_exec = '/Users/colby/.pyenv/shims/python3.6'
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" *--- Rainbow Parens ---*
+let g:syntastic_javascript_checkers = ['eslint']
+let g:rainbow_active = 0
+
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \]
+
+
+" *--- CtrlP ---*
+
 map <leader>b :CtrlPBuffer<CR>
 map <leader>m :CtrlPMRUFiles<CR>
 nnoremap <leader>t :CtrlPBufTag<CR>
@@ -370,8 +345,6 @@ let g:ctrlp_custom_ignore = {
       \ 'dir':  '\.git$\|\.hg$\|\.svn$\|/Users/colby$\|\',
       \ 'file': '\.pyc$\|\.pyo$\|\.so$\|\.dll$\|\.png$\|\.jpg\|\.jpeg\|\.svg$\|\.rbc$\|\.rbo$\|\.class$\|\.o$\|\.swp$\',
       \ }
-
-
 
 " If ag is available use it as filename list generator instead of 'find'
 
@@ -403,29 +376,9 @@ function! s:DeleteBuffer()
   exec "norm \<F5>"
 endfunction
 
-
-let g:rbpt_colorpairs = [
-    \ ['brown',       'RoyalBlue3'],
-    \ ['Darkblue',    'SeaGreen3'],
-    \ ['darkgray',    'DarkOrchid3'],
-    \ ['darkgreen',   'firebrick3'],
-    \ ['darkcyan',    'RoyalBlue3'],
-    \ ['darkred',     'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['brown',       'firebrick3'],
-    \ ['gray',        'RoyalBlue3'],
-    \ ['black',       'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['Darkblue',    'firebrick3'],
-    \ ['darkgreen',   'RoyalBlue3'],
-    \ ['darkcyan',    'SeaGreen3'],
-    \ ['darkred',     'DarkOrchid3'],
-    \ ['red',         'firebrick3'],
-    \ ]
-
-"======================================
-"     *---Display Settings---*"
-"======================================
+" *======================================*
+" *----------|Display Settings|----------*
+" *======================================*
 
 " cursor shape should look good in terminal vim
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
@@ -434,26 +387,23 @@ let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_SR = "\<Esc>]50;CursorShape=2\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 
-" Custom HL and colors for spellcheck and cursorline
 autocmd BufRead,BufNewFile *.phtml set filetype=html
 autocmd BufRead,BufNewFile markdown set filetype=markdown
 autocmd BufNewFile,BufRead Gemfile set filetype=ruby
 
-" highlight Pmenu guibg=brown gui=bold
-hi CursorLine   cterm=NONE ctermbg=darkgray guibg=darkgray guifg=white
+" Spelling
+highlight clear SpellBad
+highlight SpellBad term=standout ctermfg=1 term=underline cterm=underline
+highlight clear SpellCap
+highlight SpellCap term=underline cterm=underline
+hi SpellBad cterm=undercurl
 
-hi clear SpellBad "clear spelling default highlight
-" hi SpellBad cterm=underline ctermfg=brown
 
-
-" indent guides like subl
-let g:indentLine_fileTypeExclude = ['text', 'sh', 'help', 'vim']
+" Indent guides like subl
+let g:indentLine_fileTypeExclude = ['text', 'help', 'vim']
 let g:indentLine_char = '┊'
 
-" -----------------------
-" ** Airline Settings **
-" -----------------------
-
+" *--- Airline Settings ---*
 
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 0
@@ -467,8 +417,6 @@ if !exists('g:airline_symbols')
 endif
 
 " unicode symbols
-" let g:airline_left_sep = '▶'
-" let g:airline_right_sep = '◀'
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 let g:airline_symbols.crypt = '🔒'
@@ -486,25 +434,16 @@ let g:airline_symbols.notexists = '∄'
 let g:airline_symbols.whitespace = 'Ξ'
 
 
+colorscheme solarized
+set background=dark
 
-"=================================
-"*--Mac/Gui Dependent--*
-"=================================
+let g:solarized_contrast="high"    "default value is normal
+let g:solarized_visibility="high"  "default value is normal
+let g:solarized_termcolors=16
+let g:solarized_bold=1
+let g:solarized_underline=1
+let g:solarized_italic=1
 
-" colorscheme solarized
-" let g:solarized_contrast=high"    "default value is normal
-" let g:solarized_visibility=high"  "default value is normal
-" set background=dark
-" set guifont=Menlo:h13
-
-" Macvim viz
-if has('gui_running')
-  colorscheme solarized
-  let g:solarized_contrast="high"    "default value is normal
-  let g:solarized_visibility="high"  "default value is normal
-  set background=dark
-  set guifont=Menlo:h13
-endif
 
 " Easily open files with other apps
 nmap <leader>- :! open -a Terminal.app .<CR><CR>
@@ -512,60 +451,3 @@ nmap <leader>_ :! open .<CR><CR>
 nmap <leader>% :! open %<CR><CR>
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
 command! LintJS execute "%!python -m json.tool"
-
-" Shift enables visual select
-imap <S-A-Left> <esc>vb
-imap <S-A-Right> <esc>ve
-imap <S-D-Left> <esc>v0
-imap <S-D-Right> <esc>v$
-imap <S-Down> <esc>v<Down>
-imap <S-LEFT> <esc>v<LEFT>
-imap <S-RIGHT> <esc>v<RIGHT>
-imap <S-Up> <esc>v<Up>
-nmap <S-A-Left> vb
-nmap <S-A-Right> ve
-nmap <S-D-Left> v0
-nmap <S-D-Right> v$
-nmap <S-Down> v<Down>
-nmap <S-Left> v<Left>
-nmap <S-Right> v<Right>
-nmap <S-Up> v<Up>
-smap <S-Down> <Down>
-vmap <S-A-Left> b
-vmap <S-A-Right> e
-vmap <S-D-Left> 0
-vmap <S-D-Right> $
-vmap <S-Down> <Down>
-vmap <S-Left> <Left>
-vmap <S-Right> <Right>
-vmap <S-Up> <Up>
-vmap <S-Down> <Down>
-vmap <S-A-Up> {
-vmap <S-A-Down> }
-vmap <bs> c
-imap <S-A-Up> <esc>v{
-imap <S-A-Down> <esc>v}
-nmap <S-A-Up> v{
-nmap <S-A-Down> v}
-vmap <S-D-Up> gg
-vmap <S-D-Down> G
-imap <S-D-Up> <esc>vgg
-imap <S-D-Down> <esc>vG
-nmap <S-D-Up> vgg
-nmap <S-D-Down> vG
-
-" Enable copy/paste w/o using unnamed register
-imap <D-v> <C-r>+
-map <D-v> "+P
-vmap <D-c> "+y
-cnoremap <D-v> <C-r>+
-
-" Enable standard tab navigation
-imap <D-t> <esc>:tabnew<CR>
-map <D-t> :tabnew<CR>
-map <D-w> :clo<CR>
-map <C-Tab> gt
-imap <C-Tab> <esc>gt
-map <C-S-Tab> gT
-imap <C-S-Tab> <esc>gT
-

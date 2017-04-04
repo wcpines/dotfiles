@@ -1,59 +1,47 @@
-# PATH=$PATH:$HOME/bin:/usr/local/git/bin/
-
 export PATH
-
 export EDITOR='vim'
-export FLATIRON_VERSION='1.1.1'
 export GIT_MERGE_AUTOEDIT='no'
 # export NODE_PATH="/usr/local/lib/node_modules:$NODE_PATH"
-export SVN_EDITOR="gvim"
+export SVN_EDITOR="vim"
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
-export VISUAL="gvim"
 export PATH="/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH"
-
-export FLASK_APP=chappy/app.py
-export FLASK_DEBUG=1
 
 # info from `brew info nvm`
 export NVM_DIR="$HOME/.nvm"
 . "/usr/local/opt/nvm/nvm.sh"
 
+shopt -s cdspell;
+
+
+source /usr/local/opt/chruby/share/chruby/chruby.sh
+chruby ruby-2.3.1
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+[ -f ~/.passwords ] && source ~/.passwords
+
 # http://docs.python-guide.org/en/latest/writing/gotchas/
-# export PYTHONDONTWRITEBYTECODE=1
+export PYTHONDONTWRITEBYTECODE=1
 
 # export PATH="/Users/colby/.pyenv/bin:$PATH"
 
 # [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-eval "$(thefuck --alias "fuck")"
-
-source /usr/local/opt/chruby/share/chruby/chruby.sh
-# chruby ruby-2.1.3
-chruby ruby-2.3.1
-
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
-
-
 # if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
 #   . /usr/local/bin/virtualenvwrapper.sh
 # fi
 
-
-shopt -s cdspell;
-[ -f ~/.passwords ] && source ~/.passwords
-
-
-#####################################
+#===================================#
 #----------Prompt settings----------#
-#####################################
+#===================================#
 
 # -- credit -- :
 # https://github.com/necolas/dotfiles/blob/master/shell/bash_prompt
 
 prompt_git() {
-
 
   # +	Uncommitted changes in the index
   # !	Unstaged changes
@@ -197,10 +185,9 @@ unset set_prompts
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 export CLICOLOR=1
 
-#############################
+#===========================#
 #----------Aliases----------#
-#############################
-
+#===========================#
 
 alias .....='cd ../../../..'
 alias ....='cd ../../..'
@@ -210,7 +197,8 @@ alias ah="ls -lah"
 alias aliases="list_aliases"
 alias be="bundle exec"
 alias blog="cd ~/Desktop/Blog/"
-alias bp="gvim ~/.bashrc"
+alias bp="vim ~/.bashrc"
+alias vrc="vim ~/.vimrc"
 alias burp="java -Xmx2g -jar ~/burpsuite_free_v1.6.32.jar"
 alias cbp="cat ~/.bashrc"
 alias code="cd ~/development/code"
@@ -220,6 +208,7 @@ alias dmop="docker-machine stop default"
 alias dms="docker-machine status default"
 alias dmst="docker-machine start default"
 alias dotfiles="cd ~/dotfiles"
+alias e="nvim"
 alias gforce="git push --force origin master"
 alias go="git open"
 alias gpom="git push origin master"
@@ -230,43 +219,44 @@ alias ip="IPython"
 alias lff="learn --fail-fast"
 alias ls="ls -gfaSh"
 alias lsf="ls -lad */" # list the directories only
-alias lyn="yarn learnyounode"
-alias lynp="yarn learnyounode print"
-alias lynv="yarn learnyounode verify program.js"
 alias misc="cd ~/desktop/misc"
 alias mk="open -a Marked\ 2.app"$1
 alias myip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*"
-alias no="echo 'https://www.youtube.com/watch?v=woe1-2fza5q&t=2m20s'"
-alias pac="pyenv activate chappy"
-alias pys="python_server"
 alias rake="bundle exec rake"
-alias vim="nvim"
 alias rc="rails console"
 alias rebuild_index="c --rebuild"
 alias rm="rm -i"
 alias rs="rails server"
 alias sbp="source ~/.bashrc"
 alias sf="mdfind"
-alias sq="sqlite3 chappy.db" $1
-alias ssu="spotify share url"
+alias sq="sqlite3"
+alias ssu="spotify share"
 alias wh="say -v whisper"
 alias ya="yarn add"
 alias yi="yarn install"
 alias yrb="yarn run bundle"
 alias yrt="yarn run test"
 alias ys="yarn start"
-alias gvim="gvim --remote-silent"
 
-###############################
+
+# https://github.com/nvbn/thefuck
+eval "$(thefuck --alias "fuck")"
+
+# alias lyn="yarn learnyounode"
+# alias lynp="yarn learnyounode print"
+# alias lynv="yarn learnyounode verify program.js"
+
+#=============================#
 #----------Functions----------#
-###############################
+#=============================#
 
+
+# list processes by port number
 function lbp(){
   lsof -wni tcp:$@
 }
 
-# NR is number of record i.e. row
-
+# Kill processes by port number
 function kbp(){
   lsof -wni tcp:$@ | awk 'NR!=1 {print $2}' | xargs kill
 }
@@ -278,10 +268,9 @@ function ber(){
 
 
 function scratch(){
-  gvim ~/scratch.$1
+  vim ~/scratch.$1
 }
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # flatiron learn platform
 function green_light(){

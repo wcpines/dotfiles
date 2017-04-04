@@ -2,14 +2,16 @@
 .DS_Store?
 ._**
 .sw*
+.*sw*
 *.env
 *.sql
 *.sqlite
 *.log
 
+tags
 node_modules/
-*secrets.yml
-*database.yml
+secrets.yml
+database.yml
 
 # SOURCE: http://islegend.com/development/setting-global-gitignore-mac-windows/
 # v v v v
