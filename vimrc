@@ -68,7 +68,7 @@ imap hh <Esc>
 imap <esc> <esc>l
 
 nnoremap Q: <nop>
-noremap <leader>s :w<CR>
+nmap <leader>s :w<CR>
 map <leader>l :set hlsearch!<CR>
 map <leader>v :tabe ~/.vimrc<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
@@ -78,6 +78,8 @@ nmap <leader>a gg<S-v>G<CR>
 nmap <leader>A ggyG
 inoremap <C-a> <esc>I
 inoremap <C-e> <esc>A
+map j gj
+map k gk
 
 "Autocenter file jumps
 nmap G Gzz
@@ -172,6 +174,8 @@ augroup END
 autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " On save, preserve folds and cursor positions
+
+" TODO: Make this conditional on being a writeable file
 set viewoptions=cursor,folds
 autocmd BufWinLeave *.* mkview! " NOTE -- this breaks with fugitive Glog
 autocmd BufWinEnter *.* silent loadview
@@ -187,83 +191,92 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+" Enable Vundle
+Plugin 'gmarik/Vundle.vim'
 
-Plugin 'AndrewRadev/splitjoin.vim'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'vim-scripts/applescript.vim'
-Plugin 'ap/vim-css-color'
+" -- Syntax, languages, & frameworks
 Plugin 'asux/vim-capybara'
-Plugin 'bps/vim-textobj-python'
-Plugin 'bronson/vim-visual-star-search'
-Plugin 'chun-yang/vim-action-ag'
-Plugin 'coderifous/textobj-word-column.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'elzr/vim-json'
-Plugin 'ervandew/supertab'
-Plugin 'gioele/vim-autoswap'
-Plugin 'gmarik/Vundle.vim'
-Plugin 'godlygeek/tabular'
 Plugin 'hallison/vim-ruby-sinatra'
 Plugin 'hdima/python-syntax'
-Plugin 'henrik/vim-indexed-search'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'joker1007/vim-markdown-quote-syntax'
-Plugin 'junegunn/goyo.vim'
-Plugin 'kana/vim-textobj-function'
-Plugin 'kana/vim-textobj-line'
-Plugin 'kana/vim-textobj-user'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'lepture/vim-jinja'
-Plugin 'lifepillar/vim-solarized8'
-Plugin 'luochen1990/rainbow'
-Plugin 'mattn/emmet-vim'
-Plugin 'mkomitee/vim-gf-python'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'mxw/vim-jsx'
-Plugin 'mzlogin/vim-markdown-toc'
 Plugin 'nelstrom/vim-markdown-folding'
 Plugin 'nvie/vim-flake8'
-Plugin 'olical/vim-enmasse'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-rake'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'vim-scripts/Jinja'
+Plugin 'vim-scripts/applescript.vim'
+Plugin 'vim-scripts/indentpython.vim'
+Plugin 'vim-scripts/sql_iabbr.vim'
+Plugin 'vim-scripts/sqlcomplete.vim'
+Plugin 'vim-syntastic/syntastic'
+
+" -- Text objects
+Plugin 'bps/vim-textobj-python'
+Plugin 'coderifous/textobj-word-column.vim'
+Plugin 'kana/vim-textobj-function'
+" Plugin 'kana/vim-textobj-line'
+Plugin 'kana/vim-textobj-user'
+Plugin 'michaeljsmith/vim-indent-object'
 Plugin 'poetic/vim-textobj-javascript'
+Plugin 'thinca/vim-textobj-function-javascript'
+Plugin 'vim-scripts/textobj-rubyblock'
+
+" -- Search & file nav
+Plugin 'bronson/vim-visual-star-search'
+Plugin 'chun-yang/vim-action-ag'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'henrik/vim-indexed-search'
 Plugin 'rking/ag.vim'
-Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
+Plugin 'vim-scripts/SearchComplete'
+
+" -- Display
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'ap/vim-css-color'
+Plugin 'lifepillar/vim-solarized8'
+Plugin 'luochen1990/rainbow'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+
+" -- Misc Enhancements
+Plugin 'AndrewRadev/splitjoin.vim'
+Plugin 'ervandew/supertab'
+Plugin 'gioele/vim-autoswap'
+Plugin 'godlygeek/tabular'
+Plugin 'junegunn/goyo.vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'mkomitee/vim-gf-python'
+Plugin 'mzlogin/vim-markdown-toc'
+Plugin 'olical/vim-enmasse'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'sjl/gundo.vim'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'thinca/vim-textobj-function-javascript'
-Plugin 'thoughtbot/vim-rspec'
 Plugin 'tmhedberg/matchit'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-rake'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-speeddating'
 Plugin 'tpope/vim-surround'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'vim-ruby/vim-ruby'
-Plugin 'vim-scripts/Jinja'
-Plugin 'vim-scripts/SearchComplete'
 Plugin 'vim-scripts/ZoomWin'
-Plugin 'vim-scripts/dbext.vim'
-Plugin 'vim-scripts/indentpython.vim'
-Plugin 'vim-scripts/sql_iabbr.vim'
-Plugin 'vim-scripts/sqlcomplete.vim'
-Plugin 'vim-scripts/sum.vim'
-Plugin 'vim-scripts/textobj-rubyblock'
 Plugin 'vim-scripts/zoom.vim'
-Plugin 'vim-syntastic/syntastic'
 Plugin 'vimlab/split-term.vim'
 Plugin 'wellle/targets.vim'
 Plugin 'yggdroot/indentline'
-call vundle#end()
 
+call vundle#end()
 
 " *==========================================================*
 " *----------|Plugin-dependent Settings & Mappings|----------*
@@ -273,6 +286,8 @@ call vundle#end()
 map <leader>y <C-y>,
 map <leader>o :ZoomWin<CR>
 nmap <leader>r :RainbowToggle<CR>
+nmap <leader>n :NERDTreeFind<CR>
+nmap <leader>c :CtrlPClearCache<CR>
 
 "  (The following settings depend on plugins, or macOS
 
@@ -290,7 +305,7 @@ let g:vim_markdown_new_list_item_indent=0
 
 " *--- Syntastic ---*
 let g:syntastic_javascript_checkers = ['eslint']
-let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+let g:jsx_ext_required = 1 " Allow JSX in normal JS files
 let g:syntastic_python_checkers = ['python']
 let python_highlight_all = 1
 let g:syntastic_python_python_exec = '/Users/colby/.pyenv/shims/python3.6'
@@ -320,7 +335,6 @@ let g:rbpt_colorpairs = [
     \ ['darkred',     'DarkOrchid3'],
     \ ['red',         'firebrick3'],
     \]
-
 
 " *--- CtrlP ---*
 
@@ -362,7 +376,6 @@ endif
 let g:ag_working_path_mode="r"
 
 " Close buffer via <C-@> using CtrlP // source: https://gist.github.com/rainerborene/8074898
-
 let g:ctrlp_buffer_func = { 'enter': 'CtrlPMappings' }
 
 function! CtrlPMappings()
@@ -434,6 +447,11 @@ let g:airline_symbols.notexists = '∄'
 let g:airline_symbols.whitespace = 'Ξ'
 
 
+" *======================================*
+" *----------|Breakable|----------*
+" *======================================*
+" These settings likely to break on remote machines
+
 colorscheme solarized
 set background=dark
 
@@ -443,11 +461,14 @@ let g:solarized_termcolors=16
 let g:solarized_bold=1
 let g:solarized_underline=1
 let g:solarized_italic=1
-
+highlight Comment cterm=italic
 
 " Easily open files with other apps
 nmap <leader>- :! open -a Terminal.app .<CR><CR>
 nmap <leader>_ :! open .<CR><CR>
 nmap <leader>% :! open %<CR><CR>
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
+command! Helpme !subl "%:p"
 command! LintJS execute "%!python -m json.tool"
+
+tnoremap <C-h> <space><C-\><C-n>?==\$<CR>g_

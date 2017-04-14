@@ -6,6 +6,11 @@ export SVN_EDITOR="vim"
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
 export PATH="/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH"
 
+# http://docs.python-guide.org/en/latest/writing/gotchas/
+export PYTHONDONTWRITEBYTECODE=1
+
+# export PATH="/Users/colby/.pyenv/bin:$PATH"
+
 # info from `brew info nvm`
 export NVM_DIR="$HOME/.nvm"
 . "/usr/local/opt/nvm/nvm.sh"
@@ -14,7 +19,7 @@ shopt -s cdspell;
 
 
 source /usr/local/opt/chruby/share/chruby/chruby.sh
-chruby ruby-2.3.1
+chruby ruby-2.4.1
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -23,12 +28,6 @@ fi
 
 [ -f ~/.passwords ] && source ~/.passwords
 
-# http://docs.python-guide.org/en/latest/writing/gotchas/
-export PYTHONDONTWRITEBYTECODE=1
-
-# export PATH="/Users/colby/.pyenv/bin:$PATH"
-
-# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 # if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
 #   . /usr/local/bin/virtualenvwrapper.sh
@@ -215,7 +214,7 @@ alias gpom="git push origin master"
 alias grebase="git rebase -i HEAD~"
 alias grep="grep --color=auto"
 alias hg="history|grep" $1
-alias ip="IPython"
+alias ip="IPython3"
 alias lff="learn --fail-fast"
 alias ls="ls -gfaSh"
 alias lsf="ls -lad */" # list the directories only
@@ -387,8 +386,5 @@ function teleport(){
   last_command=$(fc -ln | tail -2 | head -1)
   cd `$last_command | awk -F '\/' '{OFS="\/"; $NF=""; print $0}'`
 }
-
-# eval "$(pyenv init -)"
-# eval "$(pyenv virtualenv-init -)"
 
 [ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
