@@ -10,6 +10,7 @@
 " 5. Plugin Settings & Mappings
 " 6. Display Settings
 
+
 " *====================================*
 " *----------|Basic Settings|----------*
 " *====================================*
@@ -97,6 +98,7 @@ map <leader>] ]s
 
 " Quick formatting, searching, and common replacements
 nmap S :%s//g<LEFT><LEFT>
+map <leader># F#i<space><esc>
 map <leader>C :%s/,/\r/g<CR>
 map <leader>N :%s/\n/,/g<CR>
 map <leader>R :%s/\\n/\r/g<CR>
@@ -106,6 +108,7 @@ map <leader>/ :%s/<C-R>///g<CR>
 nmap <leader>f /\cfunction\s\{1\}
 nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR><C-o>
 nmap <leader>Z V$%zf
+nmap cp :!echo %:p\|pbcopy<CR>
 
 " inserting blank lines
 nmap [<space> O<esc>
@@ -143,7 +146,6 @@ noremap <leader>h :clo<CR>
 noremap <leader>e :tabe<CR>
 
 nmap <leader>. <C-w>=
-nmap <leader>\ :Term<CR>
 
 " Open all buffers in tabs
 map <leader><tab> :bufdo tab split<CR>
@@ -154,6 +156,10 @@ imap <C-N> <Nop>
 " *=================================================*
 " *----------|Auto-commands and functions|----------*
 " *=================================================*
+
+" Normalize comment keywords across all filetypes
+autocmd Syntax * syntax keyword Todo TBD TODO NOTE QUESTION OPTIMIZE FIXME containedin=.*Comment
+
 
 " kill trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
@@ -175,10 +181,9 @@ autocmd BufNewFile,BufRead *.md set filetype=markdown
 
 " On save, preserve folds and cursor positions
 
-" TODO: Make this conditional on being a writeable file
 set viewoptions=cursor,folds
-autocmd BufWinLeave *.* mkview! " NOTE -- this breaks with fugitive Glog
-autocmd BufWinEnter *.* silent loadview
+" autocmd BufWinLeave *.* mkview! " NOTE -- this breaks with fugitive Glog
+" autocmd BufWinEnter *.* silent loadview
 
 " disable auto-comment (#) insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -187,96 +192,112 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " *----------|Plugins|----------*
 " *=============================*
 
-" Set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" TBD: Possible erroneous symlinking: ~/.config/nvim/.vim -> ~/.vim)
 
-" Enable Vundle
-Plugin 'gmarik/Vundle.vim'
+" check whether vim-plug is installed and install it if necessary
+" SOURCE: https://github.com/nicknisi/dotfiles/blob/master/config/nvim/plugins.vim
+" TBD: not sure this actually works...
+
+let plugpath = expand('<sfile>:p:h'). '/autoload/plug.vim'
+if !filereadable(plugpath)
+    if executable('curl')
+        let plugurl = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        call system('curl -fLo ' . shellescape(plugpath) . ' --create-dirs ' . plugurl)
+        if v:shell_error
+            echom "Error downloading vim-plug. Please install it manually.\n"
+            exit
+        endif
+    else
+        echom "vim-plug not installed. Please install it manually or install curl.\n"
+        exit
+    endif
+endif
+
+call plug#begin('~/.vim/plugged')
 
 " -- Syntax, languages, & frameworks
-Plugin 'asux/vim-capybara'
-Plugin 'ekalinin/Dockerfile.vim'
-Plugin 'elzr/vim-json'
-Plugin 'hallison/vim-ruby-sinatra'
-Plugin 'hdima/python-syntax'
-Plugin 'jelera/vim-javascript-syntax'
-Plugin 'joker1007/vim-markdown-quote-syntax'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'lepture/vim-jinja'
-Plugin 'mustache/vim-mustache-handlebars'
-Plugin 'mxw/vim-jsx'
-Plugin 'nelstrom/vim-markdown-folding'
-Plugin 'nvie/vim-flake8'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'thoughtbot/vim-rspec'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-rake'
-Plugin 'vim-ruby/vim-ruby'
-Plugin 'vim-scripts/Jinja'
-Plugin 'vim-scripts/applescript.vim'
-Plugin 'vim-scripts/indentpython.vim'
-Plugin 'vim-scripts/sql_iabbr.vim'
-Plugin 'vim-scripts/sqlcomplete.vim'
-Plugin 'vim-syntastic/syntastic'
+Plug 'asux/vim-capybara', { 'for': 'ruby' }
+Plug 'ekalinin/Dockerfile.vim'
+Plug 'elzr/vim-json', { 'for': 'json' }
+Plug 'hallison/vim-ruby-sinatra', { 'for': 'ruby' }
+Plug 'hdima/python-syntax', { 'for': 'python' }
+Plug 'jelera/vim-javascript-syntax', { 'for': ['javascript', 'javascript.jsx', 'html'] }
+Plug 'joker1007/vim-markdown-quote-syntax', { 'for': 'markdown' }
+Plug 'keith/rspec.vim', { 'for': 'ruby' }
+Plug 'lepture/vim-jinja', { 'for': 'jinja.html' }
+Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
+Plug 'nelstrom/vim-markdown-folding', { 'for': 'markdown' }
+Plug 'nvie/vim-flake8', { 'for': 'python' }
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'tpope/vim-rails', { 'for': 'ruby' }
+Plug 'tpope/vim-rake', { 'for': 'ruby' }
+Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
+Plug 'vim-scripts/Jinja', { 'for': 'jinja.html' }
+Plug 'vim-scripts/applescript.vim'
+Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
+Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
+Plug 'vim-scripts/sqlcomplete.vim', { 'for': 'sql' }
 
 " -- Text objects
-Plugin 'bps/vim-textobj-python'
-Plugin 'coderifous/textobj-word-column.vim'
-Plugin 'kana/vim-textobj-function'
-" Plugin 'kana/vim-textobj-line'
-Plugin 'kana/vim-textobj-user'
-Plugin 'michaeljsmith/vim-indent-object'
-Plugin 'poetic/vim-textobj-javascript'
-Plugin 'thinca/vim-textobj-function-javascript'
-Plugin 'vim-scripts/textobj-rubyblock'
+Plug 'bps/vim-textobj-python', { 'for': 'python' }
+Plug 'coderifous/textobj-word-column.vim'
+Plug 'kana/vim-textobj-function', { 'for': ['python', 'javascript', 'vim'] }
+Plug 'kana/vim-textobj-user'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'poetic/vim-textobj-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
+Plug 'thinca/vim-textobj-function-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
+Plug 'vim-scripts/textobj-rubyblock', { 'for': 'ruby' }
 
 " -- Search & file nav
-Plugin 'bronson/vim-visual-star-search'
-Plugin 'chun-yang/vim-action-ag'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'henrik/vim-indexed-search'
-Plugin 'rking/ag.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'vim-scripts/SearchComplete'
+Plug 'bronson/vim-visual-star-search'
+Plug 'chun-yang/vim-action-ag', { 'on': 'Ag' }
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'd11wtq/ctrlp_bdelete.vim'
+Plug 'danro/rename.vim'
+Plug 'henrik/vim-indexed-search'
+Plug 'rking/ag.vim', { 'on': 'Ag' }
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'vim-scripts/SearchComplete'
 
 " -- Display
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'ap/vim-css-color'
-Plugin 'lifepillar/vim-solarized8'
-Plugin 'luochen1990/rainbow'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'altercation/vim-colors-solarized'
+Plug 'ap/vim-css-color', { 'for': 'css' }
+Plug 'lifepillar/vim-solarized8'
+Plug 'luochen1990/rainbow', { 'for': ['javascript', 'javascript.jsx', 'html'] }
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " -- Misc Enhancements
-Plugin 'AndrewRadev/splitjoin.vim'
-Plugin 'ervandew/supertab'
-Plugin 'gioele/vim-autoswap'
-Plugin 'godlygeek/tabular'
-Plugin 'junegunn/goyo.vim'
-Plugin 'mattn/emmet-vim'
-Plugin 'mkomitee/vim-gf-python'
-Plugin 'mzlogin/vim-markdown-toc'
-Plugin 'olical/vim-enmasse'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'sjl/gundo.vim'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'tmhedberg/matchit'
-Plugin 'tommcdo/vim-exchange'
-Plugin 'tpope/vim-abolish'
-Plugin 'tpope/vim-bundler'
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-speeddating'
-Plugin 'tpope/vim-surround'
-Plugin 'vim-scripts/ZoomWin'
-Plugin 'vim-scripts/zoom.vim'
-Plugin 'vimlab/split-term.vim'
-Plugin 'wellle/targets.vim'
-Plugin 'yggdroot/indentline'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'SirVer/ultisnips'
+Plug 'ervandew/supertab'
+Plug 'gioele/vim-autoswap'
+Plug 'godlygeek/tabular'
+Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
+Plug 'mattn/emmet-vim', { 'for': 'html' }
+Plug 'mkomitee/vim-gf-python', { 'for': 'python' }
+Plug 'mzlogin/vim-markdown-toc', { 'for': 'markdown' }
+Plug 'olical/vim-enmasse'
+Plug 'scrooloose/nerdcommenter'
+Plug 'sjl/gundo.vim'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tmhedberg/matchit'
+Plug 'tommcdo/vim-exchange'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-bundler', { 'for': 'ruby' }
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-surround'
+Plug 'vim-scripts/ZoomWin'
+Plug 'vim-scripts/zoom.vim'
+Plug 'vimlab/split-term.vim'
+Plug 'wellle/targets.vim'
+Plug 'yggdroot/indentline'
 
-call vundle#end()
+" Initialize plugin system
+call plug#end()
 
 " *==========================================================*
 " *----------|Plugin-dependent Settings & Mappings|----------*
@@ -300,7 +321,7 @@ let g:sparkupExecuteMapping='<c-g>'
 let g:split_term_vertical=1
 let g:vim_json_syntax_conceal=1
 let g:vim_markdown_conceal=0
-let g:vim_markdown_folding_disabled = 0
+let g:vim_markdown_folding_disabled=0
 let g:vim_markdown_new_list_item_indent=0
 
 " *--- Syntastic ---*
@@ -312,6 +333,30 @@ let g:syntastic_python_python_exec = '/Users/colby/.pyenv/shims/python3.6'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
+" *--- Projectionist/Rails-vim ---*
+" Map controllers to request specs as alternate file
+" Source: https://github.com/tpope/vim-rails/issues/368#issuecomment-265086019
+let g:rails_projections = {
+      \  "app/controllers/*_controller.rb": {
+      \      "test": [
+      \        "spec/requests/{}_spec.rb",
+      \        "spec/controllers/{}_controller_spec.rb",
+      \        "test/controllers/{}_controller_test.rb"
+      \      ],
+      \      "alternate": [
+      \        "spec/requests/{}_spec.rb",
+      \        "spec/controllers/{}_controller_spec.rb",
+      \        "test/controllers/{}_controller_test.rb"
+      \      ],
+      \   },
+      \   "spec/requests/*_spec.rb": {
+      \      "command": "request",
+      \      "alternate": "app/controllers/{}_controller.rb",
+      \      "template": "require 'rails_helper'\n\n" .
+      \        "RSpec.describe '{}' do\nend",
+      \   },
+      \ }
 
 " *--- Rainbow Parens ---*
 let g:syntastic_javascript_checkers = ['eslint']
@@ -375,42 +420,33 @@ endif
 " configure ag.vim to always start searching project root instead of the cwd
 let g:ag_working_path_mode="r"
 
-" Close buffer via <C-@> using CtrlP // source: https://gist.github.com/rainerborene/8074898
-let g:ctrlp_buffer_func = { 'enter': 'CtrlPMappings' }
+" Close buffer via <C-@> using CtrlP // source: https://github.com/d11wtq/ctrlp_bdelete.vim
+call ctrlp_bdelete#init()
 
-function! CtrlPMappings()
-  nnoremap <buffer> <silent> <C-@> :call <sid>DeleteBuffer()<cr>
-endfunction
+" Old: https://gist.github.com/rainerborene/8074898
 
-function! s:DeleteBuffer()
-  let path = fnamemodify(getline('.')[2:], ':p')
-  let bufn = matchstr(path, '\v\d+\ze\*No Name')
-  exec "bd" bufn ==# "" ? path : bufn
-  exec "norm \<F5>"
-endfunction
+" let g:ctrlp_buffer_func = { 'enter': 'CtrlPMappings' }
+" function! CtrlPMappings()
+"   nnoremap <buffer> <silent> <C-@> :call <sid>DeleteBuffer()<cr>
+" endfunction
+
+" function! s:DeleteBuffer()
+"   let path = fnamemodify(getline('.')[2:], ':p')
+"   let bufn = matchstr(path, '\v\d+\ze\*No Name')
+"   exec "bd" bufn ==# "" ? path : bufn
+"   exec "norm \<F5>"
+" endfunction
+
+map <Leader>S :call RunCurrentSpecFile()<CR>
 
 " *======================================*
 " *----------|Display Settings|----------*
 " *======================================*
 
-" cursor shape should look good in terminal vim
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-
 autocmd BufRead,BufNewFile *.phtml set filetype=html
 autocmd BufRead,BufNewFile markdown set filetype=markdown
+autocmd BufRead,BufNewFile md set filetype=markdown
 autocmd BufNewFile,BufRead Gemfile set filetype=ruby
-
-" Spelling
-highlight clear SpellBad
-highlight SpellBad term=standout ctermfg=1 term=underline cterm=underline
-highlight clear SpellCap
-highlight SpellCap term=underline cterm=underline
-hi SpellBad cterm=undercurl
-
 
 " Indent guides like subl
 let g:indentLine_fileTypeExclude = ['text', 'help', 'vim']
@@ -446,11 +482,10 @@ let g:airline_symbols.spell = 'Ꞩ'
 let g:airline_symbols.notexists = '∄'
 let g:airline_symbols.whitespace = 'Ξ'
 
-
 " *======================================*
 " *----------|Breakable|----------*
 " *======================================*
-" These settings likely to break on remote machines
+" These settings likely to break or only work on remote machines
 
 colorscheme solarized
 set background=dark
@@ -466,9 +501,26 @@ highlight Comment cterm=italic
 " Easily open files with other apps
 nmap <leader>- :! open -a Terminal.app .<CR><CR>
 nmap <leader>_ :! open .<CR><CR>
-nmap <leader>% :! open %<CR><CR>
+nmap go% :! open %<CR><CR>
+
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
 command! Helpme !subl "%:p"
 command! LintJS execute "%!python -m json.tool"
 
-tnoremap <C-h> <space><C-\><C-n>?==\$<CR>g_
+" map ctr-h to escape in :terminal mode and detect multiple readline prompts
+if has('nvim')
+  tnoremap <C-h> <space><C-\><C-n>?==\$\\|\d\+\s\+>\\|>>><CR>g
+  tnoremap <esc> <space><C-\><C-n>
+endif
+
+
+if has('nvim')
+  nmap <leader>\ :Term<CR>
+endif
+
+
+" cursor shape should look good in terminal neovim
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
