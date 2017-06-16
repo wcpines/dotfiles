@@ -211,7 +211,7 @@ alias e="nvim"
 alias gforce="git push --force origin master"
 alias go="git open"
 alias gpom="git push origin master"
-alias grebase="git rebase -i HEAD~"
+alias grebase="git rebase -i HEAD~$1"
 alias grep="grep --color=auto"
 alias hg="history|grep" $1
 alias ip="IPython3"
@@ -236,7 +236,8 @@ alias yi="yarn install"
 alias yrb="yarn run bundle"
 alias yrt="yarn run test"
 alias ys="yarn start"
-
+alias rff="rspec --f-f"
+alias sedtricks="curl http://www.pement.org/sed/sed1line.txt | pygmentize"
 
 # https://github.com/nvbn/thefuck
 eval "$(thefuck --alias "fuck")"
@@ -385,6 +386,17 @@ function clone_and_cd(){
 function teleport(){
   last_command=$(fc -ln | tail -2 | head -1)
   cd `$last_command | awk -F '\/' '{OFS="\/"; $NF=""; print $0}'`
+}
+
+function todo(){
+  ag "TODO|NOTE|TBD|FIXME|OPTIMIZE" .
+}
+
+
+
+function test_site_time(){
+  echo "time_connect + time_starttransfer = time_total"
+  curl -o /dev/null -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
 }
 
 [ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
