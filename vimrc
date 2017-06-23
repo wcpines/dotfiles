@@ -4,7 +4,7 @@
 " sections:
 
 " 1. Basic Settings
-" 2. Vanilla Mappings
+" 2. Standard Mappings
 " 3. Autocmds & Functions
 " 4. Plugins
 " 5. Plugin Settings & Mappings
@@ -116,11 +116,11 @@ nmap ]<space> o<esc>
 
 
 " Autosurround stuff
-inoremap [] []<esc>i
-inoremap {} {}<esc>i
-inoremap () ()<esc>i
-inoremap "" ""<esc>i
-inoremap '' ''<esc>i
+" inoremap [] []<esc>i
+" inoremap {} {}<esc>i
+" inoremap () ()<esc>i
+" inoremap "" ""<esc>i
+" inoremap '' ''<esc>i
 inoremap <% <%<space>%><esc>hhi
 inoremap <%= <%=<space>%><esc>hhi
 inoremap {% {%<space>%}<esc>hhi
@@ -158,8 +158,8 @@ imap <C-N> <Nop>
 " *=================================================*
 
 " Normalize comment keywords across all filetypes
-autocmd Syntax * syntax keyword Todo TBD TODO NOTE QUESTION OPTIMIZE FIXME containedin=.*Comment
 
+autocmd Syntax * syntax keyword Todo OPTIMIZE FIXME TODO TBD NOTE containedin=.*Comment
 
 " kill trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
@@ -192,25 +192,12 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " *----------|Plugins|----------*
 " *=============================*
 
-" TBD: Possible erroneous symlinking: ~/.config/nvim/.vim -> ~/.vim)
-
-" check whether vim-plug is installed and install it if necessary
-" SOURCE: https://github.com/nicknisi/dotfiles/blob/master/config/nvim/plugins.vim
-" TBD: not sure this actually works...
-
-let plugpath = expand('<sfile>:p:h'). '/autoload/plug.vim'
-if !filereadable(plugpath)
-    if executable('curl')
-        let plugurl = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-        call system('curl -fLo ' . shellescape(plugpath) . ' --create-dirs ' . plugurl)
-        if v:shell_error
-            echom "Error downloading vim-plug. Please install it manually.\n"
-            exit
-        endif
-    else
-        echom "vim-plug not installed. Please install it manually or install curl.\n"
-        exit
-    endif
+" Install the plugin manager if it doesn't exist
+filetype off
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -226,7 +213,6 @@ Plug 'joker1007/vim-markdown-quote-syntax', { 'for': 'markdown' }
 Plug 'keith/rspec.vim', { 'for': 'ruby' }
 Plug 'lepture/vim-jinja', { 'for': 'jinja.html' }
 Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
-Plug 'nelstrom/vim-markdown-folding', { 'for': 'markdown' }
 Plug 'nvie/vim-flake8', { 'for': 'python' }
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
@@ -241,7 +227,7 @@ Plug 'vim-scripts/sqlcomplete.vim', { 'for': 'sql' }
 " -- Text objects
 Plug 'bps/vim-textobj-python', { 'for': 'python' }
 Plug 'coderifous/textobj-word-column.vim'
-Plug 'kana/vim-textobj-function', { 'for': ['python', 'javascript', 'vim'] }
+Plug 'kana/vim-textobj-function', { 'for': ['shell', 'python', 'javascript', 'vim'] }
 Plug 'kana/vim-textobj-user'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'poetic/vim-textobj-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
@@ -250,13 +236,13 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': 'ruby' }
 
 " -- Search & file nav
 Plug 'bronson/vim-visual-star-search'
-Plug 'chun-yang/vim-action-ag', { 'on': 'Ag' }
+Plug 'chun-yang/vim-action-ag'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'd11wtq/ctrlp_bdelete.vim'
 Plug 'danro/rename.vim'
 Plug 'henrik/vim-indexed-search'
 Plug 'rking/ag.vim', { 'on': 'Ag' }
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/SearchComplete'
 
 " -- Display
@@ -321,7 +307,7 @@ let g:sparkupExecuteMapping='<c-g>'
 let g:split_term_vertical=1
 let g:vim_json_syntax_conceal=1
 let g:vim_markdown_conceal=0
-let g:vim_markdown_folding_disabled=0
+let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_new_list_item_indent=0
 
 " *--- Syntastic ---*
@@ -421,7 +407,9 @@ endif
 let g:ag_working_path_mode="r"
 
 " Close buffer via <C-@> using CtrlP // source: https://github.com/d11wtq/ctrlp_bdelete.vim
-call ctrlp_bdelete#init()
+if !empty(glob("~/.config/nvim/plugged/ctrlp_bdelete.vim "))
+  call ctrlp_bdelete#init()
+endif
 
 " Old: https://gist.github.com/rainerborene/8074898
 
@@ -487,7 +475,7 @@ let g:airline_symbols.whitespace = 'Ξ'
 " *======================================*
 " These settings likely to break or only work on remote machines
 
-colorscheme solarized
+silent! colorscheme solarized
 set background=dark
 
 let g:solarized_contrast="high"    "default value is normal
@@ -507,20 +495,11 @@ command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
 command! Helpme !subl "%:p"
 command! LintJS execute "%!python -m json.tool"
 
-" map ctr-h to escape in :terminal mode and detect multiple readline prompts
-if has('nvim')
-  tnoremap <C-h> <space><C-\><C-n>?==\$\\|\d\+\s\+>\\|>>><CR>g
-  tnoremap <esc> <space><C-\><C-n>
-endif
-
-
 if has('nvim')
   nmap <leader>\ :Term<CR>
+  tmap <C-h> <esc>
 endif
 
-
-" cursor shape should look good in terminal neovim
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+if !has('nvim')
+  set ttymouse=xterm2
+endif

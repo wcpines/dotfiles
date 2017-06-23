@@ -8,7 +8,8 @@
 
 dir=dotfiles                    # dotfiles directory
 olddir=dotfiles_old             # old dotfiles backup directory
-files="bashrc vimrc vim ctags gitignore"    # list of files/folders to symlink in homedir
+files="bashrc vimrc ctags gitignore"    # list of files/folders to symlink in homedir
+packages="Brewfile"
 
 ##########
 
@@ -28,4 +29,12 @@ for file in $files; do
     mv ~/.$file ~/dotfiles_old/
     echo "Creating symlink to $file in home directory."
     ln -s $dir/$file ~/.$file
+done
+
+# link Brewfile as a non-hidden file
+for package_list in $packages; do
+    echo "Moving any existing package lists from ~ to $olddir"
+    mv ~/$package_list ~/dotfiles_old/
+    echo "Creating symlink to $package_list in home directory."
+    ln -s $dir/$package_list ~/$package_list
 done
