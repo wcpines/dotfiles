@@ -14,7 +14,7 @@
 " *====================================*
 " *----------|Basic Settings|----------*
 " *====================================*
-
+set belloff=all
 syntax on                                               " Enable syntax highlighting
 filetype off                                            " Filetype detection[OFF]
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
@@ -27,6 +27,7 @@ set expandtab                                           " Use spaces when tab is
 set gcr=n:blinkon0                                      " Turn off cursor blink
 set hidden                                              " Switch buffers and preserve changes w/o saving
 set ignorecase                                          " Ignore case for search patterns
+" set inccommand=split                                    " Preview find/replace as expression is constructed
 set incsearch                                           " Dynamic search (search and refine as you type)
 set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
@@ -43,7 +44,7 @@ set smartindent                                         " Changes indent based o
 set softtabstop=2                                       " Determines number of spaces to be inserted for tabs.  Also, backspace key treats four space like a tab (so deletes all spaces)
 set splitbelow                                          " default horizontal split below
 set splitright                                          " default vertical split right
-set t_vb=                                               " No visual bell
+set noerrorbells visualbell t_vb=                       " No visual bell, no error bell sounds
 set tabstop=2                                           " Set number of columns inserted with tab key
 set tags=./tags,tags;$HOME                              " Vim to search for Ctags file in current file's directory, moving up the directory structure until found/home is hit
 set textwidth=0                                         " Controls the wrap width you would like to use (character length).  Setting it to default: disabled
@@ -97,6 +98,7 @@ map <leader>= z=
 map <leader>] ]s
 
 " Quick formatting, searching, and common replacements
+nmap Y y$
 nmap S :%s//g<LEFT><LEFT>
 map <leader># F#i<space><esc>
 map <leader>C :%s/,/\r/g<CR>
@@ -164,8 +166,6 @@ autocmd Syntax * syntax keyword Todo OPTIMIZE FIXME TODO TBD NOTE containedin=.*
 " kill trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
 
-" Stop the beeping
-set noerrorbells visualbell t_vb=
 if has('autocmd')
   autocmd GUIEnter * set visualbell t_vb=
 endif
@@ -186,7 +186,7 @@ set viewoptions=cursor,folds
 " autocmd BufWinEnter *.* silent loadview
 
 " disable auto-comment (#) insertion
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+" autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " *=============================*
 " *----------|Plugins|----------*
@@ -203,6 +203,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " -- Syntax, languages, & frameworks
+" Plug 'vim-scripts/applescript.vim'
 Plug 'asux/vim-capybara', { 'for': 'ruby' }
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'elzr/vim-json', { 'for': 'json' }
@@ -215,11 +216,10 @@ Plug 'lepture/vim-jinja', { 'for': 'jinja.html' }
 Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
 Plug 'nvie/vim-flake8', { 'for': 'python' }
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'sunaku/vim-ruby-minitest', { 'for': 'ruby' }
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
 Plug 'tpope/vim-rake', { 'for': 'ruby' }
-Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 Plug 'vim-scripts/Jinja', { 'for': 'jinja.html' }
-Plug 'vim-scripts/applescript.vim'
 Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
 Plug 'vim-scripts/sqlcomplete.vim', { 'for': 'sql' }
@@ -227,12 +227,12 @@ Plug 'vim-scripts/sqlcomplete.vim', { 'for': 'sql' }
 " -- Text objects
 Plug 'bps/vim-textobj-python', { 'for': 'python' }
 Plug 'coderifous/textobj-word-column.vim'
-Plug 'kana/vim-textobj-function', { 'for': ['shell', 'python', 'javascript', 'vim'] }
+Plug 'kana/vim-textobj-function'
 Plug 'kana/vim-textobj-user'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'poetic/vim-textobj-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
 Plug 'thinca/vim-textobj-function-javascript', { 'for': ['javascript', 'javascript.jsx', 'html'] }
-Plug 'vim-scripts/textobj-rubyblock', { 'for': 'ruby' }
+Plug 'vim-scripts/textobj-rubyblock'
 
 " -- Search & file nav
 Plug 'bronson/vim-visual-star-search'
@@ -260,6 +260,8 @@ Plug 'ervandew/supertab'
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
+Plug 'kassio/neoterm'
+Plug 'machakann/vim-highlightedyank'
 Plug 'mattn/emmet-vim', { 'for': 'html' }
 Plug 'mkomitee/vim-gf-python', { 'for': 'python' }
 Plug 'mzlogin/vim-markdown-toc', { 'for': 'markdown' }
@@ -297,7 +299,7 @@ nmap <leader>n :NERDTreeFind<CR>
 nmap <leader>c :CtrlPClearCache<CR>
 
 "  (The following settings depend on plugins, or macOS
-
+let g:UltiSnipsSnippetsDir="~/.vim/plugged/ultisnips/UltiSnips"
 let g:NERDSpaceDelims=1
 let g:multi_cursor_prev_key='<C-S-p>'
 let g:multi_cursor_quit_key='<Esc>'
@@ -309,6 +311,31 @@ let g:vim_json_syntax_conceal=1
 let g:vim_markdown_conceal=0
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_new_list_item_indent=0
+let g:highlightedyank_highlight_duration=250
+
+" *--- NeoTerm ---*
+let g:neoterm_position='vertical'
+let g:neoterm_automap_keys=',tt'
+let g:neoterm_repl_ruby='pry'
+let g:neoterm_repl_python='ipython'
+
+nnoremap <silent> <leader>tf :TREPLSendFile<cr>
+nnoremap <silent> <leader>tl :TREPLSendLine<cr>
+vnoremap <silent> <leader>ts :TREPLSendSelection<cr>
+
+" hide/close terminal
+nnoremap <silent> <leader>th :call neoterm#close()<cr>
+" clear terminal
+nnoremap <silent> <leader>tc :call neoterm#clear()<cr>
+" kills the current job (send a <c-c>)
+nnoremap <silent> <leader>tk :call neoterm#kill()<cr>
+
+" Rails commands
+command! Troutes :T rake routes
+command! Tmigrate :T rake db:migrate
+
+" Git commands
+command! -nargs=+ Tg :T git <args>
 
 " *--- Syntastic ---*
 let g:syntastic_javascript_checkers = ['eslint']
@@ -371,7 +398,7 @@ let g:rbpt_colorpairs = [
 
 map <leader>b :CtrlPBuffer<CR>
 map <leader>m :CtrlPMRUFiles<CR>
-nnoremap <leader>t :CtrlPBufTag<CR>
+nnoremap <leader>T :CtrlPBufTag<CR>
 
 " Prevent indexing $HOME dir:
 nnoremap <leader>p :call RunCtrlP()<CR>
@@ -473,7 +500,7 @@ let g:airline_symbols.whitespace = 'Ξ'
 " *======================================*
 " *----------|Breakable|----------*
 " *======================================*
-" These settings likely to break or only work on remote machines
+" These settings likely to break on remote/new machines
 
 silent! colorscheme solarized
 set background=dark
@@ -484,6 +511,7 @@ let g:solarized_termcolors=16
 let g:solarized_bold=1
 let g:solarized_underline=1
 let g:solarized_italic=1
+
 highlight Comment cterm=italic
 
 " Easily open files with other apps
@@ -496,8 +524,12 @@ command! Helpme !subl "%:p"
 command! LintJS execute "%!python -m json.tool"
 
 if has('nvim')
-  nmap <leader>\ :Term<CR>
+  " nmap <leader>\ :Term<CR>
   tmap <C-h> <esc>
+  nmap <leader>\ :Tnew<CR>
+  tmap <Esc> <C-\><C-n>
+  tmap <C-h> <Esc>
+  nmap <leader>x :T est<CR>
 endif
 
 if !has('nvim')
