@@ -19,10 +19,9 @@ sudo scutil --set ComputerName "$COMPUTER_NAME"
 sudo scutil --set HostName "$COMPUTER_NAME"
 sudo scutil --set LocalHostName "$COMPUTER_NAME"
 
-#Create SSH keypair
-
-echo "creating your SSH keys"
-ssh-keygen -f "$HOME/.ssh/id_rsa" -t rsa -b 4096 -C "$MY_EMAIL"
+# Create SSH keypair
+# echo "creating your SSH keys"
+# ssh-keygen -f "$HOME/.ssh/id_rsa" -t rsa -b 4096 -C "$MY_EMAIL"
 
 # move to home dir
 cd
