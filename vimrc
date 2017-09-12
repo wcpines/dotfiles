@@ -27,7 +27,7 @@ set expandtab                                           " Use spaces when tab is
 set gcr=n:blinkon0                                      " Turn off cursor blink
 set hidden                                              " Switch buffers and preserve changes w/o saving
 set ignorecase                                          " Ignore case for search patterns
-" set inccommand=split                                    " Preview find/replace as expression is constructed
+set inccommand=split                                    " Preview find/replace as expression is constructed
 set incsearch                                           " Dynamic search (search and refine as you type)
 set laststatus=2                                        " Show current mode, file name, file status, ruler, etc.
 set modelines=0                                         " Ignore modelines set in files (which would otherwise set custom setting son a per file basis.  The line numbers vim would check to look for options would be set here)
@@ -71,6 +71,7 @@ imap <esc> <esc>l
 
 nnoremap Q: <nop>
 nmap <leader>s :w<CR>
+imap <leader>s <esc>:w<CR>
 map <leader>l :set hlsearch!<CR>
 map <leader>v :tabe ~/.vimrc<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
@@ -111,6 +112,8 @@ nmap <leader>f /\cfunction\s\{1\}
 nmap <leader>` :g/^\s*binding.pry\s*$\\|^\s*byebug\s*$\\|^\s*debugger\s*$\\|^\s*embed()\s*$/d<CR><C-o>
 nmap <leader>Z V$%zf
 nmap cp :!echo %:p\|pbcopy<CR>
+vnoremap <C-a> :s/\%V-\=\d\+/\=submatch(0)+1/g<CR>
+vnoremap <C-x> :s/\%V-\=\d\+/\=submatch(0)-1/g<CR>
 
 " inserting blank lines
 nmap [<space> O<esc>
@@ -178,6 +181,7 @@ augroup END
 
 " Markdown for `.md` file extensions
 autocmd BufNewFile,BufRead *.md set filetype=markdown
+au BufRead,BufNewFile *_spec.rb		set filetype=ruby
 
 " On save, preserve folds and cursor positions
 
@@ -203,19 +207,19 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " -- Syntax, languages, & frameworks
-" Plug 'vim-scripts/applescript.vim'
-Plug 'asux/vim-capybara', { 'for': 'ruby' }
+Plug 'vim-scripts/applescript.vim'
+" Plug 'asux/vim-capybara', { 'for': 'ruby' }
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'elzr/vim-json', { 'for': 'json' }
 Plug 'hallison/vim-ruby-sinatra', { 'for': 'ruby' }
 Plug 'hdima/python-syntax', { 'for': 'python' }
 Plug 'jelera/vim-javascript-syntax', { 'for': ['javascript', 'javascript.jsx', 'html'] }
 Plug 'joker1007/vim-markdown-quote-syntax', { 'for': 'markdown' }
-Plug 'keith/rspec.vim', { 'for': 'ruby' }
+Plug 'keith/rspec.vim' , { 'for': 'ruby' }
 Plug 'lepture/vim-jinja', { 'for': 'jinja.html' }
 Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
 Plug 'nvie/vim-flake8', { 'for': 'python' }
-Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'plasticboy/vim-markdown'  , { 'for': 'markdown' }
 Plug 'sunaku/vim-ruby-minitest', { 'for': 'ruby' }
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
 Plug 'tpope/vim-rake', { 'for': 'ruby' }

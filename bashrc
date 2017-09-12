@@ -1,15 +1,19 @@
-export PATH
-export EDITOR='vim'
+if [ -n "$NVIM_LISTEN_ADDRESS" ]
+then
+  export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
+elif [[ -x "/usr/local/bin/nvim" ]]
+then
+  export VISUAL="nvim"
+else
+  export VISUAL='vim'
+fi
+
 export GIT_MERGE_AUTOEDIT='no'
-# export NODE_PATH="/usr/local/lib/node_modules:$NODE_PATH"
-export SVN_EDITOR="vim"
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
 export PATH="/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH"
 
-# http://docs.python-guide.org/en/latest/writing/gotchas/
-export PYTHONDONTWRITEBYTECODE=1
-
 # export PATH="/Users/colby/.pyenv/bin:$PATH"
+# export NODE_PATH="/usr/local/lib/node_modules:$NODE_PATH"
 
 # info from `brew info nvm`
 export NVM_DIR="$HOME/.nvm"
@@ -18,20 +22,28 @@ export NVM_DIR="$HOME/.nvm"
 shopt -s cdspell;
 
 
-source /usr/local/opt/chruby/share/chruby/chruby.sh
-chruby ruby-2.4.1
-
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
 
+if [ -f ~/.config/exercism/exercism_completion.bash ]; then
+  . ~/.config/exercism/exercism_completion.bash
+fi
+
 [ -f ~/.passwords ] && source ~/.passwords
+
+
+source /usr/local/opt/chruby/share/chruby/chruby.sh
+chruby ruby-2.4.1
 
 
 # if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
 #   . /usr/local/bin/virtualenvwrapper.sh
 # fi
+
+# http://docs.python-guide.org/en/latest/writing/gotchas/
+export PYTHONDONTWRITEBYTECODE=1
 
 #===================================#
 #----------Prompt settings----------#
@@ -192,12 +204,11 @@ alias .....='cd ../../../..'
 alias ....='cd ../../..'
 alias ...='cd ../..'
 alias ..='cd ..'
-alias ah="ls -lah"
+alias ah="ls -gFaSh"
 alias aliases="list_aliases"
 alias be="bundle exec"
-alias blog="cd ~/Desktop/Blog/"
-alias bp="vim ~/.bashrc"
-alias vrc="vim ~/.vimrc"
+alias blog="cd ~/Dropbox/Blog/"
+alias bp="nvim ~/.bashrc"
 alias burp="java -Xmx2g -jar ~/burpsuite_free_v1.6.32.jar"
 alias cbp="cat ~/.bashrc"
 alias code="cd ~/development/code"
@@ -207,7 +218,12 @@ alias dmop="docker-machine stop default"
 alias dms="docker-machine status default"
 alias dmst="docker-machine start default"
 alias dotfiles="cd ~/dotfiles"
-alias e="nvim"
+alias e="nvim -S ~/.config/nvim/init.vim"
+alias ef="exercism fetch"
+alias es="exercism submit"
+alias est="es_test"
+alias eu="exa -la"
+alias exr="cd ~/development/exercism/ruby/"
 alias gforce="git push --force origin master"
 alias go="git open"
 alias gpom="git push origin master"
@@ -216,11 +232,10 @@ alias grep="grep --color=auto"
 alias hg="history|grep" $1
 alias ip="IPython3"
 alias lff="learn --fail-fast"
-alias ls="ls -gfaSh"
 alias lsf="ls -lad */" # list the directories only
 alias misc="cd ~/desktop/misc"
 alias mk="open -a Marked\ 2.app"$1
-alias myip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*"
+alias myip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*'"
 alias rake="bundle exec rake"
 alias rc="rails console"
 alias rebuild_index="c --rebuild"
@@ -230,6 +245,7 @@ alias sbp="source ~/.bashrc"
 alias sf="mdfind"
 alias sq="sqlite3"
 alias ssu="spotify share"
+alias vrc="nvim ~/.vimrc"
 alias wh="say -v whisper"
 alias ya="yarn add"
 alias yi="yarn install"
@@ -268,7 +284,7 @@ function ber(){
 
 
 function scratch(){
-  vim ~/scratch.$1
+  nvim ~/scratch.$1
 }
 
 
@@ -398,5 +414,17 @@ function test_site_time(){
   echo "time_connect + time_starttransfer = time_total"
   curl -o /dev/null -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
 }
+
+
+# coffeescript has most readable syntax for minitest output
+function es_test(){
+  ruby *_test.rb | pygmentize -l coffeescript
+  # ruby *_test.rb | pygmentize -l clojure
+}
+
+function truncate_rails_errors(){
+  jq '. | {error: .error, exception: .exception, status: .status, app_trace: .traces["Application Trace"]}'
+}
+
 
 [ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
