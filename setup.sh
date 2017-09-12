@@ -1,6 +1,11 @@
 # WORK IN PROGRESS
 # Goal: Easily set-up new mac, little manual installs and (re-)config
 
+# TODO: 
+# Create gitconfig
+# Create SSH key-pair
+# Add SSH keys to github!
+
 # Check for Homebrew,
 # Install if we don't have it
 if test ! $(which brew); then
@@ -12,11 +17,11 @@ fi
 echo "Updating homebrew..."
 brew update
 
+# Install Homebrew bundler to use Brewfile
 echo "Adding Brew Bundler..."
 brew tap Homebrew/bundle
 
-# mas-cli for mac app store apps
-
+# Install mas-cli for mac app store apps
 echo "Install mas-cli..."
 brew install mas
 
@@ -39,5 +44,4 @@ brew bundle
 # download solarized
 wget -O $HOME/Downloads/solarized.zip "http://ethanschoonover.com/solarized/files/solarized.zip"
 
-# gitconfig?
-# add SSH keys to github!
+
