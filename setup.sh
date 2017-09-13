@@ -64,6 +64,9 @@ echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> ~/.config/nvim/init.
 echo "let &packpath = &runtimepath" >> ~/.config/nvim/init.vim
 echo "source ~/.vimrc" >> ~/.config/nvim/init.vim
 
+# Setting OSX defaults
+sh ~/dotfiles/macos
+
 # download solarized
 wget -O $HOME/Downloads/solarized.zip "http://ethanschoonover.com/solarized/files/solarized.zip"
 
