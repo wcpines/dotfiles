@@ -270,6 +270,7 @@ Plug 'mattn/emmet-vim', { 'for': 'html' }
 Plug 'mkomitee/vim-gf-python', { 'for': 'python' }
 Plug 'mzlogin/vim-markdown-toc', { 'for': 'markdown' }
 Plug 'olical/vim-enmasse'
+Plug 'rizzatti/dash.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'sjl/gundo.vim'
 Plug 'terryma/vim-multiple-cursors'
@@ -287,7 +288,6 @@ Plug 'vim-scripts/zoom.vim'
 Plug 'vimlab/split-term.vim'
 Plug 'wellle/targets.vim'
 Plug 'yggdroot/indentline'
-
 " Initialize plugin system
 call plug#end()
 
@@ -301,6 +301,7 @@ map <leader>o :ZoomWin<CR>
 nmap <leader>r :RainbowToggle<CR>
 nmap <leader>n :NERDTreeFind<CR>
 nmap <leader>c :CtrlPClearCache<CR>
+nmap <leader>D :Dash<CR>
 
 "  (The following settings depend on plugins, or macOS
 let g:UltiSnipsSnippetsDir="~/.vim/plugged/ultisnips/UltiSnips"
