@@ -252,7 +252,6 @@ Plug 'vim-scripts/SearchComplete'
 " -- Display
 Plug 'altercation/vim-colors-solarized'
 Plug 'ap/vim-css-color', { 'for': 'css' }
-Plug 'lifepillar/vim-solarized8'
 Plug 'luochen1990/rainbow', { 'for': ['javascript', 'javascript.jsx', 'html'] }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
