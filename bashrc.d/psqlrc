@@ -1,0 +1,5 @@
+\pset linestyle unicode
+\pset border 2
+\setenv PAGER 'pspg -FX -s 17 --no-mouse --no-bars --only-for-tables'
+\set HISTSIZE 100000
+\x auto

@@ -1,0 +1,9 @@
+#!/bin/sh
+set -euo pipefail
+
+git diff --name-only --diff-filter=AM HEAD |
+	grep ".*rb" |
+	xargs bundle exec rubocop \
+		--display-cop-names \
+		--extra-details \
+		--parallel

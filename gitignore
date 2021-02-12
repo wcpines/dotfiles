@@ -1,0 +1,57 @@
+*.env
+*.log
+*.sql
+*.sqlite
+*admitlist*
+*denylist*
+*includelist*
+*project_note*
+*tags*
+.*sw*
+.DS_Store
+.DS_Store?
+.sw*
+database.yml
+misc.sh
+node_modules/
+project_notes*
+secrets.yml
+tags
+test*json
+test*sh
+*logs.txt
+
+
+# ===============================================================================
+#  SOURCE: http://islegend.com/development/setting-global-gitignore-mac-windows/
+# ===============================================================================
+
+
+###################
+# Compiled Source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+############
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+metadata.json
+rez.txt
+time_q.md
+todo.txt
+colby-pines-secret.yml

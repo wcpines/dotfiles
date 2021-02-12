@@ -1,0 +1,7 @@
+git diff --name-only --diff-filter=AM HEAD |
+	grep ".*exs*" |
+	xargs mix format --check-formatted
+if [ $? == 1 ]; then
+	echo "commit failed due to format issues..."
+	exit 1
+fi
