@@ -210,18 +210,6 @@ let g:indentLine_fileTypeExclude = ['text', 'help', 'vim']
 let g:indentLine_char = '┊'
 
 
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#tab_min_count = 2
-let g:airline#extensions#tabline#show_splits = 0
-let g:airline#extensions#tabline#fnamemod = ':t:'
-let g:airline#extensions#tabline#alt_sep = 1
-let g:airline#extensions#tabline#show_buffers = 0
-
-let g:airline_theme='solarized'
-let g:airline_powerline_fonts = 1
-let g:webdevicons_enable_airline_tabline = 1 " default
-let g:webdevicons_enable_airline_statusline=1 " default
-
 let g:fzf_colors =
       \ { 'fg':      ['fg', 'Normal'],
       \ 'bg':      ['bg', 'Normal'],
@@ -237,17 +225,45 @@ let g:fzf_colors =
       \ 'header':  ['fg', 'Comment'] }
 
 
-
+lua << EOF
+  local lualine = require('lualine')
+  lualine.extensions = { 'fzf' }
+  lualine.sections.lualine_a = { 'mode',}
+  lualine.sections.lualine_b = { 'branch', 'diff', 'filetype' }
+  lualine.sections.lualine_x = { 'encoding', { 'diagnostics', sources = { 'coc' }} }
+  lualine.options.section_separators = {'', ''}
+  lualine.options.component_separators = {'', ''}
+  lualine.options.theme = 'gruvbox'
+  lualine.status()
+EOF
 
 if $ITERM_PROFILE == 'cpd'
   set background=dark
-  let g:airline_solarized_bg='dark'
-  call airline#themes#solarized#refresh()
 else
   set background=light
-  let g:airline_solarized_bg='light'
-  call airline#themes#solarized#refresh()
 endif
+
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#tab_min_count = 2
+" let g:airline#extensions#tabline#show_splits = 0
+" let g:airline#extensions#tabline#fnamemod = ':t:'
+" let g:airline#extensions#tabline#alt_sep = 1
+" let g:airline#extensions#tabline#show_buffers = 0
+
+" let g:airline_theme='solarized'
+" let g:airline_powerline_fonts = 1
+" let g:webdevicons_enable_airline_tabline = 1 " default
+" let g:webdevicons_enable_airline_statusline=1 " default
+
+" if $ITERM_PROFILE == 'cpd'
+"   set background=dark
+"   let g:airline_solarized_bg='dark'
+"   call airline#themes#solarized#refresh()
+" else
+"   set background=light
+"   let g:airline_solarized_bg='light'
+"   call airline#themes#solarized#refresh()
+" endif
 
 highlight htmlArg cterm=italic
 highlight Comment cterm=italic

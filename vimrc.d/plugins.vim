@@ -44,7 +44,6 @@ Plug 'psf/black', { 'for': 'python' }
 Plug 'rhysd/vim-crystal', { 'for': 'crystal' }
 Plug 'ruby-formatter/rufo-vim', { 'for': 'ruby' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'slashmili/alchemist.vim', { 'for': ['elixir', 'eelixir'] }
 Plug 'sunaku/vim-ruby-minitest', { 'for': 'ruby' }
 Plug 'tarekbecker/vim-yaml-formatter'
 Plug 'towolf/vim-helm'
@@ -70,7 +69,7 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': ['rspec', 'ruby'] }
 " -- Search & file nav
 
 " Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
-" Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] }
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-localorie'
 Plug 'danro/rename.vim'
@@ -82,17 +81,17 @@ Plug 'nelstrom/vim-visual-star-search'
 " -- Display
 
 
-" Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
 Plug 'altercation/vim-colors-solarized'
+Plug 'hoob3rt/lualine.nvim'
 Plug 'junegunn/seoul256.vim'
+Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ryanoasis/vim-devicons'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'vim-scripts/restore_view.vim'
 
 " -- Misc Enhancements
 
+Plug 'tweekmonster/startuptime.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'dhruvasagar/vim-table-mode', { 'for': ['tsv', 'csv', 'sql']}
 Plug 'gioele/vim-autoswap'
