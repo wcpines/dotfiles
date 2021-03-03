@@ -40,6 +40,7 @@ nnoremap <C-]> <C-]>zz
 
 nnoremap gR :Rg <C-r><C-w><CR>
 nnoremap gF :call fzf#vim#files('.', {'options':'--query '.expand('<cword>')})<CR><C-a>
+let g:fzf_buffers_jump = 1
 
 " https://github.com/junegunn/fzf.vim/pull/733#issuecomment-559720813
 
@@ -242,28 +243,6 @@ if $ITERM_PROFILE == 'cpd'
 else
   set background=light
 endif
-
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#tab_min_count = 2
-" let g:airline#extensions#tabline#show_splits = 0
-" let g:airline#extensions#tabline#fnamemod = ':t:'
-" let g:airline#extensions#tabline#alt_sep = 1
-" let g:airline#extensions#tabline#show_buffers = 0
-
-" let g:airline_theme='solarized'
-" let g:airline_powerline_fonts = 1
-" let g:webdevicons_enable_airline_tabline = 1 " default
-" let g:webdevicons_enable_airline_statusline=1 " default
-
-" if $ITERM_PROFILE == 'cpd'
-"   set background=dark
-"   let g:airline_solarized_bg='dark'
-"   call airline#themes#solarized#refresh()
-" else
-"   set background=light
-"   let g:airline_solarized_bg='light'
-"   call airline#themes#solarized#refresh()
-" endif
 
 highlight htmlArg cterm=italic
 highlight Comment cterm=italic
