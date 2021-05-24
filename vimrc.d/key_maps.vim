@@ -11,6 +11,9 @@ imap hh <Esc>
 " Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
 
+inoreabbrev  tf @tag :focus
+inoreabbrev  pp \|>
+vmap <leader>s <esc>:w<CR>
 nmap <leader>s :w<CR>
 map <leader>l :set hlsearch!<CR>
 map <leader>v :tabe ~/.vimrc<CR>
@@ -41,15 +44,11 @@ nmap q: <nop>
 nmap Q: <nop>
 nmap Q <nop>
 
-" highlight/replace word--repeatable
-noremap <C-n> viw<C-n>
-vnoremap <C-n> y/<C-R>"<CR>Ngn<C-g>
+" highlight/repeatable
 vnoremap . :normal .<CR>
 
 " select-all
 nmap <leader>a gg<S-v>G<CR>
-
-map <leader>r :rviminfo!<CR>
 
 " copy/paste all lines matching last search pattern
 nmap <leader>y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>

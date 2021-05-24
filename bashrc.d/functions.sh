@@ -57,7 +57,7 @@ es_test() {
 		echo "You're not in your exercism dir"
 	elif [[ $dir == *"ruby"* ]]; then
 		ruby *_test.rb
-	elif [[ $dir == *"exercism"* ]]; then
+	elif [[ $dir == *"elixir"* ]]; then
 		elixir *_test.exs
 	fi
 }

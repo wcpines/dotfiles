@@ -1,6 +1,16 @@
 #################################
 #----------DB Helpers----------#
 #################################
+
+query() {
+	if [[ -z $LOCAL_DB_CONNECTION_STRING ]]; then
+		echo "No DB connection set"
+	else
+		printf "RUNNING:\n$@\n"
+		psql "$LOCAL_DB_CONNECTION_STRING" -c "$@"
+	fi
+}
+
 column_names() {
 	table_name=$1
 

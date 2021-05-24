@@ -28,10 +28,6 @@ autocmd BufWritePost,FileWritePost *.plist !plutil -convert binary1 <afile>
 " Normalize comment keywords across all filetypes
 autocmd Syntax * syntax keyword Todo OPTIMIZE FIXME TODO TBD NOTE containedin=.*Comment
 
-if has('autocmd')
-  autocmd GUIEnter * set visualbell t_vb=
-endif
-
 " strip trailing whitespace on save
 function! StripTrailingWs()
     %s/\s\+$//e
@@ -155,3 +151,4 @@ command! Pause silent! !spotify pause
 command! Share !spotify share url
 
 au FileType sql setl formatprg=Pgfmt
+

@@ -5,7 +5,8 @@
 set belloff=all
 syntax on                                               " Enable syntax highlighting
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
-set conceallevel=0
+
+set conceallevel=0                                      " always show syntax for concealable text
 set path+=**                                            " Search into subfolders
 set bs=2                                                " Backspace with this value allows you to use the backspace character for moving the cursor over automatically inserted indentation and over the start/end of line.
 set clipboard^=unnamed,unnamedplus                      " Use system clipboard as the yank register

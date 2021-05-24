@@ -4,9 +4,16 @@
 
 " --- Mappings ---
 " ________________
+" netrw-gx seems to be busted?
+" https://github.com/vim/vim/issues/4738
+nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
+
+
+" nnoremap <C-n> :NvimTreeToggle<CR>
+" nnoremap <leader>r :NvimTreeRefresh<CR>
+" nnoremap <leader>n :NvimTreeFindFile<CR>
 
 nmap <leader>M :call CodeFmt()<cr>
-
 map <leader>; :History:<CR>
 map <leader>b :Buffers<CR>
 map <leader>f :ProjectFiles<CR>
@@ -72,16 +79,14 @@ nmap du :call AddDebugger("o")<cr>
 nnoremap <silent> <leader>tc :Tclear<CR>
 nnoremap <silent> <leader>tf :TREPLSendFile<cr>
 nnoremap <silent> <leader>th :Tclose<cr>
-nnoremap <silent> <leader>tf :Tclose!<cr>
 nnoremap <silent> <leader>tk :Tkill<CR>
 nnoremap <silent> <leader>tl :TREPLSendLine<cr>
 nnoremap <silent> <leader>to :call neoterm#open()<cr>
 vnoremap <silent> <leader>ts :TREPLSendSelection<cr>
-nmap <leader>tC :T clear<CR>
-nmap <leader>tb :T iex#break<CR>
+nmap <leader>tC :T clear<CR><C-l>A<C-h><C-h>
+nmap <leader>tb :T iex#break<CR> " iex
 nmap <leader>tr :T rsql<CR><C-l>AG<C-h><C-h>
 nmap <leader>tq :T q<cr>
-
 
 if has('nvim')
   tnoremap <a-a> <esc>a
@@ -157,7 +162,7 @@ function! CodeFmt ()
   elseif &ft == 'python'
     Black
   elseif &ft == 'json'
-    LintJson
+    Prettier
   elseif &ft ==  'sh'
     Shfmt
   elseif &ft == 'html'
@@ -176,11 +181,11 @@ function! CodeFmt ()
   elseif &ft == 'xml'
     %!xmllint --format -
   elseif &ft == 'yaml'
-    YAMLFormat
+    Prettier
   elseif &ft == 'yml'
-    YAMLFormat
+    Prettier
   elseif &ft == 'helm'
-    YAMLFormat
+    Prettier
   else
     echom "No formatter found for given filetype"
   endif
@@ -197,13 +202,47 @@ let g:user_debugger_dictionary = {
 " --- Display Settings ---
 " ________________________
 
+" let g:nvim_tree_disable_netrw = 0
+" let g:nvim_tree_hijack_netrw = 0
+" highlight NvimTreeFolderIcon guibg=blue
+" let g:nvim_tree_icons = {
+"     \ 'default': '',
+"     \ 'symlink': '',
+"     \ 'git': {
+"     \   'unstaged': "✗",
+"     \   'staged': "✓",
+"     \   'unmerged': "",
+"     \   'renamed': "➜",
+"     \   'untracked': "★"
+"     \   },
+"     \ 'folder': {
+"     \   'default': "",
+"     \   'open': "",
+"     \   'empty': "",
+"     \   'empty_open': "",
+"     \   'symlink': "",
+"     \   }
+"     \ }
+
 set encoding=UTF-8
 silent! colorscheme solarized
 
 let g:split_term_vertical=1
 let g:vim_json_syntax_conceal=0
-let g:vim_markdown_conceal=0
+let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
+
+
+function! Prose ()
+  set conceallevel=0
+  Goyo 100
+  set linebreak
+endfunction
+
+command! Prose call Prose ()
+
+au FileType markdown Prose
+
 let g:vim_markdown_new_list_item_indent=0
 
 " Indent guides like sublime
@@ -225,18 +264,6 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
-
-lua << EOF
-  local lualine = require('lualine')
-  lualine.extensions = { 'fzf' }
-  lualine.sections.lualine_a = { 'mode',}
-  lualine.sections.lualine_b = { 'branch', 'diff', 'filetype' }
-  lualine.sections.lualine_x = { 'encoding', { 'diagnostics', sources = { 'coc' }} }
-  lualine.options.section_separators = {'', ''}
-  lualine.options.component_separators = {'', ''}
-  lualine.options.theme = 'gruvbox'
-  lualine.status()
-EOF
 
 if $ITERM_PROFILE == 'cpd'
   set background=dark
@@ -263,4 +290,77 @@ endif
 
 if !has('nvim')
   set ttymouse=xterm2
+endif
+
+let g:lualine = {
+    \'options' : {
+    \  'theme' : 'gruvbox',
+    \  'section_separators' : ['', ''],
+    \  'component_separators' : ['', ''],
+    \  'icons_enabled' : v:true,
+    \},
+    \'sections' : {
+    \  'lualine_a' : [ ['mode', {'upper': v:true,},], ],
+    \  'lualine_b' : [ ['branch', {'icon': '',},  ], ['filetype'] ],
+    \  'lualine_c' : [ ['filename', {'file_status': v:true,},], ],
+    \  'lualine_x' : [ 'encoding', 'fileformat'],
+    \  'lualine_y' : [ 'progress' ],
+    \  'lualine_z' : [ 'location'  ],
+    \},
+    \'inactive_sections' : {
+    \  'lualine_a' : [  ],
+    \  'lualine_b' : [  ],
+    \  'lualine_c' : [ 'filename' ],
+    \  'lualine_x' : [ 'location' ],
+    \  'lualine_y' : [  ],
+    \  'lualine_z' : [  ],
+    \},
+    \'extensions' : [ 'fzf' ],
+    \}
+lua require("lualine").setup()
+
+" Rename tabs to show tab number.
+" (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
+if exists("+showtabline")
+    function! MyTabLine()
+        let s = ''
+        let wn = ''
+        let t = tabpagenr()
+        let i = 1
+        while i <= tabpagenr('$')
+            let buflist = tabpagebuflist(i)
+            let winnr = tabpagewinnr(i)
+            let s .= '%' . i . 'T'
+            let s .= (i == t ? '%1*' : '%2*')
+            let s .= ' '
+            let wn = tabpagewinnr(i,'$')
+
+            let s .= '%#TabNum#'
+            let s .= i
+            " let s .= '%*'
+            let s .= (i == t ? '%#TabLineSel#' : '%#TabLine#')
+            let bufnr = buflist[winnr - 1]
+            let file = bufname(bufnr)
+            let buftype = getbufvar(bufnr, 'buftype')
+            if buftype == 'nofile'
+                if file =~ '\/.'
+                    let file = substitute(file, '.*\/\ze.', '', '')
+                endif
+            else
+                let file = fnamemodify(file, ':p:t')
+            endif
+            if file == ''
+                let file = '[No Name]'
+            endif
+            let s .= ' ' . file . ' '
+            let i = i + 1
+        endwhile
+        let s .= '%T%#TabLineFill#%='
+        let s .= (tabpagenr('$') > 1 ? '%999XX' : 'X')
+        return s
+    endfunction
+    set stal=2
+    set tabline=%!MyTabLine()
+    set showtabline=1
+    highlight link TabNum Special
 endif
