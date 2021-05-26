@@ -41,6 +41,9 @@ GEM_PATH="~/development/gollum/"
 [[ -s $HOME/.scm_breeze/scm_breeze.sh ]] &&
 	source "$HOME/.scm_breeze/scm_breeze.sh"
 
+[ -f ~/.fzf.bash ] &&
+	source ~/.fzf.bash
+
 [[ -f $(brew --prefix)/etc/bash_completion ]] &&
 	source "$(brew --prefix)/etc/bash_completion"
 
@@ -58,8 +61,6 @@ GEM_PATH="~/development/gollum/"
 
 [[ -f $HOME/.asdf/completions/asdf.bash ]] &&
 	source $HOME/.asdf/completions/asdf.bash
-
-
 
 # Elixir iex history
 export ERL_AFLAGS="-kernel shell_history enabled"
