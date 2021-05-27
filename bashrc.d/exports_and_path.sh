@@ -18,7 +18,6 @@ fi
 
 export GIT_MERGE_AUTOEDIT='no'
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
-export PATH="/usr/local/opt/postgresql@10/bin:$PATH"
 export PATH="$HOME/.asdf/shims:$PATH"
 export PATH="$HOME/.asdf/bin:$PATH"
 
@@ -71,8 +70,4 @@ export HISTTIMEFORMAT="%d/%m/%y %T "
 # Avoid duplicates in hisotry
 export HISTIGNORE='&:[ ]*'
 
-
 export STARSHIP_CONFIG="$HOME/.starship.toml"
-
-
-

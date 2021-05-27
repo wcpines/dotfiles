@@ -245,7 +245,5 @@ log_line " You should be all set.  Some likely manual steps remaining:
 exe "hi! SpellBad"       .s:fmt_curl   .s:fg_red    .s:bg_base02    .s:sp_red
 
 "
-
 print_script_step "It's now recommended you restart your computer"
-
 print_script_step "Done!🎆"
