@@ -143,7 +143,7 @@ check_status
 mas signin $APPLE_ID "$APPLE_ID_PASSWORD"
 
 log_line "installing apps and tools in Brewfile"
-brew bundle -v --file=$HOME/Brewfile
+brew bundle -v --file=$HOME/dotfiles/Brewfile
 
 log_line "configuring diff-so-fancy for global use"
 git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
