@@ -11,3 +11,5 @@ if [[ -f ~/.env ]]; then
 fi
 
 eval "$(starship init bash)"
+
+

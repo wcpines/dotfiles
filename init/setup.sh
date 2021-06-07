@@ -55,62 +55,62 @@ check_status() {
 	fi
 }
 
-ENV_VARS_FILE=$HOME/env_vars.sh
-source $ENV_VARS_FILE
-
-print_script_step "Naming your computer"
-
-log_line "setting comp name"
-sudo scutil --set ComputerName "$COMPUTER_NAME"
-check_status
-
-log_line "settng host name"
-sudo scutil --set HostName "$HOST_NAME"
-check_status
-
-log_line "setting localhost name"
-sudo scutil --set LocalHostName "$HOST_NAME"
-check_status
-
-print_script_step "Creating SSH keypair"
-log_line "using ssh-keygen"
-log_line "using address: $EMAIL_ADDRESS.  You can correct this later if needed."
-ssh-keygen -f "$HOME/.ssh/testkey" -t rsa -b 4096 -C "$EMAIL_ADDRESS"
-check_status
-
-print_script_step "Setting up FileVault"
-status=$(fdesetup status)
-if [[ $status =~ On ]]; then
-	log_line "Already enabled ✅"
-else
-	log_line "FileVault not enabled. Enabling now..."
-	sudo fdesetup enable -user "$USER" | tee $HOME/Desktop/"fv_recovery_key.txt"
-fi
-check_status
-
-print_script_step "Setting up xcode cli tools"
-if type xcode-select >&- && xpath=$(xcode-select --print-path) &&
-	[[ -d ${xpath} ]] && [[ -x ${xpath} ]]; then
-	log_line "Already installed ✅"
-else
-	cd
-	# https://apple.stackexchange.com/a/195963
-	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-	PROD=$(softwareupdate -l |
-		grep "\*.*Command Line" |
-		head -n 1 | awk -F"*" '{print $2}' |
-		sed -e 's/^ *//' |
-		tr -d '\n')
-	softwareupdate -i "$PROD" --verbose
-	check_status
-fi
-
-print_script_step "Retreiving your dotfiles from github"
-mkdir $HOME/$GITHUB_DOTFILES_REPO_NAME
-cd $HOME/$GITHUB_DOTFILES_REPO_NAME
-git init
-git pull https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$GITHUB_DOTFILES_REPO_NAME.git
-
+# ENV_VARS_FILE=$HOME/env_vars.sh
+# source $ENV_VARS_FILE
+# 
+# print_script_step "Naming your computer"
+# 
+# log_line "setting comp name"
+# sudo scutil --set ComputerName "$COMPUTER_NAME"
+# check_status
+# 
+# log_line "settng host name"
+# sudo scutil --set HostName "$HOST_NAME"
+# check_status
+# 
+# log_line "setting localhost name"
+# sudo scutil --set LocalHostName "$HOST_NAME"
+# check_status
+# 
+# print_script_step "Creating SSH keypair"
+# log_line "using ssh-keygen"
+# log_line "using address: $EMAIL_ADDRESS.  You can correct this later if needed."
+# ssh-keygen -f "$HOME/.ssh/testkey" -t rsa -b 4096 -C "$EMAIL_ADDRESS"
+# check_status
+# 
+# print_script_step "Setting up FileVault"
+# status=$(fdesetup status)
+# if [[ $status =~ On ]]; then
+# 	log_line "Already enabled ✅"
+# else
+# 	log_line "FileVault not enabled. Enabling now..."
+# 	sudo fdesetup enable -user "$USER" | tee $HOME/Desktop/"fv_recovery_key.txt"
+# fi
+# check_status
+# 
+# print_script_step "Setting up xcode cli tools"
+# if type xcode-select >&- && xpath=$(xcode-select --print-path) &&
+# 	[[ -d ${xpath} ]] && [[ -x ${xpath} ]]; then
+# 	log_line "Already installed ✅"
+# else
+# 	cd
+# 	# https://apple.stackexchange.com/a/195963
+# 	touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+# 	PROD=$(softwareupdate -l |
+# 		grep "\*.*Command Line" |
+# 		head -n 1 | awk -F"*" '{print $2}' |
+# 		sed -e 's/^ *//' |
+# 		tr -d '\n')
+# 	softwareupdate -i "$PROD" --verbose
+# 	check_status
+# fi
+# 
+# print_script_step "Retreiving your dotfiles from github"
+# mkdir $HOME/$GITHUB_DOTFILES_REPO_NAME
+# cd $HOME/$GITHUB_DOTFILES_REPO_NAME
+# git init
+# git pull https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$GITHUB_DOTFILES_REPO_NAME.git
+# 
 print_script_step "Running symlinker for your dotfiles"
 eval $(grep "files=" ./init/symlink_script.sh)
 log_line "grabbing $files"

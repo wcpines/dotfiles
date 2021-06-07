@@ -292,32 +292,34 @@ if !has('nvim')
   set ttymouse=xterm2
 endif
 
-let g:lualine = {
-    \'options' : {
-    \  'theme' : 'gruvbox',
-    \  'section_separators' : ['', ''],
-    \  'component_separators' : ['', ''],
-    \  'icons_enabled' : v:true,
-    \},
-    \'sections' : {
-    \  'lualine_a' : [ ['mode', {'upper': v:true,},], ],
-    \  'lualine_b' : [ ['branch', {'icon': '',},  ], ['filetype'] ],
-    \  'lualine_c' : [ ['filename', {'file_status': v:true,},], ],
-    \  'lualine_x' : [ 'encoding', 'fileformat'],
-    \  'lualine_y' : [ 'progress' ],
-    \  'lualine_z' : [ 'location'  ],
-    \},
-    \'inactive_sections' : {
-    \  'lualine_a' : [  ],
-    \  'lualine_b' : [  ],
-    \  'lualine_c' : [ 'filename' ],
-    \  'lualine_x' : [ 'location' ],
-    \  'lualine_y' : [  ],
-    \  'lualine_z' : [  ],
-    \},
-    \'extensions' : [ 'fzf' ],
-    \}
-lua require("lualine").setup()
+
+lua <<EOF
+ require("lualine").setup {
+    options = {
+      theme = 'gruvbox',
+      section_separators = {'', ''},
+      component_separators = {'', ''},
+      icons_enabled = true
+    },
+    sections = {
+      lualine_a = { {'mode', upper=true } },
+      lualine_b = { {'branch', icon = ''}, {'diff', colored = true} },
+      lualine_c = { {'filetype'}, {'filename', file_status = true, path=1 } },
+      lualine_x = { 'encoding', 'fileformat' },
+      lualine_y = { 'progress' },
+      lualine_z = { 'location'  },
+    },
+    inactive_sections = {
+      lualine_a = {  },
+      lualine_b = {  },
+      lualine_c = { 'filename' },
+      lualine_x = { 'location' },
+      lualine_y = {  },
+      lualine_z = {  },
+    },
+    extensions = { 'fzf' },
+    }
+EOF
 
 " Rename tabs to show tab number.
 " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)

@@ -59,7 +59,7 @@ nmap <leader>p "Ap
 nmap <leader>n :Vex 20<CR>
 let g:netrw_winsize=0
 let g:netrw_preview=1    " preview opened filen in v-split
-let g:netrw_browse_split = 0
+let g:netrw_browse_split=0
 
 " select a block
 nmap <leader>V ^V$%
@@ -74,8 +74,8 @@ map <leader>/ :%s///g<CR>
 "
 " get file path (requires gnu sed!)
 nmap <silent> cp :!echo %:p
-      \\|gsed -E 's/\/Users\/colbyp?\/development\/(\w*-*\w*)*\/
-      \\|\/Users\/colbyp?
+      \\|gsed -E 's/\/Users\/colby(pines)?\/development\/(\w*-*\w*)*\/
+      \\|\/Users\/colby(pines)?\/(\w*-*\w*)*\/
       \\///g'
       \\|tr -d '\n'
       \\|pbcopy<CR>
