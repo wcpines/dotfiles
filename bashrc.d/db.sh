@@ -3,11 +3,11 @@
 #################################
 
 query() {
-	if [[ -z $LOCAL_DB_CONNECTION_STRING ]]; then
+	if [[ -z $DB_CONNECTION_STRING ]]; then
 		echo "No DB connection set"
 	else
 		printf "RUNNING:\n$@\n"
-		psql "$LOCAL_DB_CONNECTION_STRING" -c "$@"
+		psql "$DB_CONNECTION_STRING" -c "$@"
 	fi
 }
 
