@@ -9,10 +9,6 @@
 nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
 
 
-" nnoremap <C-n> :NvimTreeToggle<CR>
-" nnoremap <leader>r :NvimTreeRefresh<CR>
-" nnoremap <leader>n :NvimTreeFindFile<CR>
-
 nmap <leader>M :call CodeFmt()<cr>
 map <leader>; :History:<CR>
 map <leader>b :Buffers<CR>
@@ -45,6 +41,7 @@ nnoremap <leader>g<C-]> :Tags <C-R><C-W> <CR>
 nnoremap <leader><C-]> <C-w><C-]><C-w>T
 nnoremap <C-]> <C-]>zz
 
+vnoremap gR y:Rg <C-r>"<CR>
 nnoremap gR :Rg <C-r><C-w><CR>
 nnoremap gF :call fzf#vim#files('.', {'options':'--query '.expand('<cword>')})<CR><C-a>
 let g:fzf_buffers_jump = 1

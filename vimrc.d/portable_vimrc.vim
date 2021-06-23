@@ -78,8 +78,6 @@ vnoremap . :normal .<CR>
 " select-all
 nmap <leader>a gg<S-v>G<CR>
 
-map <leader>r :rviminfo!<CR>
-
 " copy/paste all lines matching last search pattern
 nmap <leader>y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
 nmap <leader>D :let @a=""<CR>:g/<C-r>//d A<CR><C-o>

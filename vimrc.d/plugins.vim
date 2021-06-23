@@ -39,6 +39,7 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': ['rspec', 'ruby'] }
 " -- Search & file nav
 
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-rooter'
 Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
 Plug 'henrik/vim-indexed-search'
 Plug 'mhinz/vim-grepper'
@@ -58,7 +59,6 @@ Plug 'vim-scripts/restore_view.vim'
 
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'RRethy/vim-illuminate'
-Plug 'airblade/vim-rooter'
 Plug 'dhruvasagar/vim-table-mode', { 'for': ['tsv', 'csv', 'sql']}
 Plug 'godlygeek/tabular'
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
@@ -74,6 +74,7 @@ Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-bundler', { 'for': 'ruby' }
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dadbod'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
@@ -84,6 +85,7 @@ Plug 'troydm/zoomwintab.vim'
 Plug 'tweekmonster/startuptime.vim'
 Plug 'vim-test/vim-test'
 Plug 'vimlab/split-term.vim'
+Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'wellle/targets.vim'
 Plug 'yggdroot/indentline'
 
