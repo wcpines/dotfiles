@@ -17,7 +17,7 @@ kill_nine_by_port() {
 }
 
 scratch() {
-	nvim ~/development/weight_room/scratch.$1
+	nvim "~/Tresors/Colby/weight_room/scratch.$1"
 }
 
 git_repos() {
@@ -185,15 +185,6 @@ to_csv() {
 
 find_failing_migration() {
 	pbpaste | rg -C 10 failed | rg -i shard
-}
-
-yoga() {
-	file="$HOME/development/weight_room/find_yoga.py"
-
-	if [[ -f $file ]]; then
-		python $file
-	fi
-
 }
 
 rand() {

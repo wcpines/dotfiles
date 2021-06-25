@@ -2,6 +2,8 @@
 #----------Grep & Finders----------#
 #==================================#
 
+export LITTER_PATTERN=".*binding.pry.*$|^\s*debugger\s*;?$|.*\{debugger\}.*|.*IEx.pry.*$|.*require IEx.*$|.*IO.inspect.*|.*@tag :focus"
+
 rip_grep_glob_search_list() {
 	path_pattern=$1
 	content_pattern=$2
@@ -59,31 +61,26 @@ action_todo() {
 	fi
 }
 
-litter() {
-	use_files=$1
-	litter_pattern=".*binding.pry.*$|^\s*debugger\s*;?$|.*\{debugger\}.*|.*IEx.pry.*$|.*require IEx.*$|.*IO.inspect.*|.*@tag :focus"
-	if [[ -n $use_files ]]; then
-		rg -l "$litter_pattern"
+# TODO: consolidate functions
+
+pickup_all_litter() {
+	files=$(rg -l "$LITTER_PATTERN")
+	if [[ $files == "" ]]; then
+		echo "No litter!"
 	else
-		rg "$litter_pattern"
+		echo $files | xargs gsed -Ei "/$LITTER_PATTERN/d"
 	fi
 }
 
-pickup_litter() {
-	litter_pattern=".*binding.pry.*$|^\s*debugger\s*;?$|.*\{debugger\}.*|.*IEx.pry.*$|.*require IEx.*$|.*IO.inspect.*|.*@tag :focus"
-	files=$(rg -l "$litter_pattern")
+pickup_diff_litter() {
+	candidates=$(git diff --name-only)
 
+	files=$(echo $candidates | xargs rg -l "$LITTER_PATTERN")
 	if [[ $files == "" ]]; then
-		printf "Looks like there's no litter!"
-		return 1
+		echo "No litter!"
+	else
+		echo $files | xargs gsed -Ei "/$LITTER_PATTERN/d"
 	fi
-
-	echo "removing instances of '$litter_pattern' in:"
-	for line in $files; do
-		printf "$line\n"
-	done
-
-	rg -l "$litter_pattern" | xargs gsed -Ei "/$litter_pattern/d"
 }
 
 see() {
