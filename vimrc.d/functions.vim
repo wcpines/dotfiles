@@ -143,6 +143,7 @@ command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
 command! Json execute "tabe ~/Tresors/Colby/weight_room/scratch.json"
 command! Sql execute "tabe ~/Tresors/Colby/weight_room/scratch.sql"
 command! Exs execute "tabe ~/Tresors/Colby/weight_room/scratch.exs"
+command! Gql execute "tabe ~/Tresors/Colby/weight_room/scratch.gql"
 command! Dialyze call Dialyze()
 command! -range=% LintJson execute "<line1>,<line2>!jq '.'" | set ft=json
 command! -range=% LintYml execute "<line1>,<line2>!oq -i yaml -o yaml" | set ft=yaml
