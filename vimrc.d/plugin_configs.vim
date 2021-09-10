@@ -328,7 +328,7 @@ endfunction
 
 command! Prose call Prose ()
 
-au FileType markdown Prose
+" au FileType markdown Prose
 
 let g:vim_markdown_new_list_item_indent=0
 

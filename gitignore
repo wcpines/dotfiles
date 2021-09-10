@@ -1,6 +1,5 @@
 *.env
 *.log
-*.sql
 *.sqlite
 *admitlist*
 *denylist*
@@ -56,3 +55,5 @@ time_q.md
 todo.txt
 colby-pines-secret.yml
 .tool-versions
+
+scratch*

@@ -8,7 +8,7 @@ export CLICOLOR=1
 
 set_theme_by_tod() {
 	dt=$(date +%H)
-	if [[ ${dt#0} -gt 8 && ${dt#0} -lt 17 ]]; then
+	if [[ ${dt#0} -gt 8 && ${dt#0} -lt 14 ]]; then
 		set_light
 	else
 		set_dark

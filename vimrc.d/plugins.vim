@@ -15,6 +15,7 @@ Plug 'chrisbra/csv.vim', { 'for': ['tsv', 'csv' ]}
 Plug 'elixir-editors/vim-elixir', { 'for': ['elixir', 'eelixir']}
 Plug 'elixir-lsp/coc-elixir', {'do': 'yarn install && yarn prepack'}
 Plug 'lmeijvogel/vim-yaml-helper', { 'for': 'yaml' }
+Plug 'mhinz/vim-mix-format', { 'for': ['elixir', 'eelixir']}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ngmy/vim-rubocop', { 'for': ['rspec', 'ruby'] }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -22,7 +23,7 @@ Plug 'pantharshit00/vim-prisma'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'sheerun/vim-polyglot'
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
-Plug 'z0mbix/vim-shfmt', { 'for': 'sh' }
+Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 
 " -- Text objects
 
