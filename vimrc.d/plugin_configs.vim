@@ -8,6 +8,13 @@
 " https://github.com/vim/vim/issues/4738
 nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
 
+" vim-asterisk
+map *  <Plug>(asterisk-z*)
+map #  <Plug>(asterisk-z#)
+map g* <Plug>(asterisk-gz*)
+map g# <Plug>(asterisk-gz#)
+let g:asterisk#keeppos = 1
+
 
 nmap <leader>M :call CodeFmt()<cr>
 map <leader>; :History:<CR>
@@ -272,6 +279,8 @@ function! CodeFmt ()
   elseif &ft == 'yml'
     Prettier
   elseif &ft == 'helm'
+    Prettier
+  elseif &ft == 'graphql'
     Prettier
   else
     echom "No formatter found for given filetype"

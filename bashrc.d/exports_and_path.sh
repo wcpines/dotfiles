@@ -20,6 +20,10 @@ export GIT_MERGE_AUTOEDIT='no'
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
 export PATH="$HOME/.asdf/shims:$PATH"
 export PATH="$HOME/.asdf/bin:$PATH"
+export ANDROID_SDK="$HOME/Library/Android/sdk"
+export ANDROID_NDK="$HOME/Library/Android/ndk"
+export PATH="$ANDROID_SDK/platform-tools:$PATH"
+
 
 # http://docs.python-guide.org/en/latest/writing/gotchas/
 export PYTHONDONTWRITEBYTECODE=1
