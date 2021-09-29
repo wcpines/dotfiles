@@ -39,13 +39,12 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': ['rspec', 'ruby'] }
 
 " -- Search & file nav
 
-" Plug 'nelstrom/vim-visual-star-search'
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
-Plug 'haya14busa/vim-asterisk'
 Plug 'henrik/vim-indexed-search'
 Plug 'mhinz/vim-grepper'
+Plug 'nelstrom/vim-visual-star-search'
 Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] }
 
 " -- Display

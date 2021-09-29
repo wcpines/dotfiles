@@ -152,5 +152,4 @@ command! Play silent! !spotify play
 command! Pause silent! !spotify pause
 command! Share !spotify share url
 
-au FileType sql setl formatprg=Pgfmt
-
+au FileType sql setl formatprg=/usr/local/bin/pg_format\ -

@@ -8,14 +8,6 @@
 " https://github.com/vim/vim/issues/4738
 nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
 
-" vim-asterisk
-map *  <Plug>(asterisk-z*)
-map #  <Plug>(asterisk-z#)
-map g* <Plug>(asterisk-gz*)
-map g# <Plug>(asterisk-gz#)
-let g:asterisk#keeppos = 1
-
-
 nmap <leader>M :call CodeFmt()<cr>
 map <leader>; :History:<CR>
 map <leader>b :Buffers<CR>
@@ -111,6 +103,10 @@ endfunction
 
 command! ProjectFiles execute 'Files' s:find_git_root()
 
+" ------------
+" --- DBUI ---
+" ------------
+let g:db_ui_use_nerd_fonts=1
 "--------------------
 " --- Projections ---
 "--------------------
