@@ -70,11 +70,6 @@ nmap q: <nop>
 nmap Q: <nop>
 nmap Q <nop>
 
-" highlight/replace word--repeatable
-noremap <C-n> viw<C-n>
-vnoremap <C-n> y/<C-R>"<CR>Ngn<C-g>
-vnoremap . :normal .<CR>
-
 " select-all
 nmap <leader>a gg<S-v>G<CR>
 
