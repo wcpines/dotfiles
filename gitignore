@@ -4,6 +4,7 @@
 *admitlist*
 *denylist*
 *includelist*
+*logs.txt
 *project_note*
 *tags*
 .*sw*
@@ -18,7 +19,6 @@ secrets.yml
 tags
 test*json
 test*sh
-*logs.txt
 
 
 # ===============================================================================
@@ -29,8 +29,9 @@ test*sh
 ###################
 # Compiled Source #
 ###################
-*.com
+
 *.class
+*.com
 *.dll
 *.exe
 *.o
@@ -41,6 +42,7 @@ test*sh
 ############
 # it's better to unpack these files and commit the raw source
 # git has its own built in compression methods
+
 *.7z
 *.dmg
 *.gz
@@ -49,11 +51,12 @@ test*sh
 *.rar
 *.tar
 *.zip
+.iex.exs
+.tool-versions
+colby-pines-secret.yml
 metadata.json
 rez.txt
+scratch*
 time_q.md
 todo.txt
-colby-pines-secret.yml
-.tool-versions
-scratch*
-.iex.exs
+~/development/sched/.tool-versions
