@@ -51,6 +51,7 @@ test*sh
 *.rar
 *.tar
 *.zip
+
 .iex.exs
 .tool-versions
 colby-pines-secret.yml

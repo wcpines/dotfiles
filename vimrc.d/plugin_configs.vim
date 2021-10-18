@@ -276,6 +276,8 @@ function! CodeFmt ()
     Prettier
   elseif &ft == 'helm'
     Prettier
+  elseif &ft == 'scss'
+    Prettier
   elseif &ft == 'graphql'
     Prettier
   else
