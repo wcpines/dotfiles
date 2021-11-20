@@ -11,8 +11,6 @@ imap hh <Esc>
 " Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
 
-inoreabbrev  tf @tag :focus
-inoreabbrev  pp \|>
 vmap <leader>s <esc>:w<CR>
 nmap <leader>s :w<CR>
 map <leader>l :set hlsearch!<CR>
@@ -65,7 +63,8 @@ let g:netrw_browse_split=0
 nmap <leader>V ^V$%
 
 " easily toggle find/replace
-nmap S :%s//g<LEFT><LEFT>
+nmap R :%s//g<LEFT><LEFT>
+vmap R :s//g<LEFT><LEFT>
 
 nmap <leader>N :%normal<space>
 
@@ -167,7 +166,11 @@ nmap <leader>. <C-w>=
 
 imap <C-S-n> <Nop>
 imap <C-N> <Nop>
-imap ivalid invalid
 
 iabbrev ivalid invalid
 iabbrev Ivalid Invalid
+inoreabbrev  appoinment appointment
+inoreabbrev  tf @tag :focus
+inoreabbrev  pp \|>
+inoreabbrev  ioins \|>IO.inspect(label: "#{__MODULE__}.[func] -- ")
+

@@ -80,7 +80,7 @@ sum_column() {
 }
 
 mydiff() {
-  diff-tree $(get_master) | tee >(pbcopy)
+  diff-tree develop | tee >(pbcopy)
 }
 
 edit_previously_commited_files() {
