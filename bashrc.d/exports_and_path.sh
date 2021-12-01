@@ -67,6 +67,7 @@ GEM_PATH="~/development/gollum/"
 
 # Elixir iex history
 export ERL_AFLAGS="-kernel shell_history enabled"
+export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@1.1)"
 
 export HISTSIZE=5000
 export HISTFILESIZE=5000
