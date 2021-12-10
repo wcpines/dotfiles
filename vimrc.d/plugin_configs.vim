@@ -237,7 +237,7 @@ let g:neoterm_automap_keys=',tt'
 let g:neoterm_repl_ruby='pry'
 let g:neoterm_repl_python='ipython'
 
-let g:mix_format_on_save = 0
+let g:mix_format_on_save = 1
 let g:rufo_auto_formatting = 0
 
 function! CodeFmt ()
