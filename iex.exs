@@ -4,9 +4,9 @@ Application.put_env(:elixir, :ansi_enabled, true)
 
 # http://samuelmullen.com/articles/customizing_elixirs_iex/
 timestamp = fn ->
-  {_date, {hour, minute, _second}} = :calendar.local_time()
+  {_date, {hour, minute, second}} = :calendar.local_time()
 
-  [hour, minute]
+  [hour, minute, second]
   |> Enum.map(&String.pad_leading(Integer.to_string(&1), 2, "0"))
   |> Enum.join(":")
 end

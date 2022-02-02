@@ -171,6 +171,6 @@ iabbrev ivalid invalid
 iabbrev Ivalid Invalid
 inoreabbrev  appoinment appointment
 inoreabbrev  tf @tag :focus
+inoreabbrev  ions \|> IO.inspect(label: "<LABEL>")
 inoreabbrev  pp \|>
 inoreabbrev  ioins \|>IO.inspect(label: "#{__MODULE__}.[func] -- ")
-
