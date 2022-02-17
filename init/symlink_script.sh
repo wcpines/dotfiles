@@ -8,7 +8,7 @@
 
 dir=dotfiles
 olddir=dotfiles_old
-files="bashrc vimrc ctags gitignore iex.exs tool-versions psqlrc"
+files="bashrc vimrc ctags gitignore iex.exs tool-versions psqlrc starship.toml"
 
 ##########
 

@@ -19,6 +19,8 @@ nnoremap <leader>T :BTags<CR>
 " coc.vim tags
 map <leader>cd :CocDisable<cr>
 map <leader>ce :CocEnable<cr>
+nmap <leader>cl <Plug>(coc-codelens-action)
+
 nmap [\ <Plug>(coc-diagnostic-next)zz
 nmap ]\ <Plug>(coc-diagnostic-prev)zz
 

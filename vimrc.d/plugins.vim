@@ -39,7 +39,8 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': ['rspec', 'ruby'] }
 
 " -- Search & file nav
 
-Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
 Plug 'henrik/vim-indexed-search'
