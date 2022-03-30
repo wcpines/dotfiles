@@ -17,7 +17,7 @@ kill_nine_by_port() {
 }
 
 scratch() {
-	nvim "~/Tresors/Colby/weight_room/scratch.$1"
+	nvim "$HOME/Tresors/Colby/weight_room/scratch.$1"
 }
 
 git_repos() {

@@ -63,8 +63,7 @@ let g:netrw_browse_split=0
 nmap <leader>V ^V$%
 
 " easily toggle find/replace
-nmap R :%s//g<LEFT><LEFT>
-vmap R :s//g<LEFT><LEFT>
+nmap S :%s//g<LEFT><LEFT>
 
 nmap <leader>N :%normal<space>
 

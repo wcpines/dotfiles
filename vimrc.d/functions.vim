@@ -12,6 +12,7 @@
 "  - neovim
 "  - ripgrep
 "  - fzf
+"  - vim-surround
 
 autocmd FileType sql set commentstring=--%s
 autocmd FileType applescript set commentstring=#%s
@@ -43,6 +44,15 @@ endfunction
 
 command! FoldDef call FoldMethodDefinitions()
 
+" requires vim-surround
+function! SqlArgs()
+  %normal ysaW'
+  %normal A,
+  normal $x
+  normal ysap)
+endfunction
+
+"
 " requires pgfmt
 function! FormatTestSql()
   %s/ NULLS LAST$//g

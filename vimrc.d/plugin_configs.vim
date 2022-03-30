@@ -7,6 +7,7 @@
 " netrw-gx seems to be busted?
 " https://github.com/vim/vim/issues/4738
 nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
+let g:netrw_liststyle = 3
 
 nmap <leader>M :call CodeFmt()<cr>
 map <leader>; :History:<CR>
@@ -294,31 +295,6 @@ let g:user_debugger_dictionary = {
         \ '\.ts$':          'debugger;',
       \ }
 
-
-" --- Display Settings ---
-" ________________________
-
-" let g:nvim_tree_disable_netrw = 0
-" let g:nvim_tree_hijack_netrw = 0
-" highlight NvimTreeFolderIcon guibg=blue
-" let g:nvim_tree_icons = {
-"     \ 'default': '',
-"     \ 'symlink': '',
-"     \ 'git': {
-"     \   'unstaged': "✗",
-"     \   'staged': "✓",
-"     \   'unmerged': "",
-"     \   'renamed': "➜",
-"     \   'untracked': "★"
-"     \   },
-"     \ 'folder': {
-"     \   'default': "",
-"     \   'open': "",
-"     \   'empty': "",
-"     \   'empty_open': "",
-"     \   'symlink': "",
-"     \   }
-"     \ }
 
 set encoding=UTF-8
 silent! colorscheme solarized
