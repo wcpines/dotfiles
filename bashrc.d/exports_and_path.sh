@@ -33,6 +33,7 @@ export STARSHIP_CONFIG="$HOME/.starship.toml"
 
 export GIT_MERGE_AUTOEDIT='no'
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
+
 export PATH="$HOME/.asdf/shims:$PATH"
 export PATH="/Users/cpines/.okta/bin:$PATH"
 export PATH="/Users/cpines/.okta/bin:$PATH"

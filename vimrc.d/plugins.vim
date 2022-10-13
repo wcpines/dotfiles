@@ -14,6 +14,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'chrisbra/csv.vim', { 'for': ['tsv', 'csv' ]}
 Plug 'elixir-editors/vim-elixir', { 'for': ['elixir', 'eelixir']}
 Plug 'elixir-lsp/coc-elixir', {'do': 'yarn install && yarn prepack'}
+Plug 'hashivim/vim-terraform'
 Plug 'lmeijvogel/vim-yaml-helper', { 'for': 'yaml' }
 Plug 'mhinz/vim-mix-format', { 'for': ['elixir', 'eelixir']}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -53,6 +54,7 @@ Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] 
 
 Plug 'altercation/vim-colors-solarized'
 Plug 'hoob3rt/lualine.nvim'
+Plug 'junegunn/seoul256.vim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ryanoasis/vim-devicons'
 Plug 'vim-scripts/AnsiEsc.vim'

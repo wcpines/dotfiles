@@ -231,3 +231,8 @@ use_ytop() {
 		top
 	fi
 }
+
+git_int(){
+	git stash --message "brb"
+	git checkout master
+}

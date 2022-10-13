@@ -53,6 +53,8 @@ nmap <leader>y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
 nmap <leader>D :let @a=""<CR>:g/<C-r>//d A<CR><C-o>
 nmap <leader>p "Ap
 
+
+
 " Open netrw like nerd tree
 nmap <leader>n :Vex 20<CR>
 let g:netrw_winsize=0
@@ -173,3 +175,4 @@ inoreabbrev  tf @tag :focus
 inoreabbrev  ions \|> IO.inspect(label: "<LABEL>")
 inoreabbrev  pp \|>
 inoreabbrev  ioins \|>IO.inspect(label: "#{__MODULE__}.[func] -- ")
+inoreabbrev  cdl console.log("")

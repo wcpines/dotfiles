@@ -22,6 +22,9 @@ map <leader>cd :CocDisable<cr>
 map <leader>ce :CocEnable<cr>
 nmap <leader>cl <Plug>(coc-codelens-action)
 
+inoremap <silent><expr> <C-n> coc#pum#visible() ? coc#pum#next(1) : "\<C-n>"
+inoremap <silent><expr> <C-p> coc#pum#visible() ? coc#pum#prev(1) : "\<C-p>"
+
 nmap [\ <Plug>(coc-diagnostic-next)zz
 nmap ]\ <Plug>(coc-diagnostic-prev)zz
 
@@ -240,8 +243,10 @@ let g:neoterm_automap_keys=',tt'
 let g:neoterm_repl_ruby='pry'
 let g:neoterm_repl_python='ipython'
 
-let g:mix_format_on_save = 1
 let g:rufo_auto_formatting = 0
+
+let g:terraform_align = 1
+let g:terraform_fmt_on_save = 1
 
 function! CodeFmt ()
   if &ft == 'crystal'
@@ -336,6 +341,15 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
+command! Tt :call Toggle_theme()
+
+function! Toggle_theme ()
+if &background=='light'
+  set background=dark
+else
+  set background=light
+endif
+endfunction
 
 if $ITERM_PROFILE == 'cpd'
   set background=dark

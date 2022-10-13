@@ -36,42 +36,12 @@ endfunction
 
 autocmd BufWritePre * call StripTrailingWs()
 
-
-function! FoldMethodDefinitions()
-  g/def\s.*$/normal zfam
-  go
-endfunction
-
-command! FoldDef call FoldMethodDefinitions()
-
 " requires vim-surround
 function! SqlArgs()
   %normal ysaW'
   %normal A,
   normal $x
   normal ysap)
-endfunction
-
-"
-" requires pgfmt
-function! FormatTestSql()
-  %s/ NULLS LAST$//g
-  %s/$1/'04-20-2019'/g
-  %s/$2/'04-20-2019'/g
-  %s/$3/7/g
-  %s/$4/7/g
-  %s/$5/20/g
-  Pgfmt
-  %s/',)/')/g
-  %s/STRING/TEXT/g
-endfunction
-
-" requires jq
-function! FormatTestJson()
-	LintJson
-	g/null,/d
-	%s/\(.*\),\n.*null$/\1/g
-	w
 endfunction
 
 " requires jq
@@ -82,13 +52,11 @@ function! MapFromJson ()
   %s/\(\d\+-\d\+-\d\+T.*\),/"\1",/g
 endfunction
 
-
 function! Dialyze ()
 	setlocal makeprg=mix\ dialyzer\ --quiet\ --format\ short
 	make
 	copen
 endfunction
-
 
 " read correct filetype from file extension
 autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby

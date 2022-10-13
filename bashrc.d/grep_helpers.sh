@@ -63,17 +63,22 @@ action_todo() {
 
 # TODO: consolidate functions
 
+pickup_litter() {
+	gsed -Ei "/$LITTER_PATTERN/d"
+}
+
 pickup_all_litter() {
+
 	files=$(rg -l "$LITTER_PATTERN")
 	if [[ $files == "" ]]; then
 		echo "No litter!"
 	else
-		echo $files | xargs gsed -Ei "/$LITTER_PATTERN/d"
+		echo $files | xargs
 	fi
 }
 
 pickup_diff_litter() {
-	candidates=$(git diff --name-only)
+	candidates=$(git diff --name-only develop)
 
 	files=$(echo $candidates | xargs rg -l "$LITTER_PATTERN")
 	if [[ $files == "" ]]; then
