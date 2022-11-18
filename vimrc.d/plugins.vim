@@ -24,6 +24,7 @@ Plug 'pantharshit00/vim-prisma'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'sheerun/vim-polyglot'
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
+Plug 'darfink/vim-plist', { 'for': 'plist' }
 Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 
 " -- Text objects

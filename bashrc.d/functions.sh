@@ -91,6 +91,12 @@ edit_working_files() {
 	nvim $(git status --porcelain | awk '{print $2}')
 }
 
+edit_searched_files() {
+	search=$1
+
+	rg -l $search | xargs nvim
+}
+
 stop_and_frisk() {
 	git status --porcelain | awk '{print $2}' | xargs rubocop -a
 }
