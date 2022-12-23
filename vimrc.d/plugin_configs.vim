@@ -6,8 +6,11 @@
 " ________________
 " netrw-gx seems to be busted?
 " https://github.com/vim/vim/issues/4738
-nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
+
+" nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
 let g:netrw_liststyle = 3
+
+command! ProjectFiles execute 'Files' s:find_git_root()
 
 nmap <leader>M :call CodeFmt()<cr>
 map <leader>; :History:<CR>
@@ -17,30 +20,6 @@ map <leader>g :GFiles<CR>
 map <leader>m :History<CR>
 nnoremap <leader>T :BTags<CR>
 
-" coc.vim tags
-map <leader>cd :CocDisable<cr>
-map <leader>ce :CocEnable<cr>
-nmap <leader>cl <Plug>(coc-codelens-action)
-
-inoremap <silent><expr> <C-n> coc#pum#visible() ? coc#pum#next(1) : "\<C-n>"
-inoremap <silent><expr> <C-p> coc#pum#visible() ? coc#pum#prev(1) : "\<C-p>"
-
-nmap [\ <Plug>(coc-diagnostic-next)zz
-nmap ]\ <Plug>(coc-diagnostic-prev)zz
-
-function! s:GoToDefinition()
-  if CocAction('jumpDefinition')
-    return v:true
-  endif
-
-  let ret = execute("silent! normal \<C-]>")
-  if ret =~ "Error" || ret =~ "错误"
-    call searchdecl(expand('<cword>'))
-  endif
-endfunction
-
-nmap <silent> gd :call <SID>GoToDefinition()<CR>
-"
 " ctags
 nnoremap <leader>g<C-]> :Tags <C-R><C-W> <CR>
 nnoremap <leader><C-]> <C-w><C-]><C-w>T
@@ -71,7 +50,6 @@ command! BD call fzf#run(fzf#wrap({
 \ }))
 
 map <leader>o :ZoomWinTabToggle<CR>
-
 
 nnoremap gy :YamlGoToParent<CR>
 
@@ -107,12 +85,7 @@ function! s:find_git_root()
   return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
 endfunction
 
-command! ProjectFiles execute 'Files' s:find_git_root()
 
-" ------------
-" --- DBUI ---
-" ------------
-let g:db_ui_use_nerd_fonts=1
 "--------------------
 " --- Projections ---
 "--------------------
@@ -218,12 +191,7 @@ let g:rust_clip_command = 'pbcopy'
 let g:jsx_ext_required=0
 let g:vim_jsx_pretty_enable_jsx_highlight=1
 let g:vim_jsx_pretty_colorful_config=0
-let g:prettier#config#single_quote = 'true'
-let g:prettier#config#bracket_spacing = 'true'
-let g:prettier#config#jsx_bracket_same_line = 'false'
-let g:prettier#config#arrow_parens = 'avoid'
-let g:prettier#config#trailing_comma = 'es5'
-let g:prettier#config#parser = 'babylon'
+let g:prettier#config#config_precedence='file-override'
 
 let g:vim_yaml_helper#auto_display_path = 1
 let g:vim_yaml_helper#always_get_root = 1

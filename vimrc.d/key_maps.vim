@@ -46,14 +46,12 @@ nmap Q <nop>
 vnoremap . :normal .<CR>
 
 " select-all
-nmap <leader>a gg<S-v>G<CR>
+nmap <leader>a gg<S-v>G
 
 " copy/paste all lines matching last search pattern
 nmap <leader>y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
 nmap <leader>D :let @a=""<CR>:g/<C-r>//d A<CR><C-o>
 nmap <leader>p "Ap
-
-
 
 " Open netrw like nerd tree
 nmap <leader>n :Vex 20<CR>
@@ -67,11 +65,11 @@ nmap <leader>V ^V$%
 " easily toggle find/replace
 nmap S :%s//g<LEFT><LEFT>
 
-nmap <leader>N :%normal<space>
-
 " remove all instance of  last searched pattern
 map <leader>/ :%s///g<CR>
-"
+
+nmap <leader>N :%normal<space>
+
 " get file path (requires gnu sed!)
 nmap <silent> cp :!echo %:p
       \\|gsed -E 's/\/Users\/colby(pines)?\/development\/(\w*-*\w*)*\/
@@ -83,7 +81,6 @@ nmap <silent> cp :!echo %:p
 " Get full file path
 nmap <silent> cf :let @* = expand("%:p")<CR>
 
-
 " -----------------
 " Quick formatting
 " -----------------
@@ -94,6 +91,7 @@ nmap <leader>) f)x$p
 nmap <leader>{ a{}<left><cr><esc>O
 nmap <leader>} a{}<left>
 
+" sort unique of block
 nmap <leader>S vip:sort u<cr>
 
 " convert elixir module attribute to variable
@@ -121,6 +119,7 @@ nmap <leader>` :g/
       \\\|^\s*.*IEx.pry().*\s*$
       \\\|^\s*require IEx; IEx.pry\s*$
       \\\|^\s*embed()\s*$
+      \\\|^\s*.*IO.inspect\s*$
       \/d<CR><C-o>
 
 nmap <leader>HT V$%zf

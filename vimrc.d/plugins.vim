@@ -13,11 +13,9 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'chrisbra/csv.vim', { 'for': ['tsv', 'csv' ]}
 Plug 'elixir-editors/vim-elixir', { 'for': ['elixir', 'eelixir']}
-Plug 'elixir-lsp/coc-elixir', {'do': 'yarn install && yarn prepack'}
 Plug 'hashivim/vim-terraform'
 Plug 'lmeijvogel/vim-yaml-helper', { 'for': 'yaml' }
 Plug 'mhinz/vim-mix-format', { 'for': ['elixir', 'eelixir']}
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ngmy/vim-rubocop', { 'for': ['rspec', 'ruby'] }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'pantharshit00/vim-prisma'
@@ -64,13 +62,11 @@ Plug 'vim-scripts/restore_view.vim'
 " -- Misc Enhancements
 
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'RRethy/vim-illuminate'
 Plug 'andymass/vim-matchup'
 Plug 'dhruvasagar/vim-table-mode', { 'for': ['tsv', 'csv', 'sql']}
 Plug 'godlygeek/tabular'
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 Plug 'kassio/neoterm'
-Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'machakann/vim-highlightedyank'
 Plug 'mattn/webapi-vim'
 Plug 'mcasper/vim-infer-debugger'
