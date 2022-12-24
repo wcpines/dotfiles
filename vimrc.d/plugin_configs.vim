@@ -346,6 +346,12 @@ if !has('nvim')
   set ttymouse=xterm2
 endif
 
+lua <<EOF
+local lsp = require('lsp-zero')
+
+lsp.preset('recommended')
+lsp.setup()
+EOF
 
 lua <<EOF
  require("lualine").setup {
