@@ -19,7 +19,7 @@
 
 if [[ -n $NVIM_LISTEN_ADDRESS ]]; then
 	export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
-elif [[ -x /opt/homebrew/bin//nvim ]]; then
+elif [[ -x $(which nvim) ]]; then
 	export VISUAL="nvim"
 	export EDITOR="nvim"
 else
