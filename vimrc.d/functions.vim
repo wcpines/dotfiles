@@ -35,7 +35,8 @@ endfunction
 autocmd BufWritePre * call StripTrailingWs()
 
 function! SqlArgs()
-  %s/^\|$/'/g
+  %s/^/'/g
+  %s/$/'/g
   %s/\n/,\r/g
   normal Gdd$xA)
   normal ggI(
