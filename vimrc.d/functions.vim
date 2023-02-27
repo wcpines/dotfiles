@@ -34,6 +34,10 @@ endfunction
 
 autocmd BufWritePre * call StripTrailingWs()
 
+function! FormatCurl()
+  %s/ -H/ \\\r  -H/g
+endfunction
+
 function! SqlArgs()
   %s/^/'/g
   %s/$/'/g

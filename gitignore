@@ -60,3 +60,8 @@ scratch*
 time_q.md
 todo.txt
 scratch.ts
+const fs = require('fs-extra')
+const moment = require('moment')
+get_times.js
+scratch.exs
+.ignore
