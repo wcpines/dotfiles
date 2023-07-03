@@ -242,3 +242,9 @@ git_int(){
 	git stash --message "brb"
 	git checkout master
 }
+
+get_config(){
+	business_name=$1
+	file=$(rg --files --no-ignore $MIGRATIONS_FOLDER | rg "$business_name" | rg configuration.json)
+	cat "$file" | tee >(pbcopy)
+}
