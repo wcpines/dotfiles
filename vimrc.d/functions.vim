@@ -65,10 +65,10 @@ autocmd BufRead,BufNewFile markdown set filetype=markdown
 autocmd BufNewFile,BufRead *.scpt set filetype=applescript
 
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
-command! Json execute "tabe ~/Tresors/Colby/weight_room/scratch.json"
-command! Sql execute "tabe ~/Tresors/Colby/weight_room/scratch.sql"
-command! Exs execute "tabe ~/Tresors/Colby/weight_room/scratch.exs"
-command! Gql execute "tabe ~/Tresors/Colby/weight_room/scratch.gql"
+command! Json execute "tabe ~/Tresorit/Colby/weight_room/scratch.json"
+command! Sql execute "tabe ~/Tresorit/Colby/weight_room/scratch.sql"
+command! Exs execute "tabe ~/Tresorit/Colby/weight_room/scratch.exs"
+command! Gql execute "tabe ~/Tresorit/Colby/weight_room/scratch.gql"
 command! -range=% LintJson execute "<line1>,<line2>!jq '.'" | set ft=json
 command! -range=% LintYml execute "<line1>,<line2>!oq -i yaml -o yaml" | set ft=yaml
 command! -range=% Pgfmt execute "<line1>,<line2>!pg_format --comma-end --keyword-case 2 --function-case 2 --spaces 2"

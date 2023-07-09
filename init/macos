@@ -81,7 +81,7 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 10
 sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true
 
 # Save screenshots to the Google Drive Sceenshots
-defaults write com.apple.screencapture location -string "${HOME}/Tresors/Colby/Screenshots"
+defaults write com.apple.screencapture location -string "${HOME}/Tresorit/Colby/Screenshots"
 
 # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
 defaults write com.apple.screencapture type -string "png"

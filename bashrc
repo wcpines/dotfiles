@@ -16,3 +16,5 @@ if [[ -f ~/.env ]]; then
 fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+[ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
