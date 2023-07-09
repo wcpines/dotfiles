@@ -20,3 +20,7 @@ endif
 if filereadable(expand("~/dotfiles/vimrc.d/plugin_configs.vim"))
   source ~/dotfiles/vimrc.d/plugin_configs.vim
 endif
+
+if filereadable(expand("~/dotfiles/vimrc.d/init.lua"))
+  source ~/dotfiles/vimrc.d/init.lua
+endif

@@ -31,6 +31,11 @@ Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 Plug 'neovim/nvim-lspconfig'
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'jose-elias-alvarez/null-ls.nvim'
+Plug 'jay-babu/mason-null-ls.nvim'
+Plug 'MunifTanjim/prettier.nvim'
+Plug 'onsails/lspkind.nvim'
+Plug 'nvim-lua/plenary.nvim'
 
 " Autocompletion
 Plug 'hrsh7th/nvim-cmp'
@@ -72,11 +77,10 @@ Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] 
 
 " -- Display
 
-Plug 'altercation/vim-colors-solarized'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'junegunn/seoul256.vim'
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'ryanoasis/vim-devicons'
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'overcache/NeoSolarized'
 Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'vim-scripts/restore_view.vim'
 

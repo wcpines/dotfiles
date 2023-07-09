@@ -257,7 +257,8 @@ function! CodeFmt ()
   elseif &ft == 'graphql'
     Prettier
   else
-    echom "No formatter found for given filetype"
+    echom "Trying LSP format"
+    lua vim.lsp.buf.format({ async = false, timeout_ms = 10000 })
   endif
 endfunction
 
@@ -328,58 +329,25 @@ endif
 highlight htmlArg cterm=italic
 highlight Comment cterm=italic
 
-let g:solarized_contrast="high"    "default value is normal
-let g:solarized_visibility="high"  "default value is normal
-let g:solarized_termcolors=16
-let g:solarized_bold=1
-let g:solarized_underline=1
-let g:solarized_italic=1
+set termguicolors
+colorscheme neosolarized
+let g:neosolarized_contrast = "high"
+let g:neosolarized_bold = 1
+let g:neosolarized_underline = 0
+let g:neosolarized_italic = 0
+"
+" let g:solarized_termcolors=16
+" let g:solarized_bold=1
+" let g:solarized_underline=1
+" let g:solarized_italic=1
 
 " Workaround some broken plugins which set guicursor indiscriminately.
 set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
-
-if has('gvim')
-  set termguicolors
-endif
 
 if !has('nvim')
   set ttymouse=xterm2
 endif
 
-lua <<EOF
-local lsp = require('lsp-zero')
-
-lsp.preset('recommended')
-lsp.setup()
-EOF
-
-lua <<EOF
- require("lualine").setup {
-    options = {
-      theme = 'gruvbox',
-      section_separators = {'', ''},
-      component_separators = {'', ''},
-      icons_enabled = true
-    },
-    sections = {
-      lualine_a = { {'mode', upper=true } },
-      lualine_b = { {'branch', icon = ''}, {'diff', colored = true} },
-      lualine_c = { {'filetype'}, {'filename', file_status = true, path=1 } },
-      lualine_x = { 'encoding', 'fileformat' },
-      lualine_y = { 'progress' },
-      lualine_z = { 'location'  },
-    },
-    inactive_sections = {
-      lualine_a = {  },
-      lualine_b = {  },
-      lualine_c = { 'filename' },
-      lualine_x = { 'location' },
-      lualine_y = {  },
-      lualine_z = {  },
-    },
-    extensions = { 'fzf' },
-    }
-EOF
 
 " Rename tabs to show tab number.
 " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
