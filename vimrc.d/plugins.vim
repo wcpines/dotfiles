@@ -17,7 +17,7 @@ Plug 'hashivim/vim-terraform'
 Plug 'lmeijvogel/vim-yaml-helper', { 'for': 'yaml' }
 Plug 'mhinz/vim-mix-format', { 'for': ['elixir', 'eelixir']}
 Plug 'ngmy/vim-rubocop', { 'for': ['rspec', 'ruby'] }
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'pantharshit00/vim-prisma'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'sheerun/vim-polyglot'

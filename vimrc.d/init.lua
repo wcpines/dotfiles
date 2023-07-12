@@ -6,9 +6,6 @@ lsp.preset("recommended")
 -- 	"shellcheck",
 -- 	"codespell",
 -- 	"elixir-ls",
--- 	"eslint",
--- 	"eslint-lsp",
--- 	"eslint_d",
 -- 	"lua-language-server",
 -- 	"lua_ls",
 -- 	"prettier",
@@ -40,13 +37,37 @@ lsp.setup()
 local null_ls = require("null-ls")
 null_ls.setup({
 	sources = {
-		null_ls.builtins.code_actions.eslint_d,
 		null_ls.builtins.code_actions.shellcheck,
+		null_ls.builtins.diagnostics.actionlint,
+		null_ls.builtins.diagnostics.codespell,
+		null_ls.builtins.diagnostics.credo,
+		null_ls.builtins.diagnostics.eslint_d,
+		null_ls.builtins.diagnostics.rubocop,
 		null_ls.builtins.diagnostics.shellcheck,
 		null_ls.builtins.diagnostics.yamllint,
+		null_ls.builtins.formatting.pg_format,
 		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.shfmt,
 		null_ls.builtins.formatting.stylua,
+		null_ls.builtins.formatting.mix.with({
+			extra_filetypes = { "eelixir", "heex" },
+			args = { "format", "-" },
+			extra_args = function(_params)
+				local version_output = vim.fn.system("elixir -v")
+				local minor_version = vim.fn.matchlist(version_output, "Elixir \\d.\\(\\d\\+\\)")[2]
+
+				local extra_args = {}
+
+				-- tells the formatter the filename for the code passed to it via stdin.
+				-- This allows formatting heex files correctly. Only available for
+				-- Elixir >= 1.14
+				if tonumber(minor_version, 10) >= 14 then
+					extra_args = { "--stdin-filename", "$FILENAME" }
+				end
+
+				return extra_args
+			end,
+		}),
 	},
 })
 
@@ -75,4 +96,8 @@ cmp.setup({
 
 require("lualine").setup({
 	options = { theme = "solarized" },
+	sections = {
+		lualine_c = { { "filename", file_status = true, path = 3 } },
+		lualine_x = { "filetype" },
+	},
 })

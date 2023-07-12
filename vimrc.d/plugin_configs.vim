@@ -331,7 +331,7 @@ highlight Comment cterm=italic
 
 set termguicolors
 colorscheme neosolarized
-let g:neosolarized_contrast = "high"
+" let g:neosolarized_contrast = "high"
 let g:neosolarized_bold = 1
 let g:neosolarized_underline = 0
 let g:neosolarized_italic = 0
