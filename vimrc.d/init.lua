@@ -2,21 +2,6 @@ local lsp = require("lsp-zero")
 
 lsp.preset("recommended")
 
--- lsp.ensure_installed({
--- 	"shellcheck",
--- 	"codespell",
--- 	"elixir-ls",
--- 	"lua-language-server",
--- 	"lua_ls",
--- 	"prettier",
--- 	"prettierd",
--- 	"shfmt",
--- 	"sqlls",
--- 	"stylua",
--- 	"tsserver",
--- 	"typescript-language-server",
--- })
-
 lsp.set_sign_icons({
 	error = "✘",
 	warn = "▲",
@@ -87,8 +72,8 @@ cmp.setup({
 	formatting = {
 		fields = { "abbr", "kind", "menu" },
 		format = require("lspkind").cmp_format({
-			mode = "symbol", -- show only symbol annotations
-			maxwidth = 50, -- prevent the popup from showing more than provided characters
+			mode = "symbol",    -- show only symbol annotations
+			maxwidth = 50,      -- prevent the popup from showing more than provided characters
 			ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead
 		}),
 	},
@@ -97,7 +82,7 @@ cmp.setup({
 require("lualine").setup({
 	options = { theme = "solarized" },
 	sections = {
-		lualine_c = { { "filename", file_status = true, path = 3 } },
+		lualine_c = { { "filename", file_status = true } },
 		lualine_x = { "filetype" },
 	},
 })
