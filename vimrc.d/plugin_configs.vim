@@ -4,11 +4,13 @@
 
 " --- Mappings ---
 " ________________
-" netrw-gx seems to be busted?
-" https://github.com/vim/vim/issues/4738
 
-" nmap gx yiW:!open <cWORD><CR> <C-r>" & <CR><CR>
 let g:netrw_liststyle = 3
+
+augroup highlight_yank
+    autocmd!
+    au TextYankPost * silent! lua vim.highlight.on_yank { higroup='IncSearch', timeout=200 }
+augroup END
 
 command! ProjectFiles execute 'Files' s:find_git_root()
 
@@ -20,15 +22,17 @@ map <leader>g :GFiles<CR>
 map <leader>m :History<CR>
 nnoremap <leader>T :BTags<CR>
 
+nnoremap <leader>x <cmd>TroubleToggle document_diagnostics<cr>
+
+
 " ctags
-nnoremap <leader>g<C-]> :Tags <C-R><C-W> <CR>
 nnoremap <leader><C-]> <C-w><C-]><C-w>T
 nnoremap <C-]> <C-]>zz
 
 vnoremap gR y:Rg <C-r>"<CR>
 nnoremap gR :Rg <C-r><C-w><CR>
 nnoremap gF :call fzf#vim#files('.', {'options':'--query '.expand('<cword>')})<CR><C-a>
-let g:fzf_buffers_jump = 1
+let g:fzf_buffers_jump = 0
 
 " https://github.com/junegunn/fzf.vim/pull/733#issuecomment-559720813
 
@@ -225,8 +229,8 @@ function! CodeFmt ()
     Prettier
   elseif &ft == 'javascript'
     Prettier
-  elseif &ft == 'python'
-    Black
+  " elseif &ft == 'python'
+  "   Black
   elseif &ft == 'json'
     Prettier
   elseif &ft ==  'sh'
@@ -272,6 +276,11 @@ let g:user_debugger_dictionary = {
 
 set encoding=UTF-8
 silent! colorscheme solarized
+let g:neosolarized_vertSplitBgTrans = 1
+let g:neosolarized_contrast = "normal"
+let g:neosolarized_bold = 1
+let g:neosolarized_underline = 0
+let g:neosolarized_italic = 1
 
 let g:split_term_vertical=1
 let g:vim_json_syntax_conceal=0

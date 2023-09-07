@@ -2,5 +2,5 @@ elixir 1.14.1-otp-25
 erlang 25.0.4
 nodejs 16.16.0
 yarn 1.22.5
-python 3.10.4
+python 3.11.5
 ruby 3.0.1

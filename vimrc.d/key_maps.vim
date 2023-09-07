@@ -15,7 +15,6 @@ vmap <leader>s <esc>:w<CR>
 nmap <leader>s :w<CR>
 map <leader>l :set hlsearch!<CR>
 map <leader>v :tabe ~/.vimrc<CR>
-map <leader>e :tabe ~/.env<CR>
 map <leader>w :set wrap!<CR>:set linebreak<CR>
 nmap Y y$
 nmap <C-b> <C-^>
@@ -46,7 +45,7 @@ nmap Q <nop>
 vnoremap . :normal .<CR>
 
 " select-all
-nmap <leader>a gg<S-v>G
+noremap <leader>a gg<S-v>G
 
 " copy/paste all lines matching last search pattern
 nmap <leader>y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
@@ -56,7 +55,7 @@ nmap <leader>p "Ap
 " Open netrw like nerd tree
 nmap <leader>n :Vex 20<CR>
 let g:netrw_winsize=0
-let g:netrw_preview=1    " preview opened filen in v-split
+let g:netrw_preview=1    " preview opened file in v-split
 let g:netrw_browse_split=0
 
 " select a block
@@ -175,3 +174,4 @@ inoreabbrev  ions \|> IO.inspect(label: "<LABEL>")
 inoreabbrev  pp \|>
 inoreabbrev  ioins \|>IO.inspect(label: "#{__MODULE__}.[func] -- ")
 inoreabbrev  cdl console.log("")
+inoreabbrev appointmetns appointments

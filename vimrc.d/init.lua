@@ -26,7 +26,7 @@ null_ls.setup({
 		null_ls.builtins.diagnostics.actionlint,
 		null_ls.builtins.diagnostics.codespell,
 		null_ls.builtins.diagnostics.credo,
-		null_ls.builtins.diagnostics.eslint_d,
+		-- null_ls.builtins.diagnostics.eslint_d,
 		null_ls.builtins.diagnostics.rubocop,
 		null_ls.builtins.diagnostics.shellcheck,
 		null_ls.builtins.diagnostics.yamllint,
@@ -34,6 +34,8 @@ null_ls.setup({
 		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.shfmt,
 		null_ls.builtins.formatting.stylua,
+		null_ls.builtins.diagnostics.ruff,
+		null_ls.builtins.formatting.black,
 		null_ls.builtins.formatting.mix.with({
 			extra_filetypes = { "eelixir", "heex" },
 			args = { "format", "-" },
@@ -72,8 +74,8 @@ cmp.setup({
 	formatting = {
 		fields = { "abbr", "kind", "menu" },
 		format = require("lspkind").cmp_format({
-			mode = "symbol",    -- show only symbol annotations
-			maxwidth = 50,      -- prevent the popup from showing more than provided characters
+			mode = "symbol", -- show only symbol annotations
+			maxwidth = 50, -- prevent the popup from showing more than provided characters
 			ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead
 		}),
 	},
@@ -82,7 +84,83 @@ cmp.setup({
 require("lualine").setup({
 	options = { theme = "solarized" },
 	sections = {
-		lualine_c = { { "filename", file_status = true } },
+		lualine_c = { { "filename", file_status = true, path = 3 } },
 		lualine_x = { "filetype" },
+	},
+})
+
+-- https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua#L308
+require("nvim-treesitter.configs").setup({
+	-- Add languages to be installed here that you want installed for treesitter
+	ensure_installed = { "tsx", "typescript", "javascript", "bash", "vimdoc", "vim", "ruby", "elixir", "erlang" },
+
+	-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
+	auto_install = false,
+
+	highlight = { enable = false },
+	indent = { enable = true },
+	incremental_selection = {
+		enable = true,
+		keymaps = {
+			init_selection = "<CR>",
+			node_decremental = "<BS>",
+			node_incremental = "<CR>",
+			-- scope_incremental = "<CR>",
+			-- scope_deccremental = "<S-CR>",
+		},
+	},
+	textobjects = {
+		select = {
+			enable = true,
+			lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+			keymaps = {
+				-- You can use the capture groups defined in textobjects.scm
+				["aa"] = "@parameter.outer",
+				["ia"] = "@parameter.inner",
+				["af"] = "@function.outer",
+				["if"] = "@function.inner",
+				["ac"] = "@class.outer",
+				["ic"] = "@class.inner",
+			},
+		},
+		move = {
+			enable = true,
+			set_jumps = true, -- whether to set jumps in the jumplist
+			goto_next_start = {
+				["]m"] = "@function.outer",
+				["]]"] = "@class.outer",
+			},
+			goto_next_end = {
+				["]M"] = "@function.outer",
+				["]["] = "@class.outer",
+			},
+			goto_previous_start = {
+				["[m"] = "@function.outer",
+				["[["] = "@class.outer",
+			},
+			goto_previous_end = {
+				["[M"] = "@function.outer",
+				["[]"] = "@class.outer",
+			},
+		},
+		swap = {
+			enable = false,
+		},
+	},
+})
+
+local elixir = require("elixir")
+local elixirls = require("elixir.elixirls")
+elixir.setup({
+	nextls = { enable = false },
+	credo = { enable = true },
+	elixirls = {
+		enable = true,
+		settings = elixirls.settings({
+			dialyzerEnabled = true,
+			fetchDeps = true,
+			enableTestLenses = false,
+			suggestSpecs = true,
+		}),
 	},
 })

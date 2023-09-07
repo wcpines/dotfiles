@@ -65,3 +65,7 @@ const moment = require('moment')
 get_times.js
 scratch.exs
 .ignore
+.elixir-tools
+.rgignore
+redis_helper.js
+mb_membership_response.json
