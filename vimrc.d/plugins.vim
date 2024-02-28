@@ -22,7 +22,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'pantharshit00/vim-prisma'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
-Plug 'sheerun/vim-polyglot'
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
 Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 
@@ -84,6 +83,7 @@ Plug 'hoob3rt/lualine.nvim'
 Plug 'junegunn/seoul256.vim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'overcache/NeoSolarized'
+Plug 'elixir-editors/vim-elixir'"
 Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'vim-scripts/restore_view.vim'
 

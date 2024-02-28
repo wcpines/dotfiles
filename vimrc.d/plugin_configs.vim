@@ -262,7 +262,7 @@ function! CodeFmt ()
     Prettier
   else
     echom "Trying LSP format"
-    lua vim.lsp.buf.format({ async = false, timeout_ms = 10000 })
+    lua vim.lsp.buf.format({ async = false, timeout_ms = 3000 })
   endif
 endfunction
 
@@ -275,12 +275,6 @@ let g:user_debugger_dictionary = {
 
 
 set encoding=UTF-8
-silent! colorscheme solarized
-let g:neosolarized_vertSplitBgTrans = 1
-let g:neosolarized_contrast = "normal"
-let g:neosolarized_bold = 1
-let g:neosolarized_underline = 0
-let g:neosolarized_italic = 1
 
 let g:split_term_vertical=1
 let g:vim_json_syntax_conceal=0
@@ -319,6 +313,13 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
+silent! colorscheme NeoSolarized
+let g:neosolarized_vertSplitBgTrans = 1
+let g:neosolarized_contrast = "normal"
+let g:neosolarized_bold = 1
+let g:neosolarized_underline = 0
+let g:neosolarized_italic = 1
+
 command! Tt :call Toggle_theme()
 
 function! Toggle_theme ()
@@ -339,16 +340,6 @@ highlight htmlArg cterm=italic
 highlight Comment cterm=italic
 
 set termguicolors
-colorscheme neosolarized
-" let g:neosolarized_contrast = "high"
-let g:neosolarized_bold = 1
-let g:neosolarized_underline = 0
-let g:neosolarized_italic = 0
-"
-" let g:solarized_termcolors=16
-" let g:solarized_bold=1
-" let g:solarized_underline=1
-" let g:solarized_italic=1
 
 " Workaround some broken plugins which set guicursor indiscriminately.
 set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
