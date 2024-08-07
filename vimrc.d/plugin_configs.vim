@@ -229,8 +229,6 @@ function! CodeFmt ()
     Prettier
   elseif &ft == 'javascript'
     Prettier
-  " elseif &ft == 'python'
-  "   Black
   elseif &ft == 'json'
     Prettier
   elseif &ft ==  'sh'
@@ -247,7 +245,7 @@ function! CodeFmt ()
     write
     RustFmt
   elseif &ft == 'sql'
-    Pgfmt
+    SQLFmt
   elseif &ft == 'xml'
     %!xmllint --format -
   elseif &ft == 'yaml'
@@ -277,10 +275,9 @@ let g:user_debugger_dictionary = {
 set encoding=UTF-8
 
 let g:split_term_vertical=1
-let g:vim_json_syntax_conceal=0
+" let g:vim_json_syntax_conceal=0
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
-
 
 function! Prose ()
   set conceallevel=0
@@ -297,6 +294,7 @@ let g:vim_markdown_new_list_item_indent=0
 " Indent guides like sublime
 let g:indentLine_fileTypeExclude = ['text', 'help', 'vim']
 let g:indentLine_char = '┊'
+let g:indentLine_setConceal = 0
 
 
 let g:fzf_colors =
@@ -341,8 +339,7 @@ highlight Comment cterm=italic
 
 set termguicolors
 
-" Workaround some broken plugins which set guicursor indiscriminately.
-set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
+set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 
 if !has('nvim')
   set ttymouse=xterm2

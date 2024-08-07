@@ -68,3 +68,7 @@ scratch.exs
 .elixir-tools
 .rgignore
 redis_helper.js
+testing*
+*playground*
+fetchedClients.json
+failed_records.json

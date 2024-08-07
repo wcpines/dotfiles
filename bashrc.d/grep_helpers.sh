@@ -20,7 +20,7 @@ rip_grep_glob_search() {
 
 rip_grep_files() {
 	pattern=$1
-	rg --files | rg $pattern
+	rg --no-ignore --files | rg $pattern
 }
 
 rip_grep_no_spec() {

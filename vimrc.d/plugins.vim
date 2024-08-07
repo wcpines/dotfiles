@@ -17,12 +17,14 @@ Plug 'elixir-tools/elixir-tools.nvim'
 Plug 'hashivim/vim-terraform'
 Plug 'lmeijvogel/vim-yaml-helper', { 'for': 'yaml' }
 Plug 'mhinz/vim-mix-format', { 'for': ['elixir', 'eelixir']}
+Plug 'neowit/vim-force.com'
 Plug 'ngmy/vim-rubocop', { 'for': ['rspec', 'ruby'] }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'pantharshit00/vim-prisma'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
+Plug 'mattn/vim-sqlfmt'
 Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 
 " -- LSP
