@@ -32,15 +32,15 @@ Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 Plug 'MunifTanjim/prettier.nvim'
 Plug 'folke/trouble.nvim'
 Plug 'jay-babu/mason-null-ls.nvim'
-Plug 'jose-elias-alvarez/null-ls.nvim'
+Plug 'nvimtools/none-ls.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'onsails/lspkind.nvim'
-Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 
 " -- Autocompletion
 
+Plug 'onsails/lspkind.nvim'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-nvim-lua'
@@ -84,6 +84,7 @@ Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'hoob3rt/lualine.nvim'
 Plug 'junegunn/seoul256.vim'
 Plug 'nvim-tree/nvim-web-devicons'
+Plug 'folke/tokyonight.nvim'
 Plug 'overcache/NeoSolarized'
 Plug 'elixir-editors/vim-elixir'"
 Plug 'vim-scripts/AnsiEsc.vim'
@@ -106,7 +107,6 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-bundler', { 'for': 'ruby' }
-Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dadbod'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'

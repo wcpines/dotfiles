@@ -22,9 +22,5 @@ if filereadable(expand("~/dotfiles/vimrc.d/plugin_configs.vim"))
 endif
 
 if filereadable(expand("~/dotfiles/vimrc.d/init.lua"))
-  source ~/dotfiles/vimrc.d/init.lua
-endif
-
-if filereadable(expand("~/dotfiles/vimrc.d/base_configs.vim"))
-  source ~/dotfiles/vimrc.d/base_configs.vim
+  luafile ~/dotfiles/vimrc.d/init.lua
 endif

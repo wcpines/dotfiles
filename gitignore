@@ -72,3 +72,4 @@ testing*
 *playground*
 fetchedClients.json
 failed_records.json
+*_client_ids.json
