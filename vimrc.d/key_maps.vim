@@ -50,9 +50,7 @@ noremap <leader>a gg<S-v>G
 " copy/paste all lines matching last search pattern
 nmap <leader>y :%y<CR>
 nmap <leader>Y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
-nmap <leader>D :let @a=""<CR>:g/<C-r>//d A<CR><C-o>
 nmap <leader>p "Ap
-nmap <leader>J :LintJson<CR>
 
 " Open netrw like nerd tree
 nmap <leader>n :Vex 20<CR>

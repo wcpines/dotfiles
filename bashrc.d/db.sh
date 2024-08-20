@@ -2,13 +2,54 @@
 #----------DB Helpers----------#
 #################################
 
-query() {
-	if [[ -z $DB_CONNECTION_STRING ]]; then
-		echo "No DB connection set"
+# Global variable to store the current database type
+DB_TYPE=""
+
+# Function to set the database type
+set_db() {
+	local db_type=$1
+	case $db_type in
+	postgres | sqlite)
+		DB_TYPE=$db_type
+		echo "Database type set to $DB_TYPE"
+		;;
+	*)
+		echo "Invalid database type. Use 'postgres' or 'sqlite'."
+		;;
+	esac
+}
+
+# Function to get the current database type
+get_db_type() {
+	if [[ -n $DB_TYPE ]]; then
+		echo $DB_TYPE
+	elif [[ $(pwd) == *migrations* ]]; then
+		echo "sqlite"
+	elif [[ -n $DB_CONNECTION_STRING ]]; then
+		echo "postgres"
+	elif [[ -n $LITEDB ]]; then
+		echo "sqlite"
 	else
+		echo "none"
+	fi
+}
+# Generic query function
+query() {
+	local db_type=$(get_db_type)
+	case $db_type in
+	postgres)
+		echo "DB: $POSTGRES"
 		printf "RUNNING:\n$@\n"
 		psql "$DB_CONNECTION_STRING" -c "$@"
-	fi
+		;;
+	sqlite)
+		echo "DB: $LITEDB"
+		sqlite3 -header -column "$LITEDB" "$@"
+		;;
+	none)
+		echo "No database connection set"
+		;;
+	esac
 }
 
 column_names() {
@@ -17,31 +58,68 @@ column_names() {
 	query "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '$table_name';"
 }
 
+# Show tables
 show_tables() {
-	query '\dt;'
+	local db_type=$(get_db_type)
+	case $db_type in
+	postgres)
+		query '\dt;'
+		;;
+	sqlite)
+		query ".tables"
+		;;
+	esac
 }
 
+# Describe table
 desc_table() {
-	table_name=$1
-
-	query "\d+ $table_name;"
+	local table_name=$1
+	local db_type=$(get_db_type)
+	case $db_type in
+	postgres)
+		query "\d+ $table_name;"
+		;;
+	sqlite)
+		query "PRAGMA table_info($table_name);"
+		;;
+	esac
 }
 
+# Find tables
 find_tables() {
-	table_name=$1
-
-	query "SELECT DISTINCT(table_name) FROM information_schema.columns WHERE table_name LIKE '%$table_name%';"
+	local table_name=$1
+	local db_type=$(get_db_type)
+	case $db_type in
+	postgres)
+		query "SELECT DISTINCT(table_name) FROM information_schema.columns WHERE table_name LIKE '%$table_name%';"
+		;;
+	sqlite)
+		query "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%$table_name%';"
+		;;
+	esac
 }
 
+# Find columns
 find_columns() {
-	column_name=$1
-	exact_match=$2
-
-	if [[ -n $exact_match ]]; then
-		query "SELECT column_name, table_name FROM information_schema.columns WHERE column_name = '$column_name' GROUP BY 1, 2 ORDER BY 2 desc;"
-	else
-		query "SELECT column_name, table_name FROM information_schema.columns WHERE column_name LIKE '%$column_name%' GROUP BY 1, 2 ORDER BY 2 desc;"
-	fi
+	local column_name=$1
+	local exact_match=$2
+	local db_type=$(get_db_type)
+	case $db_type in
+	postgres)
+		if [[ -n $exact_match ]]; then
+			query "SELECT column_name, table_name FROM information_schema.columns WHERE column_name = '$column_name' GROUP BY 1, 2 ORDER BY 2 desc;"
+		else
+			query "SELECT column_name, table_name FROM information_schema.columns WHERE column_name LIKE '%$column_name%' GROUP BY 1, 2 ORDER BY 2 desc;"
+		fi
+		;;
+	sqlite)
+		query "SELECT m.name AS table_name, p.name AS column_name
+                   FROM sqlite_master m
+                   LEFT OUTER JOIN pragma_table_info((m.name)) p ON m.name <> p.name
+                   WHERE p.name LIKE '%$column_name%'
+                   ORDER BY m.name, p.cid;"
+		;;
+	esac
 }
 
 unique_tables() {

@@ -14,7 +14,9 @@ augroup END
 
 command! ProjectFiles execute 'Files' s:find_git_root()
 
-nmap <leader>M :call CodeFmt()<cr>
+" Note: Replaced by conform.nvim. Kinda does the same thing
+"nmap <leader>M :call CodeFmt()<cr>
+"
 map <leader>; :History:<CR>
 map <leader>b :Buffers<CR>
 map <leader>f :ProjectFiles<CR>
@@ -220,50 +222,6 @@ let g:rufo_auto_formatting = 0
 let g:terraform_align = 1
 let g:terraform_fmt_on_save = 1
 
-function! CodeFmt ()
-  if &ft == 'crystal'
-    CrystalFormat
-  elseif &ft == 'elixir'
-    MixFormat
-  elseif &ft == 'typescript'
-    Prettier
-  elseif &ft == 'javascript'
-    Prettier
-  elseif &ft == 'json'
-    Prettier
-  elseif &ft ==  'sh'
-    Shfmt
-  elseif &ft == 'html'
-    Prettier
-  elseif &ft == 'ruby'
-    RuboCop -a
-  elseif &ft == 'rspec.ruby'
-    RuboCop -a
-  elseif &ft == 'rspec'
-    AsyncRun RuboCop -a
-  elseif &ft == 'rust'
-    write
-    RustFmt
-  elseif &ft == 'sql'
-    SQLFmt
-  elseif &ft == 'xml'
-    %!xmllint --format -
-  elseif &ft == 'yaml'
-    Prettier
-  elseif &ft == 'yml'
-    Prettier
-  elseif &ft == 'helm'
-    Prettier
-  elseif &ft == 'scss'
-    Prettier
-  elseif &ft == 'graphql'
-    Prettier
-  else
-    echom "Trying LSP format"
-    lua vim.lsp.buf.format({ async = false, timeout_ms = 3000 })
-  endif
-endfunction
-
 let g:user_debugger_dictionary = {
       \ '\.rb':             'binding.pry',
       \ '\.rake':           'binding.pry',
@@ -311,41 +269,31 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
-silent! colorscheme NeoSolarized
-let g:neosolarized_vertSplitBgTrans = 1
-let g:neosolarized_contrast = "normal"
-let g:neosolarized_bold = 1
-let g:neosolarized_underline = 0
-let g:neosolarized_italic = 1
+colorscheme NeoSolarized
 
 command! Tt :call Toggle_theme()
 
 function! Toggle_theme ()
-if &background=='light'
-  set background=dark
-else
-  set background=light
-endif
+  if &background=='light'
+    set background=dark
+  else
+    set background=light
+  endif
 endfunction
 
-if $ITERM_PROFILE == 'cpd'
-  set background=dark
-else
-  set background=light
-endif
 
 highlight htmlArg cterm=italic
 highlight Comment cterm=italic
 
 set termguicolors
+"
+"set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 
-set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
-
-if !has('nvim')
-  set ttymouse=xterm2
-endif
-
-
+"if !has('nvim')
+"  set ttymouse=xterm2
+"endif
+"
+"
 " Rename tabs to show tab number.
 " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
 if exists("+showtabline")

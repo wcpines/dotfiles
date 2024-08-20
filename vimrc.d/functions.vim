@@ -38,6 +38,8 @@ function! FormatCurl()
   %s/ -H/ \\\r  -H/g
 endfunction
 
+command! CurlFmt call FormatCurl ()
+
 function! SqlArgs()
   %s/^/'/g
   %s/$/'/g
@@ -45,6 +47,10 @@ function! SqlArgs()
   normal Gdd$xA)
   normal ggI(
 endfunction
+
+
+command! SqlArgs call SqlArgs ()
+
 
 " requires jq
 function! MapFromJson ()
@@ -65,12 +71,14 @@ autocmd BufRead,BufNewFile markdown set filetype=markdown
 autocmd BufNewFile,BufRead *.scpt set filetype=applescript
 
 command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
+command! Ts execute "tabe ~/Tresorit/Colby/weight_room/scratch.ts"
 command! Json execute "tabe ~/Tresorit/Colby/weight_room/scratch.json"
 command! Sql execute "tabe ~/Tresorit/Colby/weight_room/scratch.sql"
 command! Exs execute "tabe ~/Tresorit/Colby/weight_room/scratch.exs"
 command! Gql execute "tabe ~/Tresorit/Colby/weight_room/scratch.gql"
+command! Html execute "tabe ~/Tresorit/Colby/weight_room/scratch.html"
+command! Shell execute "tabe ~/Tresorit/Colby/weight_room/scratch.sh"
 command! -range=% LintJson execute "<line1>,<line2>!jq '.'" | set ft=json
-command! -range=% LintYml execute "<line1>,<line2>!oq -i yaml -o yaml" | set ft=yaml
 command! -range=% Pgfmt execute "<line1>,<line2>!pg_format --comma-end --keyword-case 2 --function-case 2 --spaces 2"
 
 au FileType sql setl formatprg=/usr/local/bin/pg_format\ -

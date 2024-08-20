@@ -28,7 +28,7 @@ toggle_theme() {
 
 set_light() {
 	export BAT_THEME='Solarized (light)'
-	export ITERM_PROFILE=cpl
+	export ITERM_PROFILE='cpl'
 	git config --global core.pager "delta --theme='Solarized (light)'"
 }
 

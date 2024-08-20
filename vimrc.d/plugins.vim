@@ -24,7 +24,6 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'pantharshit00/vim-prisma'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
-Plug 'mattn/vim-sqlfmt'
 Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 
 " -- LSP
@@ -32,6 +31,7 @@ Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
 Plug 'MunifTanjim/prettier.nvim'
 Plug 'folke/trouble.nvim'
 Plug 'jay-babu/mason-null-ls.nvim'
+Plug 'stevearc/conform.nvim'
 Plug 'nvimtools/none-ls.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/plenary.nvim'
@@ -75,7 +75,8 @@ Plug 'henrik/vim-indexed-search'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-grepper'
-Plug 'nelstrom/vim-visual-star-search'
+"Plug 'nelstrom/vim-visual-star-search'
+Plug 'subnut/visualstar.vim'
 Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] }
 
 " -- Display
@@ -85,7 +86,9 @@ Plug 'hoob3rt/lualine.nvim'
 Plug 'junegunn/seoul256.vim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'folke/tokyonight.nvim'
-Plug 'overcache/NeoSolarized'
+Plug 'rebelot/kanagawa.nvim'
+"Plug 'overcache/NeoSolarized'
+Plug 'Tsuzat/NeoSolarized.nvim', { 'branch': 'master' }
 Plug 'elixir-editors/vim-elixir'"
 Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'vim-scripts/restore_view.vim'
