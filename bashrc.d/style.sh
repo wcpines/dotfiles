@@ -6,37 +6,66 @@ export CLICOLOR=1
 #===================================#
 # CREDIT: https://github.com/necolas/dotfiles/blob/master/shell/bash_prompt
 
-set_theme_by_tod() {
-	dt=$(date +%H)
-	if [[ ${dt#0} -gt 8 && ${dt#0} -lt 18 ]]; then
-		set_light
-	else
-		set_dark
-	fi
-
-	echo -e "\033]50;SetProfile=$ITERM_PROFILE\a"
+# Function to switch iTerm2 profile
+switch_iterm2_profile() {
+  echo -e "\033]1337;SetProfile=$1\007"
+  echo -e "\033]50;SetProfile=$1\a"
 }
 
 toggle_theme() {
-	if [[ $ITERM_PROFILE == cpl ]]; then
-		set_dark
-	else
-		set_light
-	fi
-	echo -e "\033]50;SetProfile=$ITERM_PROFILE\a"
+  if [[ $ITERM_PROFILE == solarized-light ]]; then
+    set_dark
+  else
+    set_light
+  fi
+}
+
+set_theme_kanagawa() {
+  export ITERM_PROFILE='kanagawa'
+  export BAT_THEME='gruvbox-dark'
+  git config --global core.pager "delta --theme='gruvbox-dark'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
 }
 
 set_light() {
-	export BAT_THEME='Solarized (light)'
-	export ITERM_PROFILE='cpl'
-	git config --global core.pager "delta --theme='Solarized (light)'"
+  export ITERM_PROFILE='solarized-light'
+  export BAT_THEME='Solarized (light)'
+  git config --global core.pager "delta --theme='Solarized (light)'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
 }
 
 set_dark() {
-	export BAT_THEME='Solarized (dark)'
-	export ITERM_PROFILE='cpd'
-	git config --global core.pager "delta --theme='Solarized (dark)'"
+  export ITERM_PROFILE='solarized-dark'
+  export BAT_THEME='Solarized (dark)'
+  git config --global core.pager "delta --theme='Solarized (dark)'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
 }
-set_theme_by_tod
 
-unset set_prompts
+set_theme_by_tod() {
+  local hour
+  hour=$(date +%H)
+  if ((hour > 8 && hour < 18)); then
+    set_light
+  else
+    set_dark
+  fi
+}
+
+# Set the initial theme based on time of day
+# set_theme_by_tod
+
+# Alias for toggling theme
+alias tt="toggle_theme"
+
+# Function to get current colorscheme
+get_current_colorscheme() {
+  echo "Current profile: $ITERM_PROFILE"
+  echo "Current BAT theme: $BAT_THEME"
+  echo "Current Git pager theme: $(git config --get core.pager | grep -o "theme='[^']*'" | cut -d"'" -f2)"
+}
+
+# Alias for getting current colorscheme
+alias gcs="get_current_colorscheme"

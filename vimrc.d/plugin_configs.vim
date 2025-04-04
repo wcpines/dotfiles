@@ -98,33 +98,32 @@ endfunction
 
 let g:projectionist_heuristics = {}
 
-let g:projectionist_heuristics['mix.exs'] = {
-            \     'apps/*/mix.exs': { 'type': 'app' },
-            \     'lib/*.ex': {
-            \       'type': 'lib',
-            \       'alternate': [
-            \         'test/{}_test.exs',
-            \         'test/lib/{}_test.exs',
-            \       ],
-            \       'template': ['defmodule {camelcase|capitalize|dot} do', 'end'],
-            \     },
-            \     'test/*_test.exs': {
-            \       'type': 'test',
-            \       'alternate': ['lib/{}.ex', '{}.ex'],
-            \       'template': [
-            \           'defmodule {camelcase|capitalize|dot}Test do',
-            \           '  use ExUnit.Case',
-            \           '',
-            \           '  alias {camelcase|capitalize|dot}, as: Subject',
-            \           '',
-            \           '  doctest Subject',
-            \           'end'
-            \       ],
-            \     },
-            \     'mix.exs': { 'type': 'mix' },
-            \     'config/*.exs': { 'type': 'config' },
-            \ }
-
+"let g:projectionist_heuristics['mix.exs'] = {
+"            \     'apps/*/mix.exs': { 'type': 'app' },
+"            \     'lib/*.ex': {
+"            \       'type': 'lib',
+"            \       'alternate': [
+"            \         'test/{}_test.exs',
+"            \       ],
+"            \       'template': ['defmodule {camelcase|capitalize|dot} do', 'end'],
+"            \     },
+"            \     'test/*_test.exs': {
+"            \       'type': 'test',
+"            \       'alternate': ['lib/{}.ex', '{}.ex'],
+"            \       'template': [
+"            \           'defmodule {camelcase|capitalize|dot}Test do',
+"            \           '  use ExUnit.Case',
+"            \           '',
+"            \           '  alias {camelcase|capitalize|dot}, as: Subject',
+"            \           '',
+"            \           '  doctest Subject',
+"            \           'end'
+"            \       ],
+"            \     },
+"            \     'mix.exs': { 'type': 'mix' },
+"            \     'config/*.exs': { 'type': 'config' },
+"            \ }
+"
 let g:projectionist_heuristics['package.json'] = {
             \   '*.js': {
             \     'alternate': [
@@ -237,6 +236,8 @@ let g:split_term_vertical=1
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
 
+let g:markdown_fenced_languages = ['elixir']
+
 function! Prose ()
   set conceallevel=0
   Goyo 100
@@ -254,23 +255,6 @@ let g:indentLine_fileTypeExclude = ['text', 'help', 'vim']
 let g:indentLine_char = '┊'
 let g:indentLine_setConceal = 0
 
-
-let g:fzf_colors =
-      \ { 'fg':      ['fg', 'Normal'],
-      \ 'bg':      ['bg', 'Normal'],
-      \ 'hl':      ['fg', 'Comment'],
-      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-      \ 'hl+':     ['fg', 'Statement'],
-      \ 'info':    ['fg', 'PreProc'],
-      \ 'prompt':  ['fg', 'Conditional'],
-      \ 'pointer': ['fg', 'Exception'],
-      \ 'marker':  ['fg', 'Keyword'],
-      \ 'spinner': ['fg', 'Label'],
-      \ 'header':  ['fg', 'Comment'] }
-
-colorscheme NeoSolarized
-
 command! Tt :call Toggle_theme()
 
 function! Toggle_theme ()
@@ -282,18 +266,22 @@ function! Toggle_theme ()
 endfunction
 
 
-highlight htmlArg cterm=italic
-highlight Comment cterm=italic
+"let g:fzf_colors =
+"      \ { 'fg':      ['fg', 'Normal'],
+"      \ 'bg':      ['bg', 'Normal'],
+"      \ 'hl':      ['fg', 'Comment'],
+"      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+"      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+"      \ 'hl+':     ['fg', 'Statement'],
+"      \ 'info':    ['fg', 'PreProc'],
+"      \ 'prompt':  ['fg', 'Conditional'],
+"      \ 'pointer': ['fg', 'Exception'],
+"      \ 'marker':  ['fg', 'Keyword'],
+"      \ 'spinner': ['fg', 'Label'],
+"      \ 'header':  ['fg', 'Comment'] }
 
 set termguicolors
-"
-"set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 
-"if !has('nvim')
-"  set ttymouse=xterm2
-"endif
-"
-"
 " Rename tabs to show tab number.
 " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
 if exists("+showtabline")

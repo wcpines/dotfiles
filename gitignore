@@ -73,3 +73,5 @@ testing*
 fetchedClients.json
 failed_records.json
 *_client_ids.json
+*op_dotenv
+.projections.json

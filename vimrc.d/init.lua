@@ -1,8 +1,110 @@
+--------------------------
+-------SETUP Colors-------
+--------------------------
+
+local ok_status, NeoSolarized = pcall(require, "NeoSolarized")
+
+if not ok_status then
+	vim.api.nvim_err_writeln("NeoSolarized not found. Please make sure it's installed.")
+	return
+end
+
+-- Default Setting for NeoSolarized
+NeoSolarized.setup({
+	style = "dark", -- "dark" or "light"
+	transparent = true, -- true/false; Enable this to disable setting the background color
+	terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+	enable_italics = true, -- Italics for different highlight groups (eg. Statement, Condition, Comment, Include, etc.)
+	styles = {
+		-- Style to be applied to different syntax groups
+		comments = { italic = true },
+		keywords = { italic = true },
+		functions = { bold = true },
+		variables = {},
+		string = { italic = true },
+		underline = true, -- true/false; for global underline
+		undercurl = true, -- true/false; for global undercurl
+	},
+	-- Add specific highlight groups
+	on_highlights = function(highlights, colors)
+		highlights.Include.fg = colors.red -- Using `red` foreground for Includes
+	end,
+})
+
+-- Function to get the current ITERM_PROFILE
+local function get_iterm_profile()
+	-- Force Vim to re-read the environment variable
+	vim.fn.system("echo $ITERM_PROFILE > /tmp/iterm_profile")
+	local handle = io.open("/tmp/iterm_profile", "r")
+	if handle == nil then
+		vim.api.nvim_err_writeln("Failed to read ITERM_PROFILE")
+		return nil
+	end
+
+	local result = handle:read("*a")
+	handle:close()
+
+	result = vim.trim(result)
+
+	if result == "" then
+		vim.api.nvim_echo({ { "\nITERM_PROFILE is empty", "WarningMsg" } }, true, {})
+		return nil
+	end
+
+	-- vim.api.nvim_echo({ { "\nCurrent ITERM_PROFILE: " .. result, "None" } }, true, {})
+	return result
+end
+
+-- Function to set colorscheme based on ITERM_PROFILE
+local function set_colorscheme()
+	local profile = get_iterm_profile()
+	if profile == nil then
+		vim.api.nvim_echo({ { "\nUsing default NeoSolarized settings", "WarningMsg" } }, true, {})
+		return
+	end
+
+	if profile == "solarized-light" then
+		vim.cmd([[colorscheme NeoSolarized]])
+		vim.opt.background = "light"
+	elseif profile == "solarized-dark" then
+		vim.cmd([[colorscheme NeoSolarized]])
+		vim.opt.background = "dark"
+	elseif profile == "kanagawa" then
+		vim.cmd("colorscheme kanagawa-wave")
+	else
+		vim.api.nvim_echo(
+			{ { "\nUnrecognized ITERM_PROFILE: " .. profile .. ". Using default background.", "WarningMsg" } },
+			true,
+			{}
+		)
+		vim.cmd([[colorscheme NeoSolarized]])
+	end
+end
+
+-- Autocommand to update colorscheme when entering a buffer or regaining focus
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+	pattern = "*",
+	callback = function()
+		set_colorscheme()
+	end,
+})
+
+-- Optional: Command to manually update the colorscheme
+vim.api.nvim_create_user_command("UpdateColorScheme", set_colorscheme, {})
+---------------------------
+---------SETUP LSP---------
+---------------------------
 local lsp_zero = require("lsp-zero")
 
 local lsp_attach = function(client, bufnr)
 	lsp_zero.default_keymaps({ buffer = bufnr })
 	vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
+	vim.keymap.set(
+		"n",
+		"<leader>C",
+		vim.lsp.buf.code_action,
+		{ noremap = true, silent = true, desc = "LSP code action" }
+	)
 
 	-- Disable semantic highlights
 	-- client.server_capabilities.semanticTokensProvider = nil
@@ -68,7 +170,7 @@ require("conform").setup({
 		helm = { "prettier" },
 		html = { "prettier" },
 		javascript = { "prettier" },
-		json = { "prettier" },
+		json = { "jq_format", "prettier" }, -- Add jq_format here
 		python = { "black" },
 		rspec = { "rubocop" },
 		ruby = { "rubocop" },
@@ -85,6 +187,10 @@ require("conform").setup({
 	formatters = {
 		pg_format = {
 			args = { "--comma-end", "--keyword-case", "2", "--function-case", "2", "--spaces", "2" },
+		},
+		jq_format = {
+			command = "jq",
+			args = { "." },
 		},
 	},
 	fallback_formatters = {
@@ -114,7 +220,15 @@ local cmp_action = require("lsp-zero").cmp_action()
 cmp.setup({
 	sources = {
 		{ name = "nvim_lsp" },
-		{ name = "buffer" },
+		{ name = "buffer", 
+		  keyword_length = 3,
+		  max_item_count = 10,
+		  option = {
+			get_bufnrs = function()
+				return vim.api.nvim_list_bufs()
+			end
+		  }
+		},
 	},
 	preselect = "item",
 	completion = {
@@ -168,16 +282,19 @@ local diagnostics_active = true
 local function toggle_diagnostics()
 	diagnostics_active = not diagnostics_active
 	if diagnostics_active then
-		vim.diagnostic.show()
+		vim.diagnostic.enable()
 		print("Diagnostics enabled")
 	else
-		vim.diagnostic.hide()
+		vim.diagnostic.disable()
 		print("Diagnostics disabled")
 	end
 end
 
 -- Add this mapping to your keybindings section
-vim.keymap.set("n", "<leader>D", toggle_diagnostics, { desc = "Toggle diagnostics" })
+vim.keymap.set("n", "<leader>D", function()
+	toggle_diagnostics()
+	require("cmp").setup.buffer({ enabled = false })
+end, { desc = "Toggle diagnostics and disable completion" })
 
 require("nvim-treesitter.configs").setup({
 	-- A directory to install the parsers into.
@@ -203,7 +320,7 @@ require("nvim-treesitter.configs").setup({
 		enable = true,
 
 		-- list of language that will be disabled
-		disable = {"elixir", "csv"},
+		disable = { "elixir", "csv" },
 
 		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
 		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).

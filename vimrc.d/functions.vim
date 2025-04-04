@@ -60,6 +60,7 @@ function! MapFromJson ()
   %s/\(\d\+-\d\+-\d\+T.*\),/"\1",/g
 endfunction
 
+
 " read correct filetype from file extension
 autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby
 autocmd BufRead,BufNewFile *_spec.rb set filetype=ruby
@@ -81,4 +82,5 @@ command! Shell execute "tabe ~/Tresorit/Colby/weight_room/scratch.sh"
 command! -range=% LintJson execute "<line1>,<line2>!jq '.'" | set ft=json
 command! -range=% Pgfmt execute "<line1>,<line2>!pg_format --comma-end --keyword-case 2 --function-case 2 --spaces 2"
 
-au FileType sql setl formatprg=/usr/local/bin/pg_format\ -
+" edit a CSV in place
+:command! -nargs=1 RgCSV execute '!(head -n1 % && rg ' . shellescape(<args>) . ' %) > temp.csv && mv temp.csv %'

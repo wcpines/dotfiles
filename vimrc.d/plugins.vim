@@ -15,6 +15,7 @@ Plug 'chrisbra/csv.vim', { 'for': ['tsv', 'csv' ]}
 Plug 'darfink/vim-plist', { 'for': 'plist' }
 Plug 'elixir-tools/elixir-tools.nvim'
 Plug 'hashivim/vim-terraform'
+Plug 'https://github.com/elkasztano/nushell-syntax-vim'
 Plug 'lmeijvogel/vim-yaml-helper', { 'for': 'yaml' }
 Plug 'mhinz/vim-mix-format', { 'for': ['elixir', 'eelixir']}
 Plug 'neowit/vim-force.com'
@@ -22,6 +23,7 @@ Plug 'ngmy/vim-rubocop', { 'for': ['rspec', 'ruby'] }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'pantharshit00/vim-prisma'
+Plug 'preservim/vim-markdown'        " Markdown support
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
 Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
@@ -69,7 +71,7 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': ['rspec', 'ruby'] }
 
 " -- Search & file nav
 
-" Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
+ Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
 Plug 'airblade/vim-rooter'
 Plug 'henrik/vim-indexed-search'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -78,12 +80,13 @@ Plug 'mhinz/vim-grepper'
 "Plug 'nelstrom/vim-visual-star-search'
 Plug 'subnut/visualstar.vim'
 Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] }
+Plug 'c-brenn/fuzzy-projectionist.vim'
 
 " -- Display
 
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'hoob3rt/lualine.nvim'
-Plug 'junegunn/seoul256.vim'
+Plug 'shaunsingh/seoul256.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'folke/tokyonight.nvim'
 Plug 'rebelot/kanagawa.nvim'
@@ -95,7 +98,6 @@ Plug 'vim-scripts/restore_view.vim'
 
 " -- Misc Enhancements
 
-" Plug 'machakann/vim-highlightedyank'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'andymass/vim-matchup'
 Plug 'dhruvasagar/vim-table-mode', { 'for': ['tsv', 'csv', 'sql']}

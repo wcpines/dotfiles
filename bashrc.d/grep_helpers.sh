@@ -107,3 +107,11 @@ find_replace() {
 history_rg() {
 	history | rg $@
 }
+
+# edit a csv in place
+rgcsv() {
+  local pattern="$1"
+  local file="$2"
+  local temp="${file}.tmp"
+  (head -n1 "$file" && rg "$pattern" "$file") > "$temp" && mv "$temp" "$file"
+}
