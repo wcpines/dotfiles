@@ -26,7 +26,7 @@ Plug 'pantharshit00/vim-prisma'
 Plug 'preservim/vim-markdown'        " Markdown support
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'graphql'] }
 Plug 'vim-scripts/sql_iabbr.vim', { 'for': 'sql' }
-Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile'] }
+Plug 'z0mbix/vim-shfmt', { 'for': ['sh', 'Dockerfile', 'nu'] }
 
 " -- LSP
 
@@ -81,6 +81,7 @@ Plug 'mhinz/vim-grepper'
 Plug 'subnut/visualstar.vim'
 Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] }
 Plug 'c-brenn/fuzzy-projectionist.vim'
+Plug 'Dkendal/nvim-alternate'
 
 " -- Display
 

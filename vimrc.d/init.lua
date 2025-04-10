@@ -220,7 +220,7 @@ local cmp_action = require("lsp-zero").cmp_action()
 cmp.setup({
 	sources = {
 		{ name = "nvim_lsp" },
-		{ name = "buffer", 
+		{ name = "buffer",
 		  keyword_length = 3,
 		  max_item_count = 10,
 		  option = {
@@ -328,4 +328,18 @@ require("nvim-treesitter.configs").setup({
 		-- Instead of true it can also be a list of languages
 		additional_vim_regex_highlighting = true,
 	},
+
+})
+require('nvim-alternate').setup({
+  pairs = {
+    -- Simple pairs (source and test)
+    {'lua/*.lua', 'tests/*_spec.lua'},
+
+    -- Example for specific file types
+    {'src/components/*.tsx', 'src/components/*.test.tsx'},
+    {'src/lib/*.ts', 'tests/lib/*.test.ts'},
+    { "lib/*.ex",        "test/*_test.exs" },
+    { "lib/*/live/*.ex", "lib/*/live/*.html.heex" },
+    { "apps/*/lib/*.ex", "apps/*/test/*_test.exs" },
+  }
 })
