@@ -20,14 +20,6 @@ toggle_theme() {
   fi
 }
 
-set_theme_kanagawa() {
-  export ITERM_PROFILE='kanagawa'
-  export BAT_THEME='gruvbox-dark'
-  git config --global core.pager "delta --theme='gruvbox-dark'"
-  switch_iterm2_profile "$ITERM_PROFILE"
-  printf "Theme set to %s\n" "$ITERM_PROFILE"
-}
-
 set_light() {
   export ITERM_PROFILE='solarized-light'
   export BAT_THEME='Solarized (light)'
@@ -47,7 +39,7 @@ set_dark() {
 set_theme_by_tod() {
   local hour
   hour=$(date +%H)
-  if ((hour > 8 && hour < 18)); then
+  if ((10#$hour > 8 && 10#$hour < 18)); then
     set_light
   else
     set_dark
@@ -55,7 +47,7 @@ set_theme_by_tod() {
 }
 
 # Set the initial theme based on time of day
-# set_theme_by_tod
+set_theme_by_tod
 
 # Alias for toggling theme
 alias tt="toggle_theme"

@@ -220,14 +220,15 @@ local cmp_action = require("lsp-zero").cmp_action()
 cmp.setup({
 	sources = {
 		{ name = "nvim_lsp" },
-		{ name = "buffer",
-		  keyword_length = 3,
-		  max_item_count = 10,
-		  option = {
-			get_bufnrs = function()
-				return vim.api.nvim_list_bufs()
-			end
-		  }
+		{
+			name = "buffer",
+			keyword_length = 3,
+			max_item_count = 10,
+			option = {
+				get_bufnrs = function()
+					return vim.api.nvim_list_bufs()
+				end,
+			},
 		},
 	},
 	preselect = "item",
@@ -328,18 +329,46 @@ require("nvim-treesitter.configs").setup({
 		-- Instead of true it can also be a list of languages
 		additional_vim_regex_highlighting = true,
 	},
-
 })
-require('nvim-alternate').setup({
-  pairs = {
-    -- Simple pairs (source and test)
-    {'lua/*.lua', 'tests/*_spec.lua'},
 
-    -- Example for specific file types
-    {'src/components/*.tsx', 'src/components/*.test.tsx'},
-    {'src/lib/*.ts', 'tests/lib/*.test.ts'},
-    { "lib/*.ex",        "test/*_test.exs" },
-    { "lib/*/live/*.ex", "lib/*/live/*.html.heex" },
-    { "apps/*/lib/*.ex", "apps/*/test/*_test.exs" },
-  }
+-- Get the nvim-alternate module once
+local alternate = require("nvim-alternate")
+
+-- Setup nvim-alternate with your pairs
+alternate.setup({
+	pairs = {
+		-- Simple pairs (source and test)
+		{ "lua/*.lua", "tests/*_spec.lua" },
+		-- Example for specific file types
+		{ "src/components/*.tsx", "src/components/*.test.tsx" },
+		{ "src/lib/*.ts", "tests/lib/*.test.ts" },
+		{ "lib/*.ex", "test/*_test.exs" },
+		{ "lib/*/live/*.ex", "lib/*/live/*.html.heex" },
+		{ "apps/*/lib/*.ex", "apps/*/test/*_test.exs" },
+	},
 })
+
+-- Create Vim commands A and AV similar to vim-projectionist
+vim.api.nvim_create_user_command("A", function()
+	-- Edit the alternate file in the current window
+	alternate.plug.edit()
+end, {})
+
+vim.api.nvim_create_user_command("AV", function()
+	-- Open the alternate file in a vertical split
+	vim.cmd("vsplit")
+	alternate.plug.edit()
+end, {})
+
+-- Optional: Add more commands for different split types
+vim.api.nvim_create_user_command("AS", function()
+	-- Open the alternate file in a horizontal split
+	vim.cmd("split")
+	alternate.plug.edit()
+end, {})
+
+vim.api.nvim_create_user_command("AT", function()
+	-- Open the alternate file in a new tab
+	vim.cmd("tabnew")
+	alternate.plug.edit()
+end, {})

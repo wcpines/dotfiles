@@ -71,7 +71,6 @@ Plug 'vim-scripts/textobj-rubyblock', { 'for': ['rspec', 'ruby'] }
 
 " -- Search & file nav
 
- Plug 'andyl/vim-projectionist-elixir', { 'for': ['elixir', 'eelixir'] }
 Plug 'airblade/vim-rooter'
 Plug 'henrik/vim-indexed-search'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -79,8 +78,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-grepper'
 "Plug 'nelstrom/vim-visual-star-search'
 Plug 'subnut/visualstar.vim'
-Plug 'tpope/vim-projectionist', { 'for': ['elixir', 'eelixir', 'ruby', 'rspec'] }
-Plug 'c-brenn/fuzzy-projectionist.vim'
 Plug 'Dkendal/nvim-alternate'
 
 " -- Display
