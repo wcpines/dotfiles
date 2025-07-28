@@ -11,15 +11,25 @@ imap hh <Esc>
 " Prevent vim from moving cursor after returning to normal mode
 imap <esc> <esc>l
 
-vmap <leader>s <esc>:w<CR>
+" easy saving
 nmap <leader>s :w<CR>
-map <leader>l :set hlsearch!<CR>
-map <leader>v :tabe ~/.vimrc<CR>
-map <leader>w :set wrap!<CR>:set linebreak<CR>
-nmap Y y$
-nmap <C-b> <C-^>
 
-"Autocenter file jumps
+" save from visual mode
+vmap <leader>s <esc>:w<CR>
+
+" toggle hlsearch
+map <leader>l :set hlsearch!<CR>
+
+" open vimrc in new tab
+map <leader>v :tabe ~/.vimrc<CR>
+
+" toggle wrap
+map <leader>w :set wrap!<CR>:set linebreak<CR>
+
+" copy to end of line
+nmap Y y$
+
+" center jumps movements in file
 nmap G Gzz
 nmap * *zz
 nmap # #zz
@@ -35,20 +45,22 @@ map <leader>z :setlocal spell!<CR>
 map <leader>= z=
 map <leader>] ]s
 
-" unmap unused crap
+" unmap unused keys
 nnoremap q; q:
 nmap q: <nop>
 nmap Q: <nop>
 nmap Q <nop>
 
-" highlight/repeatable
+" repeatable actions on visual selection
 vnoremap . :normal .<CR>
 
 " select-all
 noremap <leader>a gg<S-v>G
 
-" copy/paste all lines matching last search pattern
+" copy entire file
 nmap <leader>y :%y<CR>
+
+" copy/paste all lines matching last search pattern to register a
 nmap <leader>Y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
 nmap <leader>p "Ap
 
@@ -67,28 +79,14 @@ nmap S :%s//g<LEFT><LEFT>
 " remove all instance of  last searched pattern
 map <leader>/ :%s///g<CR>
 
-nmap <leader>N :%normal<space>
-
-" get file path (requires gnu sed!)
-nmap <silent> cp :!echo %:p
-      \\|gsed -E 's/\/Users\/colby(pines)?\/development\/(\w*-*\w*)*\/
-      \\|\/Users\/colby(pines)?\/(\w*-*\w*)*\/
-      \\///g'
-      \\|tr -d '\n'
-      \\|pbcopy<CR>
-
+" get file path
+nmap <silent> cp :let @+ = expand('%') =~ '^/' ? substitute(expand('%'), '^' . $HOME . '/[^/]\+/', '', '') : expand('%')<CR>
 " Get full file path
 nmap <silent> cf :let @* = expand("%:p")<CR>
 
 " -----------------
 " Quick formatting
 " -----------------
-
-" barfing brackets
-nmap <leader>( f(x$p
-nmap <leader>) f)x$p
-nmap <leader>{ a{}<left><cr><esc>O
-nmap <leader>} a{}<left>
 
 " sort unique of block
 nmap <leader>S vip:sort u<cr>
@@ -99,29 +97,23 @@ nmap <leader>@ xea<space>=<esc>
 " convert elixir named function to assigned anonymous function
 nmap <leader>- ^dwf(ds)i<space>=<space>fn<space><esc>$ciw-><esc>=ip
 
-" wrap in an elixir map
-nmap <leader>% i%{<esc>A}<esc>
-
 " git conflict nav
-nmap ]x /^<<<<<<<<CR>zz
-nmap [x /^>>>>>>><CR>zz
-nmap ]= /^=======<CR>zz
+"  TBD: use fugitive mappings instead
+"  nmap ]x /^<<<<<<<<CR>zz
+"  nmap [x /^>>>>>>><CR>zz
+"  nmap ]= /^=======<CR>zz
 
 
 " remove debuggers
 nmap <leader>` :g/
-      \^\s*binding.pry\s*$
-      \\\|.*require "pry".*binding.pry$
+      \^\s*binding\.pry\s*$
       \\\|^\s*byebug\s*$
-      \\\|^.*debugger.*$
-      \\\|^\s*.*require IEx.*\s*$
-      \\\|^\s*.*IEx.pry().*\s*$
-      \\\|^\s*require IEx; IEx.pry\s*$
+      \\\|^\s*debugger\s*$
+      \\\|^\s*require IEx; IEx\.pry\s*$
+      \\\|^\s*IEx\.pry()\s*$
       \\\|^\s*embed()\s*$
-      \\\|^\s*.*IO.inspect\s*$
+      \\\|^\s*IO\.inspect.*$
       \/d<CR><C-o>
-
-nmap <leader>HT V$%zf
 
 " increment/decrement vis selected nums
 vnoremap <C-a> :s/\%V-\=\d\+/\=submatch(0)+1/g<CR>
@@ -142,10 +134,6 @@ nmap <leader>d :bn<bar>bd#<CR>
 nmap <leader>F :bd!<CR>
 nmap <leader>W :Windows<CR>
 
-nnoremap <leader>g<C-]> :Tags <C-R><C-W> <CR>
-nnoremap <leader><C-]> <C-w><C-]><C-w>T
-nnoremap <C-]> <C-]>zz
-
 nmap L gt
 nmap H gT
 
@@ -155,13 +143,7 @@ noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 
-nnoremap <leader><right> <C-w>L
-nnoremap <leader><left> <C-w>H
-nnoremap <leader><down> <C-w>J
-nnoremap <leader><up> <C-w>K
 noremap <leader>h :clo<CR>
-
-nmap <leader>. <C-w>=
 
 imap <C-S-n> <Nop>
 imap <C-N> <Nop>
@@ -169,6 +151,7 @@ imap <C-N> <Nop>
 iabbrev ivalid invalid
 iabbrev Ivalid Invalid
 inoreabbrev  appoinment appointment
+inoreabbrev  appoitnment appointment
 inoreabbrev  tf @tag :focus
 inoreabbrev  ions \|> IO.inspect(label: "<LABEL>")
 inoreabbrev  pp \|>

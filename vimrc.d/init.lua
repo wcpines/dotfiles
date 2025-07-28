@@ -2,6 +2,27 @@
 -------SETUP Colors-------
 --------------------------
 
+-- Declare globals for LSP
+---@diagnostic disable: undefined-global
+local vim = vim
+
+-- Configure split borders for better visibility
+vim.opt.fillchars = {
+	horiz = "━",
+	horizup = "┻",
+	horizdown = "┳",
+	vert = "┃",
+	vertleft = "┫",
+	vertright = "┣",
+	verthoriz = "╋",
+}
+
+-- Set plain black borders for splits
+vim.api.nvim_set_hl(0, "VertSplit", { fg = "#000000", bg = "NONE" })
+vim.api.nvim_set_hl(0, "StatusLine", { fg = "#000000", bg = "NONE" })
+vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#000000", bg = "NONE" })
+
+-- Setup NeoSolarized colorscheme
 local ok_status, NeoSolarized = pcall(require, "NeoSolarized")
 
 if not ok_status then
@@ -94,61 +115,142 @@ vim.api.nvim_create_user_command("UpdateColorScheme", set_colorscheme, {})
 ---------------------------
 ---------SETUP LSP---------
 ---------------------------
-local lsp_zero = require("lsp-zero")
 
-local lsp_attach = function(client, bufnr)
-	lsp_zero.default_keymaps({ buffer = bufnr })
-	vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
-	vim.keymap.set(
-		"n",
-		"<leader>C",
-		vim.lsp.buf.code_action,
-		{ noremap = true, silent = true, desc = "LSP code action" }
-	)
-
-	-- Disable semantic highlights
-	-- client.server_capabilities.semanticTokensProvider = nil
+-- Check if required plugins are available
+local function check_plugin(plugin_name)
+	local ok, _ = pcall(require, plugin_name)
+	if not ok then
+		vim.api.nvim_err_writeln(string.format("Plugin '%s' not found. Please run :PlugInstall", plugin_name))
+		return false
+	end
+	return true
 end
 
-lsp_zero.extend_lspconfig({
-	sign_text = {
-		error = "✘",
-		warn = "▲",
-		hint = "⚑",
-		info = "»",
+-- Check all required plugins
+local required_plugins = {
+	"mason",
+	"mason-lspconfig",
+	"lspconfig",
+	"cmp_nvim_lsp",
+	"null-ls",
+	"conform",
+	"cmp",
+	"lspkind",
+}
+
+for _, plugin in ipairs(required_plugins) do
+	if not check_plugin(plugin) then
+		return
+	end
+end
+
+-- LSP keymaps
+local function lsp_attach(client, bufnr)
+	-- Buffer local mappings
+	local opts = { buffer = bufnr, noremap = true, silent = true }
+
+	-- LSP keymaps
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+	vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
+	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+	vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+end
+
+-- Setup Mason
+require("mason").setup({
+	ui = {
+		border = "rounded",
 	},
-	lsp_attach = lsp_attach,
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 
-require("mason").setup({})
-
+-- Setup Mason LSP Config
 require("mason-lspconfig").setup({
-	ensure_installed = { "tsserver", "elixirls", "sqlls", "lua_ls" },
-	handlers = {
-		lsp_zero.default_setup,
-		function(server_name)
-			require("lspconfig")[server_name].setup({})
-		end,
-	},
+	ensure_installed = { "ts_ls", "elixirls", "sqlls", "lua_ls" },
+	automatic_enable = true,
 })
 
-require("lspconfig").lua_ls.setup({
-	on_init = function(client)
-		lsp_zero.nvim_lua_settings(client, {})
-	end,
-})
+-- LSP capabilities
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-require("lspconfig").sqlls.setup({
+-- Setup LSP servers
+local lspconfig = require("lspconfig")
+
+-- TypeScript/JavaScript (using ts_ls instead of deprecated tsserver)
+lspconfig.ts_ls.setup({
 	on_attach = lsp_attach,
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	capabilities = capabilities,
+	cmd = { "typescript-language-server", "--stdio" },
 	settings = {
-		sqlls = {
-			-- You can add any specific settings for sqlls here
+		typescript = {
+			inlayHints = {
+				includeInlayParameterNameHints = "all",
+				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+				includeInlayFunctionParameterTypeHints = true,
+				includeInlayVariableTypeHints = true,
+				includeInlayPropertyDeclarationTypeHints = true,
+				includeInlayFunctionLikeReturnTypeHints = true,
+				includeInlayEnumMemberValueHints = true,
+			},
 		},
 	},
 })
 
+-- Elixir
+lspconfig.elixirls.setup({
+	on_attach = lsp_attach,
+	capabilities = capabilities,
+	cmd = { "elixir-ls" },
+	settings = {
+		elixirLS = {
+			-- Add any Elixir-specific settings here
+		},
+	},
+})
+
+-- SQL
+lspconfig.sqlls.setup({
+	on_attach = lsp_attach,
+	capabilities = capabilities,
+	cmd = { "sql-language-server", "up", "--method", "stdio" },
+	settings = {
+		sqlls = {
+			-- Add any SQL-specific settings here
+		},
+	},
+})
+
+-- Lua
+lspconfig.lua_ls.setup({
+	on_attach = lsp_attach,
+	capabilities = capabilities,
+	cmd = { "lua-language-server" },
+	settings = {
+		Lua = {
+			runtime = {
+				version = "LuaJIT",
+			},
+			diagnostics = {
+				globals = { "vim" },
+			},
+			workspace = {
+				library = vim.api.nvim_get_runtime_file("", true),
+			},
+			telemetry = {
+				enable = false,
+			},
+		},
+	},
+})
+
+-- Setup null-ls for diagnostics and formatting
 local null_ls = require("null-ls")
 
 null_ls.setup({
@@ -161,6 +263,7 @@ null_ls.setup({
 	},
 })
 
+-- Setup conform for formatting
 require("conform").setup({
 	formatters_by_ft = {
 		["*"] = { "codespell" },
@@ -170,7 +273,7 @@ require("conform").setup({
 		helm = { "prettier" },
 		html = { "prettier" },
 		javascript = { "prettier" },
-		json = { "jq_format", "prettier" }, -- Add jq_format here
+		json = { "jq_format", "prettier" },
 		python = { "black" },
 		rspec = { "rubocop" },
 		ruby = { "rubocop" },
@@ -198,14 +301,6 @@ require("conform").setup({
 	},
 })
 
--- -- Optional: Automatically format on save
--- vim.api.nvim_create_autocmd("BufWritePre", {
---   pattern = "*",
---   callback = function()
---     require("conform").format({ async = false, lsp_fallback = true })
---   end,
--- })
-
 -- Key mapping for manual formatting
 vim.api.nvim_set_keymap(
 	"n",
@@ -214,8 +309,8 @@ vim.api.nvim_set_keymap(
 	{ noremap = true, silent = true }
 )
 
+-- Setup completion
 local cmp = require("cmp")
-local cmp_action = require("lsp-zero").cmp_action()
 
 cmp.setup({
 	sources = {
@@ -238,14 +333,14 @@ cmp.setup({
 	formatting = {
 		fields = { "abbr", "kind", "menu" },
 		format = require("lspkind").cmp_format({
-			mode = "symbol", -- show only symbol annotations
-			maxwidth = 50, -- prevent the popup from showing more than provided characters
-			ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead
+			mode = "symbol",
+			maxwidth = 50,
+			ellipsis_char = "...",
 		}),
 	},
 	mapping = cmp.mapping.preset.insert({
 		-- Navigate between completion items
-		["<Tab>"] = cmp_action.tab_complete(),
+		["<Tab>"] = cmp.mapping.select_next_item({ behavior = "select" }),
 		["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = "select" }),
 		["<C-p>"] = cmp.mapping.select_prev_item({ behavior = "select" }),
 		["<C-n>"] = cmp.mapping.select_next_item({ behavior = "select" }),
@@ -255,10 +350,6 @@ cmp.setup({
 
 		-- Ctrl+Space to trigger completion menu
 		["<S-Space>"] = cmp.mapping.complete(),
-
-		-- Navigate between snippet placeholder
-		["<C-f>"] = cmp_action.vim_snippet_jump_forward(),
-		["<C-b>"] = cmp_action.vim_snippet_jump_backward(),
 
 		-- Scroll up and down in the completion documentation
 		["<C-u>"] = cmp.mapping.scroll_docs(-4),
@@ -272,6 +363,9 @@ cmp.setup({
 })
 
 require("lualine").setup({
+	options = {
+		theme = "NeoSolarized",
+	},
 	sections = {
 		lualine_c = { { "filename", file_status = true, path = 3 } },
 		lualine_x = { "filetype" },
@@ -331,44 +425,56 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
--- Get the nvim-alternate module once
-local alternate = require("nvim-alternate")
-
--- Setup nvim-alternate with your pairs
-alternate.setup({
-	pairs = {
-		-- Simple pairs (source and test)
-		{ "lua/*.lua", "tests/*_spec.lua" },
-		-- Example for specific file types
-		{ "src/components/*.tsx", "src/components/*.test.tsx" },
-		{ "src/lib/*.ts", "tests/lib/*.test.ts" },
-		{ "lib/*.ex", "test/*_test.exs" },
-		{ "lib/*/live/*.ex", "lib/*/live/*.html.heex" },
-		{ "apps/*/lib/*.ex", "apps/*/test/*_test.exs" },
+-- Setup Claude Code
+require("claude-code").setup({
+	-- Terminal window settings
+	window = {
+		split_ratio = 0.3, -- Percentage of screen for the terminal window
+		position = "botright", -- Position of the window
+		enter_insert = true, -- Enter insert mode when opening Claude Code
+		hide_numbers = true, -- Hide line numbers in the terminal window
+		hide_signcolumn = true, -- Hide the sign column in the terminal window
+	},
+	-- File refresh settings
+	refresh = {
+		enable = true, -- Enable file change detection
+		updatetime = 100, -- updatetime when Claude Code is active
+		timer_interval = 1000, -- How often to check for file changes
+		show_notifications = true, -- Show notification when files are reloaded
+	},
+	-- Git project settings
+	git = {
+		use_git_root = true, -- Set CWD to git root when opening Claude Code
+	},
+	-- Shell-specific settings
+	shell = {
+		separator = "&&", -- Command separator for bash
+		pushd_cmd = "pushd", -- Command to push directory onto stack
+		popd_cmd = "popd", -- Command to pop directory from stack
+	},
+	-- Command settings
+	command = "claude", -- Command used to launch Claude Code
+	-- Command variants
+	command_variants = {
+		continue = "--continue", -- Resume the most recent conversation
+		resume = "--resume", -- Display an interactive conversation picker
+		verbose = "--verbose", -- Enable verbose logging
+	},
+	-- Keymaps
+	keymaps = {
+		toggle = {
+			normal = "<leader>cc", -- Normal mode keymap for toggling Claude Code
+			terminal = "<C-,>", -- Terminal mode keymap for toggling Claude Code
+			variants = {
+				continue = "<leader>cC", -- Continue conversation
+				verbose = "<leader>cV", -- Verbose mode
+			},
+		},
+		window_navigation = true, -- Enable window navigation keymaps
+		scrolling = true, -- Enable scrolling keymaps
 	},
 })
 
--- Create Vim commands A and AV similar to vim-projectionist
-vim.api.nvim_create_user_command("A", function()
-	-- Edit the alternate file in the current window
-	alternate.plug.edit()
-end, {})
-
-vim.api.nvim_create_user_command("AV", function()
-	-- Open the alternate file in a vertical split
-	vim.cmd("vsplit")
-	alternate.plug.edit()
-end, {})
-
--- Optional: Add more commands for different split types
-vim.api.nvim_create_user_command("AS", function()
-	-- Open the alternate file in a horizontal split
-	vim.cmd("split")
-	alternate.plug.edit()
-end, {})
-
-vim.api.nvim_create_user_command("AT", function()
-	-- Open the alternate file in a new tab
-	vim.cmd("tabnew")
-	alternate.plug.edit()
-end, {})
+-- Load plugin configurations
+local plugin_configs = dofile("/Users/colby/dotfiles/vimrc.d/plugin_configs.lua")
+plugin_configs.init()

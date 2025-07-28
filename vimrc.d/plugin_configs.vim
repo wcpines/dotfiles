@@ -5,12 +5,16 @@
 " --- Mappings ---
 " ________________
 
-let g:netrw_liststyle = 3
+let g:netrw_liststyle = 2
 
 augroup highlight_yank
     autocmd!
     au TextYankPost * silent! lua vim.highlight.on_yank { higroup='IncSearch', timeout=200 }
 augroup END
+
+function! s:find_git_root()
+  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+endfunction
 
 command! ProjectFiles execute 'Files' s:find_git_root()
 
@@ -23,13 +27,6 @@ map <leader>f :ProjectFiles<CR>
 map <leader>g :GFiles<CR>
 map <leader>m :History<CR>
 nnoremap <leader>T :BTags<CR>
-
-nnoremap <leader>x <cmd>TroubleToggle document_diagnostics<cr>
-
-
-" ctags
-nnoremap <leader><C-]> <C-w><C-]><C-w>T
-nnoremap <C-]> <C-]>zz
 
 vnoremap gR y:Rg <C-r>"<CR>
 nnoremap gR :Rg <C-r><C-w><CR>
@@ -57,40 +54,8 @@ command! BD call fzf#run(fzf#wrap({
 
 map <leader>o :ZoomWinTabToggle<CR>
 
-nnoremap gy :YamlGoToParent<CR>
-
 nmap dU :call AddDebugger("O")<cr>
 nmap du :call AddDebugger("o")<cr>
-
-nnoremap <silent> <leader>tc :Tclear<CR>
-nnoremap <silent> <leader>tf :TREPLSendFile<cr>
-nnoremap <silent> <leader>th :Tclose<cr>
-nnoremap <silent> <leader>tk :Tkill<CR>
-nnoremap <silent> <leader>tl :TREPLSendLine<cr>
-nnoremap <silent> <leader>to :call neoterm#open()<cr>
-vnoremap <silent> <leader>ts :TREPLSendSelection<cr>
-nmap <leader>tC :T clear<CR><C-l>A<C-h><C-h>
-nmap <leader>tb :T iex#break<CR> " iex
-nmap <leader>tr :T rsql<CR><C-l>AG<C-h><C-h>
-nmap <leader>tq :T q<cr>
-
-if has('nvim')
-  tnoremap <a-a> <esc>a
-  tnoremap <a-b> <esc>b
-  tnoremap <a-d> <esc>d
-  tnoremap <a-f> <esc>f
-endif
-
-if has('nvim')
-  tmap <C-h> <C-\><C-n>
-  nmap <leader>\ :vert Tnew<CR>
-endif
-
-
-function! s:find_git_root()
-  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
-
 
 " --- Options ---
 "________________
@@ -100,32 +65,8 @@ set diffopt+=iwhite
 
 let g:sparkupExecuteMapping='<c-g>'
 
-let g:rust_clip_command = 'pbcopy'
-
-let g:jsx_ext_required=0
-let g:vim_jsx_pretty_enable_jsx_highlight=1
-let g:vim_jsx_pretty_colorful_config=0
-let g:prettier#config#config_precedence='file-override'
-
-let g:vim_yaml_helper#auto_display_path = 1
-let g:vim_yaml_helper#always_get_root = 1
-
 let g:indexed_search_mappings = 1
 let g:indexed_search_center = 1
-
-let g:highlightedyank_highlight_duration=250
-
-nnoremap tT :TestNearest<cr>
-let test#strategy='neoterm'
-let test#ruby#rspec#executable = 'bin/rspec'
-let test#filename_modifier = ':p'
-
-let g:neoterm_default_mod='below'
-let g:neoterm_automap_keys=',tt'
-let g:neoterm_repl_ruby='pry'
-let g:neoterm_repl_python='ipython'
-
-let g:rufo_auto_formatting = 0
 
 let g:terraform_align = 1
 let g:terraform_fmt_on_save = 1
@@ -139,30 +80,9 @@ let g:user_debugger_dictionary = {
 
 
 set encoding=UTF-8
-
-let g:split_term_vertical=1
 " let g:vim_json_syntax_conceal=0
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
-
-let g:markdown_fenced_languages = ['elixir']
-
-function! Prose ()
-  set conceallevel=0
-  Goyo 100
-  set linebreak
-endfunction
-
-command! Prose call Prose ()
-
-" au FileType markdown Prose
-
-let g:vim_markdown_new_list_item_indent=0
-
-" Indent guides like sublime
-let g:indentLine_fileTypeExclude = ['text', 'help', 'vim']
-let g:indentLine_char = '┊'
-let g:indentLine_setConceal = 0
 
 command! Tt :call Toggle_theme()
 

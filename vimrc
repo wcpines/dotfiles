@@ -13,8 +13,9 @@ if filereadable(expand("~/dotfiles/vimrc.d/key_maps.vim"))
   source ~/dotfiles/vimrc.d/key_maps.vim
 endif
 
-if filereadable(expand("~/dotfiles/vimrc.d/plugins.vim"))
-  source ~/dotfiles/vimrc.d/plugins.vim
+" Load lazy.nvim
+if filereadable(expand("~/dotfiles/vimrc.d/lazy.lua"))
+  luafile ~/dotfiles/vimrc.d/lazy.lua
 endif
 
 if filereadable(expand("~/dotfiles/vimrc.d/plugin_configs.vim"))
