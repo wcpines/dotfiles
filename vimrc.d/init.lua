@@ -22,96 +22,37 @@ vim.api.nvim_set_hl(0, "VertSplit", { fg = "#000000", bg = "NONE" })
 vim.api.nvim_set_hl(0, "StatusLine", { fg = "#000000", bg = "NONE" })
 vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#000000", bg = "NONE" })
 
--- Setup NeoSolarized colorscheme
-local ok_status, NeoSolarized = pcall(require, "NeoSolarized")
-
-if not ok_status then
-	vim.api.nvim_err_writeln("NeoSolarized not found. Please make sure it's installed.")
-	return
+-- Default Setting for NeoSolarized (only if plugin is loaded)
+local neosolarized_ok, neosolarized = pcall(require, "NeoSolarized")
+if neosolarized_ok then
+	neosolarized.setup({
+		style = "dark", -- "dark" or "light"
+		transparent = false, -- true/false; Enable this to disable setting the background color
+		terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+		enable_italics = true, -- Italics for different highlight groups (eg. Statement, Condition, Comment, Include, etc.)
+		styles = {
+			-- Style to be applied to different syntax groups
+			comments = { italic = true },
+			keywords = { italic = true },
+			functions = { bold = true },
+			variables = {},
+			string = { italic = true },
+			underline = true, -- true/false; for global underline
+			undercurl = true, -- true/false; for global undercurl
+		},
+		-- Add specific highlight groups
+		on_highlights = function(highlights, colors)
+			highlights.Include.fg = colors.red -- Using `red` foreground for Includes
+		end,
+	})
+	-- Set colorscheme
+	vim.cmd([[colorscheme NeoSolarized]])
+	vim.opt.background = "dark"
+else
+	-- Fallback to default colorscheme if NeoSolarized is not available
+	vim.opt.background = "dark"
+	pcall(vim.cmd, [[colorscheme default]])
 end
-
--- Default Setting for NeoSolarized
-NeoSolarized.setup({
-	style = "dark", -- "dark" or "light"
-	transparent = true, -- true/false; Enable this to disable setting the background color
-	terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
-	enable_italics = true, -- Italics for different highlight groups (eg. Statement, Condition, Comment, Include, etc.)
-	styles = {
-		-- Style to be applied to different syntax groups
-		comments = { italic = true },
-		keywords = { italic = true },
-		functions = { bold = true },
-		variables = {},
-		string = { italic = true },
-		underline = true, -- true/false; for global underline
-		undercurl = true, -- true/false; for global undercurl
-	},
-	-- Add specific highlight groups
-	on_highlights = function(highlights, colors)
-		highlights.Include.fg = colors.red -- Using `red` foreground for Includes
-	end,
-})
-
--- Function to get the current ITERM_PROFILE
-local function get_iterm_profile()
-	-- Force Vim to re-read the environment variable
-	vim.fn.system("echo $ITERM_PROFILE > /tmp/iterm_profile")
-	local handle = io.open("/tmp/iterm_profile", "r")
-	if handle == nil then
-		vim.api.nvim_err_writeln("Failed to read ITERM_PROFILE")
-		return nil
-	end
-
-	local result = handle:read("*a")
-	handle:close()
-
-	result = vim.trim(result)
-
-	if result == "" then
-		vim.api.nvim_echo({ { "\nITERM_PROFILE is empty", "WarningMsg" } }, true, {})
-		return nil
-	end
-
-	-- vim.api.nvim_echo({ { "\nCurrent ITERM_PROFILE: " .. result, "None" } }, true, {})
-	return result
-end
-
--- Function to set colorscheme based on ITERM_PROFILE
-local function set_colorscheme()
-	local profile = get_iterm_profile()
-	if profile == nil then
-		vim.api.nvim_echo({ { "\nUsing default NeoSolarized settings", "WarningMsg" } }, true, {})
-		return
-	end
-
-	if profile == "solarized-light" then
-		vim.cmd([[colorscheme NeoSolarized]])
-		vim.opt.background = "light"
-	elseif profile == "solarized-dark" then
-		vim.cmd([[colorscheme NeoSolarized]])
-		vim.opt.background = "dark"
-	elseif profile == "kanagawa" then
-		vim.cmd("colorscheme kanagawa-wave")
-	else
-		vim.api.nvim_echo(
-			{ { "\nUnrecognized ITERM_PROFILE: " .. profile .. ". Using default background.", "WarningMsg" } },
-			true,
-			{}
-		)
-		vim.cmd([[colorscheme NeoSolarized]])
-	end
-end
-
--- Autocommand to update colorscheme when entering a buffer or regaining focus
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
-	pattern = "*",
-	callback = function()
-		set_colorscheme()
-	end,
-})
-
--- Optional: Command to manually update the colorscheme
-vim.api.nvim_create_user_command("UpdateColorScheme", set_colorscheme, {})
 ---------------------------
 ---------SETUP LSP---------
 ---------------------------
@@ -173,7 +114,7 @@ require("mason").setup({
 
 -- Setup Mason LSP Config
 require("mason-lspconfig").setup({
-	ensure_installed = { "ts_ls", "elixirls", "sqlls", "lua_ls" },
+	ensure_installed = { "ts_ls", "sqlls", "lua_ls" },
 	automatic_enable = true,
 })
 
@@ -203,17 +144,7 @@ lspconfig.ts_ls.setup({
 	},
 })
 
--- Elixir
-lspconfig.elixirls.setup({
-	on_attach = lsp_attach,
-	capabilities = capabilities,
-	cmd = { "elixir-ls" },
-	settings = {
-		elixirLS = {
-			-- Add any Elixir-specific settings here
-		},
-	},
-})
+-- Elixir - handled by elixir-tools.nvim plugin
 
 -- SQL
 lspconfig.sqlls.setup({
@@ -364,7 +295,7 @@ cmp.setup({
 
 require("lualine").setup({
 	options = {
-		theme = "NeoSolarized",
+		theme = "auto",
 	},
 	sections = {
 		lualine_c = { { "filename", file_status = true, path = 3 } },
@@ -415,7 +346,7 @@ require("nvim-treesitter.configs").setup({
 		enable = true,
 
 		-- list of language that will be disabled
-		disable = { "elixir", "csv" },
+		disable = { "csv" },
 
 		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
 		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).

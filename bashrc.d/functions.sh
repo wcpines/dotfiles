@@ -217,23 +217,6 @@ remove_chat_history_for_good() {
   fi
 }
 
-# edit() {
-# 	file_input=$1
-# 	file_name=$(echo $file_input | awk -F ':' '{print $1}')
-# 	line_number=$(echo $file_input | awk -F ':' '{print $2}')
-
-# 	nvim +"$line_number" "$file_name"
-
-# }
-
-use_ytop() {
-  if [[ -n $(which ytop) ]]; then
-    ytop -c solarized-dark
-  else
-    top
-  fi
-}
-
 git_int() {
   git stash --message "brb"
   git checkout master

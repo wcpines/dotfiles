@@ -5,7 +5,7 @@
 " --- Mappings ---
 " ________________
 
-let g:netrw_liststyle = 2
+let g:netrw_liststyle = 4
 
 augroup highlight_yank
     autocmd!
@@ -16,41 +16,27 @@ function! s:find_git_root()
   return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
 endfunction
 
-command! ProjectFiles execute 'Files' s:find_git_root()
+command! ProjectFiles lua require('fzf-lua').files({cwd = vim.fn.system('git rev-parse --show-toplevel 2> /dev/null'):gsub('\n', '')})
 
 " Note: Replaced by conform.nvim. Kinda does the same thing
 "nmap <leader>M :call CodeFmt()<cr>
 "
-map <leader>; :History:<CR>
-map <leader>b :Buffers<CR>
+map <leader>; :lua require('fzf-lua').command_history()<CR>
+map <leader>b :lua require('fzf-lua').buffers()<CR>
 map <leader>f :ProjectFiles<CR>
-map <leader>g :GFiles<CR>
-map <leader>m :History<CR>
-nnoremap <leader>T :BTags<CR>
+map <leader>g :lua require('fzf-lua').git_files()<CR>
+map <leader>m :lua require('fzf-lua').oldfiles()<CR>
+nnoremap <leader>T :lua require('fzf-lua').lsp_document_symbols()<CR>
 
-vnoremap gR y:Rg <C-r>"<CR>
-nnoremap gR :Rg <C-r><C-w><CR>
-nnoremap gF :call fzf#vim#files('.', {'options':'--query '.expand('<cword>')})<CR><C-a>
-let g:fzf_buffers_jump = 0
+vnoremap gR y:lua require('fzf-lua').grep({search = vim.fn.getreg('"')})<CR>
+nnoremap gR :lua require('fzf-lua').grep({search = vim.fn.expand('<cword>')})<CR>
+nnoremap gF :lua require('fzf-lua').files({query = vim.fn.expand('<cword>')})<CR>
+" Removed fzf.vim config
 
 " https://github.com/junegunn/fzf.vim/pull/733#issuecomment-559720813
 
-function! s:list_buffers()
-  redir => list
-  silent ls
-  redir END
-  return split(list, "\n")
-endfunction
+command! BD lua require('fzf-lua').buffers({actions = {['ctrl-d'] = {fn = require('fzf-lua.actions').buf_del, reload = true}}})
 
-function! s:delete_buffers(lines)
-  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
-endfunction
-
-command! BD call fzf#run(fzf#wrap({
-  \ 'source': s:list_buffers(),
-  \ 'sink*': { lines -> s:delete_buffers(lines) },
-  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
-\ }))
 
 map <leader>o :ZoomWinTabToggle<CR>
 

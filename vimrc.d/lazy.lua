@@ -15,9 +15,48 @@ vim.opt.rtp:prepend(lazypath)
 -- Configure lazy.nvim
 require("lazy").setup({
 	-- Syntax, languages, & frameworks
-	{ "chrisbra/csv.vim", ft = { "tsv", "csv" } },
+	{ "chrisbra/csv.vim" },
 	{ "darfink/vim-plist", ft = "plist" },
-	{ "elixir-tools/elixir-tools.nvim" },
+	{
+		"elixir-tools/elixir-tools.nvim",
+		version = "*",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			local elixir = require("elixir")
+
+			elixir.setup({
+				nextls = {
+					enable = true,
+					on_attach = function(client, bufnr)
+						-- LSP keymaps
+						local opts = { buffer = bufnr, noremap = true, silent = true }
+						vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+						vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+						vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+						vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+						vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+						vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+						vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+						vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+						vim.keymap.set(
+							"n",
+							"gl",
+							vim.diagnostic.open_float,
+							{ desc = "Show diagnostics in a floating window" }
+						)
+						vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+						vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+						vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+					end,
+				},
+				elixirls = { enable = false },
+				credo = { enable = false },
+			})
+		end,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+	},
 	{ "hashivim/vim-terraform" },
 	{ "https://github.com/elkasztano/nushell-syntax-vim" },
 	-- { "lmeijvogel/vim-yaml-helper", ft = "yaml" },
@@ -60,7 +99,56 @@ require("lazy").setup({
 	{ "nvim-lua/plenary.nvim" },
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
-	{ "greggh/claude-code.nvim" },
+	{
+		"greggh/claude-code.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim", -- Required for git operations
+		},
+		config = function()
+			require("claude-code").setup({
+				-- Terminal window settings
+				window = {
+					split_ratio = 0.3, -- Percentage of screen for the terminal window
+					position = "botright", -- Position: "botright", "topleft", "vertical", "float"
+					enter_insert = true, -- Enter insert mode when opening Claude Code
+					hide_numbers = true, -- Hide line numbers in the terminal window
+					hide_signcolumn = true, -- Hide the sign column in the terminal window
+				},
+				-- File refresh settings
+				refresh = {
+					enable = true, -- Enable file change detection
+					updatetime = 100, -- updatetime when Claude Code is active (milliseconds)
+					timer_interval = 1000, -- How often to check for file changes (milliseconds)
+					show_notifications = true, -- Show notification when files are reloaded
+				},
+				-- Git project settings
+				git = {
+					use_git_root = true, -- Set CWD to git root when opening Claude Code
+				},
+				-- Command settings
+				command = "claude", -- Command used to launch Claude Code
+				-- Command variants
+				command_variants = {
+					continue = "--continue", -- Resume the most recent conversation
+					resume = "--resume", -- Display an interactive conversation picker
+					verbose = "--verbose", -- Enable verbose logging
+				},
+				-- Keymaps
+				keymaps = {
+					toggle = {
+						normal = "<C-,>", -- Normal mode keymap for toggling Claude Code
+						terminal = "<C-,>", -- Terminal mode keymap for toggling Claude Code
+						variants = {
+							continue = "<leader>cC", -- Normal mode keymap for Claude Code with continue flag
+							verbose = "<leader>cV", -- Normal mode keymap for Claude Code with verbose flag
+						},
+					},
+					window_navigation = true, -- Enable window navigation keymaps (<C-h/j/k/l>)
+					scrolling = true, -- Enable scrolling keymaps (<C-f/b>)
+				},
+			})
+		end,
+	},
 
 	-- Autocompletion
 	{ "onsails/lspkind.nvim" },
@@ -93,9 +181,16 @@ require("lazy").setup({
 			vim.fn["fzf#install"]()
 		end,
 	},
-	{ "junegunn/fzf.vim" },
+	{ "ibhagwan/fzf-lua" },
 	{ "mhinz/vim-grepper" },
-	{ "subnut/visualstar.vim" },
+	{
+		"subnut/visualstar.vim",
+		event = "VeryLazy",
+		keys = {
+			{ "*", "<Plug>(VisualstarSearch-*)", mode = "x" },
+			{ "#", "<Plug>(VisualstarSearch-#)", mode = "x" },
+		},
+	},
 	{ "Dkendal/nvim-alternate" },
 
 	-- Display
@@ -105,64 +200,26 @@ require("lazy").setup({
 	{ "folke/tokyonight.nvim" },
 	{ "rebelot/kanagawa.nvim" },
 	{ "calind/selenized.nvim" },
-	{ "craftzdog/solarized-osaka.nvim" },
+	{
+		"craftzdog/solarized-osaka.nvim",
+		lazy = false,
+		priority = 1000,
+	},
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = false,
+		priority = 1000,
+	},
 	{
 		"Tsuzat/NeoSolarized.nvim",
 		branch = "master",
 		lazy = false,
 		priority = 1000,
-		config = function()
-			vim.cmd([[colorscheme NeoSolarized]])
-		end,
 	},
 	{ "elixir-editors/vim-elixir" },
 	{ "vim-scripts/AnsiEsc.vim" },
 	{ "vim-scripts/restore_view.vim" },
-	{
-		"lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
-		config = function()
-			-- Define subtle highlight groups for indent lines using NeoSolarized colors
-			vim.api.nvim_set_hl(0, "IndentBlanklineIndent1", { fg = "#073642", nocombine = true })
-			vim.api.nvim_set_hl(0, "IndentBlanklineIndent2", { fg = "#073642", nocombine = true })
-			vim.api.nvim_set_hl(0, "IndentBlanklineIndent3", { fg = "#073642", nocombine = true })
-			vim.api.nvim_set_hl(0, "IndentBlanklineIndent4", { fg = "#073642", nocombine = true })
-			vim.api.nvim_set_hl(0, "IndentBlanklineIndent5", { fg = "#073642", nocombine = true })
-			vim.api.nvim_set_hl(0, "IndentBlanklineIndent6", { fg = "#073642", nocombine = true })
-
-			-- Configure indent-blankline
-			require("ibl").setup({
-				indent = {
-					char = "│",
-					tab_char = "│",
-					highlight = "IndentBlanklineIndent1",
-				},
-				scope = {
-					enabled = true,
-					show_start = true,
-					show_end = true,
-					injected_languages = true,
-					highlight = "Function",
-					priority = 500,
-				},
-				exclude = {
-					filetypes = {
-						"help",
-						"startify",
-						"dashboard",
-						"lazy",
-						"mason",
-						"notify",
-						"toggleterm",
-						"lspinfo",
-						"checkhealth",
-						"man",
-					},
-					buftypes = { "terminal", "nofile", "prompt", "toggleterm" },
-				},
-			})
-		end,
-	},
 
 	-- Misc Enhancements
 	{ "AndrewRadev/splitjoin.vim" },
@@ -170,6 +227,36 @@ require("lazy").setup({
 		"andymass/vim-matchup",
 		init = function()
 			vim.g.matchup_treesitter_enabled = 1
+			vim.g.matchup_matchparen_deferred = 1
+			vim.g.matchup_matchparen_hi_surround_always = 1
+			-- Enable matchup for Elixir file types
+			vim.g.matchup_override_vimtex = 1
+		end,
+		config = function()
+			-- Enable Elixir do..end matching
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = { "elixir", "eelixir" },
+				callback = function()
+					vim.b.match_words = table.concat({
+						"\\<do\\>:\\<end\\>",
+						"\\<def\\>:\\<end\\>",
+						"\\<defp\\>:\\<end\\>",
+						"\\<defmodule\\>:\\<end\\>",
+						"\\<defprotocol\\>:\\<end\\>",
+						"\\<defimpl\\>:\\<end\\>",
+						"\\<case\\>:\\<end\\>",
+						"\\<cond\\>:\\<end\\>",
+						"\\<receive\\>:\\<end\\>",
+						"\\<try\\>:\\<rescue\\>:\\<catch\\>:\\<after\\>:\\<end\\>",
+						"\\<if\\>:\\<else\\>:\\<end\\>",
+						"\\<unless\\>:\\<else\\>:\\<end\\>",
+						"\\<with\\>:\\<else\\>:\\<end\\>",
+						"\\<fn\\>:\\<end\\>",
+						"\\<quote\\>:\\<end\\>",
+						"\\<for\\>:\\<end\\>",
+					}, ",")
+				end,
+			})
 		end,
 	},
 	{ "dhruvasagar/vim-table-mode", ft = { "tsv", "csv", "sql" } },

@@ -34,9 +34,9 @@ command! -nargs=1 RgCSV execute '!(head -n1 % && rg ' . shellescape(<args>) . ' 
 " *=================================================*
 
 " Strip trailing whitespace on save
-"function! StripTrailingWs()
-"    %s/\s\+$//e
-"endfunction
+function! StripTrailingWs()
+    %s/\s\+$//e
+endfunction
 
 " Format curl commands with proper line breaks
 function! FormatCurl()
@@ -74,7 +74,7 @@ autocmd BufWritePost,FileWritePost *.plist !plutil -convert binary1 <afile>
 autocmd Syntax * syntax keyword Todo OPTIMIZE FIXME TODO TBD NOTE containedin=.*Comment
 
 " Strip trailing whitespace on save
-"autocmd BufWritePre * call StripTrailingWs()
+autocmd BufWritePre * call StripTrailingWs()
 
 " Filetype detection for various extensions
 autocmd BufRead,BufNewFile *.phtml set filetype=html

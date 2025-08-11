@@ -25,6 +25,7 @@ set_light() {
   export BAT_THEME='Solarized (light)'
   git config --global core.pager "delta --theme='Solarized (light)'"
   switch_iterm2_profile "$ITERM_PROFILE"
+  echo "$ITERM_PROFILE" > ~/.current_color_theme_cache.txt
   printf "Theme set to %s\n" "$ITERM_PROFILE"
 }
 
@@ -33,13 +34,50 @@ set_dark() {
   export BAT_THEME='Solarized (dark)'
   git config --global core.pager "delta --theme='Solarized (dark)'"
   switch_iterm2_profile "$ITERM_PROFILE"
+  echo "$ITERM_PROFILE" > ~/.current_color_theme_cache.txt
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
+}
+
+set_rose_pine() {
+  export ITERM_PROFILE='rose-pine'
+  export BAT_THEME='Monokai Extended'
+  git config --global core.pager "delta --theme='Monokai Extended'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  echo "$ITERM_PROFILE" > ~/.current_color_theme_cache.txt
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
+}
+
+set_rose_pine_moon() {
+  export ITERM_PROFILE='rose-pine-moon'
+  export BAT_THEME='Monokai Extended'
+  git config --global core.pager "delta --theme='Monokai Extended'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  echo "$ITERM_PROFILE" > ~/.current_color_theme_cache.txt
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
+}
+
+set_rose_pine_dawn() {
+  export ITERM_PROFILE='rose-pine-dawn'
+  export BAT_THEME='Monokai Extended Light'
+  git config --global core.pager "delta --theme='GitHub'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  echo "$ITERM_PROFILE" > ~/.current_color_theme_cache.txt
+  printf "Theme set to %s\n" "$ITERM_PROFILE"
+}
+
+set_kanagawa() {
+  export ITERM_PROFILE='kanagawa'
+  export BAT_THEME='Monokai Extended'
+  git config --global core.pager "delta --theme='Monokai Extended'"
+  switch_iterm2_profile "$ITERM_PROFILE"
+  echo "$ITERM_PROFILE" > ~/.current_color_theme_cache.txt
   printf "Theme set to %s\n" "$ITERM_PROFILE"
 }
 
 set_theme_by_tod() {
   local hour
   hour=$(date +%H)
-  if ((10#$hour > 8 && 10#$hour < 18)); then
+  if ((10#$hour > 9 && 10#$hour < 18)); then
     set_light
   else
     set_dark
@@ -47,7 +85,7 @@ set_theme_by_tod() {
 }
 
 # Set the initial theme based on time of day
-set_theme_by_tod
+# set_theme_by_tod
 
 # Alias for toggling theme
 alias tt="toggle_theme"

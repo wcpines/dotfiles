@@ -77,3 +77,5 @@ failed_records.json
 .projections.json
 .env*
 **.envrc.d/**/
+*.claude*
+*output/
