@@ -22,11 +22,24 @@ vim.api.nvim_set_hl(0, "VertSplit", { fg = "#000000", bg = "NONE" })
 vim.api.nvim_set_hl(0, "StatusLine", { fg = "#000000", bg = "NONE" })
 vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#000000", bg = "NONE" })
 
+-- -- Time-based background switching
+-- local function set_background_by_time()
+-- 	local current_hour = tonumber(os.date("%H"))
+-- 	if current_hour >= 7 and current_hour < 18 then
+-- 		vim.opt.background = "light"
+-- 		return "light"
+-- 	else
+-- 		vim.opt.background = "dark"
+-- 		return "dark"
+-- 	end
+-- end
+--
+--
 -- Default Setting for NeoSolarized (only if plugin is loaded)
 local neosolarized_ok, neosolarized = pcall(require, "NeoSolarized")
 if neosolarized_ok then
 	neosolarized.setup({
-		style = "dark", -- "dark" or "light"
+		style = time_based_style, -- "dark" or "light" based on time
 		transparent = false, -- true/false; Enable this to disable setting the background color
 		terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
 		enable_italics = true, -- Italics for different highlight groups (eg. Statement, Condition, Comment, Include, etc.)
@@ -47,12 +60,20 @@ if neosolarized_ok then
 	})
 	-- Set colorscheme
 	vim.cmd([[colorscheme NeoSolarized]])
-	vim.opt.background = "dark"
 else
 	-- Fallback to default colorscheme if NeoSolarized is not available
-	vim.opt.background = "dark"
 	pcall(vim.cmd, [[colorscheme default]])
 end
+
+-- Get time-based style
+-- Time-based background switching
+local current_hour = tonumber(os.date("%H"))
+if current_hour >= 7 and current_hour < 18 then
+	vim.opt.background = "light"
+else
+	vim.opt.background = "dark"
+end
+
 ---------------------------
 ---------SETUP LSP---------
 ---------------------------
@@ -87,6 +108,9 @@ end
 
 -- LSP keymaps
 local function lsp_attach(client, bufnr)
+	-- Disable semantic tokens for all servers to reduce load
+	client.server_capabilities.semanticTokensProvider = nil
+
 	-- Buffer local mappings
 	local opts = { buffer = bufnr, noremap = true, silent = true }
 
@@ -116,6 +140,13 @@ require("mason").setup({
 require("mason-lspconfig").setup({
 	ensure_installed = { "ts_ls", "sqlls", "lua_ls" },
 	automatic_enable = true,
+})
+
+-- Global LSP settings for performance
+vim.lsp.set_log_level("warn") -- Reduce log verbosity
+vim.diagnostic.config({
+	update_in_insert = false, -- Don't update diagnostics in insert mode
+	severity_sort = true,
 })
 
 -- LSP capabilities
@@ -353,56 +384,6 @@ require("nvim-treesitter.configs").setup({
 		-- Using this option may slow down your editor, and you may see some duplicate highlights.
 		-- Instead of true it can also be a list of languages
 		additional_vim_regex_highlighting = true,
-	},
-})
-
--- Setup Claude Code
-require("claude-code").setup({
-	-- Terminal window settings
-	window = {
-		split_ratio = 0.3, -- Percentage of screen for the terminal window
-		position = "botright", -- Position of the window
-		enter_insert = true, -- Enter insert mode when opening Claude Code
-		hide_numbers = true, -- Hide line numbers in the terminal window
-		hide_signcolumn = true, -- Hide the sign column in the terminal window
-	},
-	-- File refresh settings
-	refresh = {
-		enable = true, -- Enable file change detection
-		updatetime = 100, -- updatetime when Claude Code is active
-		timer_interval = 1000, -- How often to check for file changes
-		show_notifications = true, -- Show notification when files are reloaded
-	},
-	-- Git project settings
-	git = {
-		use_git_root = true, -- Set CWD to git root when opening Claude Code
-	},
-	-- Shell-specific settings
-	shell = {
-		separator = "&&", -- Command separator for bash
-		pushd_cmd = "pushd", -- Command to push directory onto stack
-		popd_cmd = "popd", -- Command to pop directory from stack
-	},
-	-- Command settings
-	command = "claude", -- Command used to launch Claude Code
-	-- Command variants
-	command_variants = {
-		continue = "--continue", -- Resume the most recent conversation
-		resume = "--resume", -- Display an interactive conversation picker
-		verbose = "--verbose", -- Enable verbose logging
-	},
-	-- Keymaps
-	keymaps = {
-		toggle = {
-			normal = "<leader>cc", -- Normal mode keymap for toggling Claude Code
-			terminal = "<C-,>", -- Terminal mode keymap for toggling Claude Code
-			variants = {
-				continue = "<leader>cC", -- Continue conversation
-				verbose = "<leader>cV", -- Verbose mode
-			},
-		},
-		window_navigation = true, -- Enable window navigation keymaps
-		scrolling = true, -- Enable scrolling keymaps
 	},
 })
 

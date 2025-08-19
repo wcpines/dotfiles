@@ -21,13 +21,36 @@ require("lazy").setup({
 		"elixir-tools/elixir-tools.nvim",
 		version = "*",
 		event = { "BufReadPre", "BufNewFile" },
+		ft = { "elixir", "eelixir", "heex", "surface" },
 		config = function()
 			local elixir = require("elixir")
 
 			elixir.setup({
 				nextls = {
 					enable = true,
+					-- Prevent multiple instances
+					single_file_support = false,
+					-- Add debugging and performance settings
+					init_options = {
+						experimental = {
+							completions = {
+								enable = false, -- Disable to reduce load
+							},
+						},
+					},
+					cmd_env = {
+						-- Enable debug logging
+						NEXTLS_LOG_LEVEL = "debug",
+					},
+					-- Prevent automatic restarts that could spawn multiple instances
+					flags = {
+						debounce_text_changes = 1000, -- Wait 1s before processing changes
+						allow_incremental_sync = true,
+					},
 					on_attach = function(client, bufnr)
+						-- Disable semantic tokens to reduce load
+						client.server_capabilities.semanticTokensProvider = nil
+
 						-- LSP keymaps
 						local opts = { buffer = bufnr, noremap = true, silent = true }
 						vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
@@ -99,56 +122,6 @@ require("lazy").setup({
 	{ "nvim-lua/plenary.nvim" },
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
-	{
-		"greggh/claude-code.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim", -- Required for git operations
-		},
-		config = function()
-			require("claude-code").setup({
-				-- Terminal window settings
-				window = {
-					split_ratio = 0.3, -- Percentage of screen for the terminal window
-					position = "botright", -- Position: "botright", "topleft", "vertical", "float"
-					enter_insert = true, -- Enter insert mode when opening Claude Code
-					hide_numbers = true, -- Hide line numbers in the terminal window
-					hide_signcolumn = true, -- Hide the sign column in the terminal window
-				},
-				-- File refresh settings
-				refresh = {
-					enable = true, -- Enable file change detection
-					updatetime = 100, -- updatetime when Claude Code is active (milliseconds)
-					timer_interval = 1000, -- How often to check for file changes (milliseconds)
-					show_notifications = true, -- Show notification when files are reloaded
-				},
-				-- Git project settings
-				git = {
-					use_git_root = true, -- Set CWD to git root when opening Claude Code
-				},
-				-- Command settings
-				command = "claude", -- Command used to launch Claude Code
-				-- Command variants
-				command_variants = {
-					continue = "--continue", -- Resume the most recent conversation
-					resume = "--resume", -- Display an interactive conversation picker
-					verbose = "--verbose", -- Enable verbose logging
-				},
-				-- Keymaps
-				keymaps = {
-					toggle = {
-						normal = "<C-,>", -- Normal mode keymap for toggling Claude Code
-						terminal = "<C-,>", -- Terminal mode keymap for toggling Claude Code
-						variants = {
-							continue = "<leader>cC", -- Normal mode keymap for Claude Code with continue flag
-							verbose = "<leader>cV", -- Normal mode keymap for Claude Code with verbose flag
-						},
-					},
-					window_navigation = true, -- Enable window navigation keymaps (<C-h/j/k/l>)
-					scrolling = true, -- Enable scrolling keymaps (<C-f/b>)
-				},
-			})
-		end,
-	},
 
 	-- Autocompletion
 	{ "onsails/lspkind.nvim" },

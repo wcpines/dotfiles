@@ -70,6 +70,8 @@ let g:netrw_winsize=0
 let g:netrw_preview=1    " preview opened file in v-split
 let g:netrw_browse_split=0
 
+" open file with default program
+nmap <leader>O :!open %<cr>
 " select a block
 nmap <leader>V ^V$%
 
