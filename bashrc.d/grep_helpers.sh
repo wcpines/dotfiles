@@ -18,6 +18,10 @@ rip_grep_glob_search() {
 	rip_grep_files $path_pattern | xargs rg -i $content_pattern
 }
 
+rip_grep_delta() {
+  rg $@ --json | delta
+}
+
 rip_grep_files() {
 	pattern=$1
 	rg --no-ignore --files | rg $pattern

@@ -9,15 +9,12 @@ for file in ${HOME}/dotfiles/bashrc.d/*.sh; do
 	source $file
 done
 
-if [[ -f ~/.env ]]; then
+if [[ -f ~/.env.sh ]]; then
 	set -a
-	source ~/.env
+	source ~/.env.sh
 	set +a
 fi
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-[ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
 
 
 eval "$(direnv hook bash)"

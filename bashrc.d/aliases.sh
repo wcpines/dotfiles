@@ -3,7 +3,7 @@
 #===========================#
 
 if [[ -n $(which bat) ]]; then
-	alias cat="bat"
+  alias cat="bat --theme auto:system"
 fi
 
 # alias rg="rg --hidden"
@@ -12,6 +12,9 @@ alias ..="cd .."
 alias :q="exit"
 alias :qa="exit"
 alias ah="ls -gFash"
+alias ls="ls -G"
+alias ll="ls -lGh"
+alias la="ls -laG"
 alias als="nvim $HOME/dotfiles/bashrc.d/aliases.sh"
 alias blog="cd $HOME/Tresorit/Colby/blog/"
 alias bp="nvim $HOME/dotfiles/bashrc.d"
@@ -68,6 +71,7 @@ alias mt="mix test"
 alias mtf="mix test --failed"
 alias myip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*'"
 alias phx="mix phx.server"
+alias rgd="rip_grep_delta"
 alias rgf="rip_grep_files"
 alias rgg="rip_grep_glob_search"
 alias rgi="rip_grep_ignore_case"

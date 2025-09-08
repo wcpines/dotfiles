@@ -79,3 +79,5 @@ failed_records.json
 **.envrc.d/**/
 *.claude*
 *output/
+.DS_Store
+*appointment_v2*csv

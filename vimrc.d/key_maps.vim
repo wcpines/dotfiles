@@ -62,7 +62,7 @@ nmap <leader>y :%y<CR>
 
 " copy/paste all lines matching last search pattern to register a
 nmap <leader>Y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
-nmap <leader>p "Ap
+nmap <leader>P "Ap
 
 " Open netrw like nerd tree
 nmap <leader>n :Vex 20<CR>
@@ -73,7 +73,7 @@ let g:netrw_browse_split=0
 " open file with default program
 nmap <leader>O :!open %<cr>
 " select a block
-nmap <leader>V ^V$%
+nmap <leader>V $V%
 
 " easily toggle find/replace
 nmap S :%s//g<LEFT><LEFT>

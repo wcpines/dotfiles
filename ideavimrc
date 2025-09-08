@@ -72,7 +72,7 @@ nmap <leader>a gg<S-v>G<CR>
 " copy/paste all lines matching last search pattern
 nmap <leader>y :let @a=""<CR>:g/<C-r>//y A<CR><C-o>
 nmap <leader>D :let @a=""<CR>:g/<C-r>//d A<CR><C-o>
-nmap <leader>p "Ap
+nmap <leader>P "Ap
 
 " select a block
 nmap <leader>V ^V$%
@@ -173,3 +173,19 @@ autocmd Syntax * syntax keyword Todo OPTIMIZE FIXME TODO TBD NOTE containedin=.*
 
 " kill trailing whitespace on save
 autocmd BufWritePre * :%s/\s\+$//e
+
+"
+" Convert list to SQL IN clause arguments
+function! SqlArgs()
+  try
+    %s/^/'/ge
+    %s/$/'/ge
+    %s/\n/,\r/ge
+    execute "normal! Gdd$xA)"
+    execute "normal! ggI("
+  catch
+    echo "Error in SqlArgs function"
+  endtry
+endfunction
+
+command! SqlArgs call SqlArgs()

@@ -8,8 +8,8 @@ defaults write NSGlobalDomain AppleHighlightColor -string "1.000000 0.874510 0.7
 # Always show scrollbars
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
 
-# Reduce transparency effects (improves performance on older machines)
-# Uncomment if needed: defaults write com.apple.universalaccess reduceTransparency -bool true
+# Disable transparency in the menu bar and elsewhere on Yosemite
+# defaults write com.apple.universalaccess reduceTransparency -bool true
 
 # Increase window resize speed for Cocoa applications
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
@@ -34,8 +34,7 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
 
 
-# Show battery percentage in menu bar
-# Note: In modern macOS, this is managed through System Settings > Control Center
+# Show battery on menubar
 defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 
 # Expand save panel by default
@@ -46,8 +45,7 @@ defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
-# Disable Gatekeeper quarantine for downloaded apps (requires System Settings confirmation in Sequoia)
-# Note: In macOS Sequoia, this command requires manual confirmation in System Settings > Privacy & Security
+# Disable the “Are you sure you want to open this application?” dialog
 defaults write com.apple.LaunchServices LSQuarantine -bool false
 
 # Reveal IP address, hostname, OS version, etc. when clicking the clock
@@ -82,11 +80,9 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 10
 # Show language menu in the top right corner of the boot screen
 sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true
 
-# Save screenshots to the Tresorit Screenshots (fixed typo)
+# Save screenshots to the Tresorit Sceenshots
 defaults write com.apple.screencapture location "$HOME/Tresorit/Colby/Screenshots"
-# Disable screenshot preview window
-defaults write com.apple.screencapture disable-preview -bool true
-# Disable floating thumbnail after screenshot
+defaults write com.apple.screencapture disable-preview true
 defaults write com.apple.screencapture show-thumbnail -bool false
 
 
@@ -99,10 +95,9 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Finder: disable window animations and Get Info animations
 defaults write com.apple.finder DisableAllAnimations -bool true
 
-# Enable font smoothing (deprecated GUI option but command still works)
-# Apple removed the GUI in Big Sur - mostly unnecessary on Retina displays
-# Light smoothing for external non-Retina displays
-defaults -currentHost write -g AppleFontSmoothing -int 1
+# Enable subpixel font rendering on non-Apple LCDs
+# Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
+defaults write NSGlobalDomain AppleFontSmoothing -int 1
 
 # Show icons for external drives, servers, and removable media on the desktop
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
@@ -147,7 +142,7 @@ defaults write com.apple.dock minimize-to-application -bool true
 # Set dock size
 defaults write com.apple.dock tilesize -int 36
 
-# Set dock and menubar theme to dark mode (works on modern macOS)
+# Set dock and menubar theme (may not work in osx sierra)
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 
 # Wipe all (default) app icons from the Dock
@@ -177,9 +172,8 @@ defaults write com.apple.dock expose-group-by-app -bool false
 # Prevent Photos from opening automatically when devices are plugged in
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 
-# Prevent Music app from opening automatically when devices are plugged in
-# Note: iTunes is replaced by Music app in modern macOS
-defaults write com.apple.Music ignore-devices 1
+# Prevent iTunes from opening automatically when devices are plugged in
+defaults write com.apple.iTunesHelper ignore-devices 1
 
 ###############################################################################
 # Chrome                                                                      #
@@ -219,32 +213,5 @@ defaults write com.apple.terminal SecureKeyboardEntry -bool true
 # Messages                                                                    #
 ###############################################################################
 
-# Disable smart quotes as it's annoying for messages that contain code
+# Disable smart quotes as it’s annoying for messages that contain code
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
-
-###############################################################################
-# macOS Sequoia 15+ Modern Settings                                          #
-###############################################################################
-
-# Window tiling settings (new in Sequoia)
-# Disable margins between tiled windows for cleaner look
-defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
-
-# Stage Manager settings (introduced in Ventura, refined in Sequoia)
-# Disable Stage Manager by default
-defaults write com.apple.WindowManager GloballyEnabled -bool false
-
-# Control Center customization (modern macOS)
-# Show Bluetooth in menu bar
-defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
-
-# Show Sound in menu bar
-defaults write com.apple.controlcenter "NSStatusItem Visible Sound" -bool true
-
-# Privacy settings for modern macOS
-# Disable location-based suggestions
-defaults write com.apple.suggestions SuggestionsEnabled -bool false
-
-# Disable Siri suggestions in Spotlight
-defaults write com.apple.Spotlight showedFTE -bool true
-defaults write com.apple.Spotlight "DisabledDataSources" -array "MENU_EXPRESSION" "MENU_WEBSEARCH" "MENU_SPOTLIGHT_SUGGESTIONS"

@@ -209,9 +209,9 @@ remove_chat_history_for_good() {
   read -p "$1>>> " user_input
   if [[ $user_input == "yes" ]]; then
     echo "Deleting chat history"
-    rm -rf $HOME/Library/Messages/chat.db*
-    rm -rf $HOME/Library/Messages/Archive/
-    rm -rf $HOME/Library/Messages/Attachments/
+    sudo rm -rf $HOME/Library/Messages/chat.db*
+    sudo rm -rf $HOME/Library/Messages/Archive/
+    sudo rm -rf $HOME/Library/Messages/Attachments/
   else
     echo "Canceling"
   fi

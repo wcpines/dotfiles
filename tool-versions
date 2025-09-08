@@ -1,6 +1,9 @@
-erlang 27.2.1
-elixir 1.18.2-otp-27
+elixir 1.18.4-otp-27
+erlang 27.3.4.2
+just 1.26.0
 nodejs 24.2.0
-yarn 1.22.5
 python 3.11.5
 ruby 3.0.1
+terraform 1.11.2
+typos 1.22.3
+yarn 1.22.5

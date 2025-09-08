@@ -3,28 +3,28 @@
 #============================================#
 
 [[ -s $HOME/.scm_breeze/scm_breeze.sh ]] &&
-	source "$HOME/.scm_breeze/scm_breeze.sh"
+  source "$HOME/.scm_breeze/scm_breeze.sh"
 
-[[ -f ~/.fzf.bash ]] &&
-	source ~/.fzf.bash
+[[ -r ~/.fzf.bash ]] &&
+  source ~/.fzf.bash
 
-[[ -f $HOMEBREW_PREFIX/etc/bash_completion ]] &&
-	source $HOMEBREW_PREFIX/etc/bash_completion
+[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] &&
+  source "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
 
-[[ -f $HOMEBREW_PREFIX/opt/asdf/asdf.sh ]] &&
-	source $HOMEBREW_PREFIX/opt/asdf/asdf.sh
+[[ -r $HOMEBREW_PREFIX/opt/asdf/asdf.sh ]] &&
+  source $HOMEBREW_PREFIX/opt/asdf/asdf.sh
 
-[[ -f $HOME/.asdf/completions/asdf.bash ]] &&
-	source $HOME/.asdf/completions/asdf.bash
+[[ -r $HOME/.asdf/completions/asdf.bash ]] &&
+  source $HOME/.asdf/completions/asdf.bash
 
 if [[ -n $NVIM_LISTEN_ADDRESS ]]; then
-	export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
+  export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
 elif [[ -x $(which nvim) ]]; then
-	export VISUAL="nvim"
-	export EDITOR="nvim"
+  export VISUAL="nvim"
+  export EDITOR="nvim"
 else
-	export VISUAL='vim'
-	export EDITOR="vim"
+  export VISUAL='vim'
+  export EDITOR="vim"
 fi
 
 export BASH_SILENCE_DEPRECATION_WARNING=1 # macos catalina uses zsh
@@ -53,3 +53,10 @@ export HISTTIMEFORMAT="%d/%m/%y %T "
 export HISTIGNORE='&:[ ]*'
 
 export ERLANG_OPENSSL_PATH="/usr/bin/openssl"
+
+# Enable colored ls output
+export CLICOLOR=1
+export LSCOLORS=ExFxCxDxBxegedabagacad
+
+export BAT_THEME_DARK='Solarized (dark)'
+export BAT_THEME_LIGHT='Solarized (light)'

@@ -16,26 +16,33 @@ function! s:find_git_root()
   return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
 endfunction
 
-command! ProjectFiles lua require('fzf-lua').files({cwd = vim.fn.system('git rev-parse --show-toplevel 2> /dev/null'):gsub('\n', '')})
+" command! ProjectFiles lua require('fzf-lua').files({cwd = vim.fn.system('git rev-parse --show-toplevel 2> /dev/null'):gsub('\n', '')})
 
 " Note: Replaced by conform.nvim. Kinda does the same thing
 "nmap <leader>M :call CodeFmt()<cr>
 "
-map <leader>; :lua require('fzf-lua').command_history()<CR>
-map <leader>b :lua require('fzf-lua').buffers()<CR>
-map <leader>f :ProjectFiles<CR>
-map <leader>g :lua require('fzf-lua').git_files()<CR>
-map <leader>m :lua require('fzf-lua').oldfiles()<CR>
-nnoremap <leader>T :lua require('fzf-lua').lsp_document_symbols()<CR>
+" map <leader>; :lua require('fzf-lua').command_history()<CR>
+" map <leader>b :lua require('fzf-lua').buffers()<CR>
+" map <leader>f :ProjectFiles<CR>
+" map <leader>g :lua require('fzf-lua').git_files()<CR>
+" map <leader>m :lua require('fzf-lua').oldfiles()<CR>
+" nnoremap <leader>T :lua require('fzf-lua').lsp_document_symbols()<CR>
 
-vnoremap gR y:lua require('fzf-lua').grep({search = vim.fn.getreg('"')})<CR>
-nnoremap gR :lua require('fzf-lua').grep({search = vim.fn.expand('<cword>')})<CR>
-nnoremap gF :lua require('fzf-lua').files({query = vim.fn.expand('<cword>')})<CR>
+" vnoremap gR y:lua require('fzf-lua').grep({search = vim.fn.getreg('"')})<CR>
+" nnoremap gR :lua require('fzf-lua').grep({search = vim.fn.expand('<cword>')})<CR>
+" nnoremap gF :lua require('fzf-lua').files({query = vim.fn.expand('<cword>')})<CR>
 " Removed fzf.vim config
 
 " https://github.com/junegunn/fzf.vim/pull/733#issuecomment-559720813
 
-command! BD lua require('fzf-lua').buffers({actions = {['ctrl-d'] = {fn = require('fzf-lua.actions').buf_del, reload = true}}})
+" command! BD lua require('fzf-lua').buffers({actions = {['ctrl-d'] = {fn = require('fzf-lua.actions').buf_del, reload = true}}})
+
+" New BD command using snacks picker for buffer deletion
+" The buffers picker has built-in Ctrl+X and dd keymaps for buffer deletion
+command! BD lua vim.schedule(function() require('snacks').picker.buffers() end)
+
+" Rg command using snacks picker for ripgrep search with file filtering
+command! -nargs=* Rg lua vim.schedule(function() require('snacks').picker.grep_word({search = <q-args>}) end)
 
 
 map <leader>o :ZoomWinTabToggle<CR>

@@ -38,4 +38,4 @@ set textwidth=0                                         " Controls the wrap widt
 set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these directories and patterns
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
-set lazyredraw                                          " Don't redraw during macro execution
+" set lazyredraw                                          " Don't redraw during macro execution

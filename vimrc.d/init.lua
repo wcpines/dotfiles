@@ -348,7 +348,7 @@ local function toggle_diagnostics()
 end
 
 -- Add this mapping to your keybindings section
-vim.keymap.set("n", "<leader>D", function()
+vim.keymap.set("n", "<leader>t", function()
 	toggle_diagnostics()
 	require("cmp").setup.buffer({ enabled = false })
 end, { desc = "Toggle diagnostics and disable completion" })
@@ -383,10 +383,26 @@ require("nvim-treesitter.configs").setup({
 		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
 		-- Using this option may slow down your editor, and you may see some duplicate highlights.
 		-- Instead of true it can also be a list of languages
-		additional_vim_regex_highlighting = true,
+		additional_vim_regex_highlighting = false,
 	},
 })
 
+-- Auto-change to git root directory
+local function change_to_git_root()
+	local git_root = vim.fs.root(0, '.git')
+	if git_root then
+		vim.cmd.cd(git_root)
+	end
+end
+
+-- Create autocommand group for git root directory changes
+vim.api.nvim_create_augroup('AutoGitRoot', { clear = true })
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+	group = 'AutoGitRoot',
+	callback = change_to_git_root,
+})
+
 -- Load plugin configurations
-local plugin_configs = dofile("/Users/colby/dotfiles/vimrc.d/plugin_configs.lua")
+local user = os.getenv("USER") or os.getenv("USERNAME") -- fallback for Windows
+local plugin_configs = dofile("/Users/" .. user .. "/dotfiles/vimrc.d/plugin_configs.lua")
 plugin_configs.init()
