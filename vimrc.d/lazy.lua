@@ -230,6 +230,17 @@ require("lazy").setup({
 					}, ",")
 				end,
 			})
+
+			-- Enable TypeScript/JavaScript bracket matching
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+				callback = function()
+					-- Enable matchup for these filetypes
+					vim.b.matchup_matchparen_enabled = 1
+					-- Set match pairs for TypeScript/JavaScript
+					vim.opt_local.matchpairs = "(:),{:},[:],<:>"
+				end,
+			})
 		end,
 	},
 	{ "dhruvasagar/vim-table-mode", ft = { "tsv", "csv", "sql" } },

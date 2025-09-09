@@ -80,4 +80,3 @@ failed_records.json
 *.claude*
 *output/
 .DS_Store
-*appointment_v2*csv
