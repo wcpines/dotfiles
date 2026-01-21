@@ -38,6 +38,9 @@ export PATH="$HOME/.asdf/shims:$PATH"
 export PATH="/Users/cpines/.okta/bin:$PATH"
 export PATH="/Users/cpines/.okta/bin:$PATH"
 export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
 
 # Makes man page reader vim instead of less
 export MANPAGER='col -bx | nvim -c ":set ft=man nonu nolist" -c ":IndentLinesDisable" -R -'

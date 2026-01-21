@@ -175,7 +175,16 @@ lspconfig.ts_ls.setup({
 	},
 })
 
--- Elixir - handled by elixir-tools.nvim plugin
+-- Elixir (Expert - official Elixir LSP)
+vim.lsp.config('expert', {
+	cmd = { vim.fn.expand('~/.local/bin/expert'), '--stdio' },
+	root_markers = { 'mix.exs', '.git' },
+	filetypes = { 'elixir', 'eelixir', 'heex' },
+	on_attach = lsp_attach,
+	capabilities = capabilities,
+})
+
+vim.lsp.enable('expert')
 
 -- SQL
 lspconfig.sqlls.setup({

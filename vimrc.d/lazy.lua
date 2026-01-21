@@ -15,71 +15,9 @@ vim.opt.rtp:prepend(lazypath)
 -- Configure lazy.nvim
 require("lazy").setup({
 	-- Syntax, languages, & frameworks
+	{ "PedramNavid/dbtpal" },
 	{ "chrisbra/csv.vim" },
 	{ "darfink/vim-plist", ft = "plist" },
-	{
-		"elixir-tools/elixir-tools.nvim",
-		version = "*",
-		event = { "BufReadPre", "BufNewFile" },
-		ft = { "elixir", "eelixir", "heex", "surface" },
-		config = function()
-			local elixir = require("elixir")
-
-			elixir.setup({
-				nextls = {
-					enable = true,
-					-- Prevent multiple instances
-					single_file_support = false,
-					-- Add debugging and performance settings
-					init_options = {
-						experimental = {
-							completions = {
-								enable = false, -- Disable to reduce load
-							},
-						},
-					},
-					cmd_env = {
-						-- Enable debug logging
-						NEXTLS_LOG_LEVEL = "debug",
-					},
-					-- Prevent automatic restarts that could spawn multiple instances
-					flags = {
-						debounce_text_changes = 1000, -- Wait 1s before processing changes
-						allow_incremental_sync = true,
-					},
-					on_attach = function(client, bufnr)
-						-- Disable semantic tokens to reduce load
-						client.server_capabilities.semanticTokensProvider = nil
-
-						-- LSP keymaps
-						local opts = { buffer = bufnr, noremap = true, silent = true }
-						vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-						vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-						vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-						vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-						vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-						vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-						vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-						vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-						vim.keymap.set(
-							"n",
-							"gl",
-							vim.diagnostic.open_float,
-							{ desc = "Show diagnostics in a floating window" }
-						)
-						vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-						vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-						vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-					end,
-				},
-				elixirls = { enable = false },
-				credo = { enable = false },
-			})
-		end,
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-	},
 	{ "hashivim/vim-terraform" },
 	{ "https://github.com/elkasztano/nushell-syntax-vim" },
 	-- { "lmeijvogel/vim-yaml-helper", ft = "yaml" },
@@ -275,15 +213,15 @@ require("lazy").setup({
 			{ "<leader>p", function() require("snacks").picker() end, desc = "Picker" },
 			{ "<leader>D", function() require("snacks").picker.diagnostics() end, desc = "Diagnostics" },
 			{ "<leader>m", function() require("snacks").picker.recent() end, desc = "Recent Files" },
-			
+
 			-- Replace fzf-lua mappings
 			{ "<leader>;", function() require("snacks").picker.command_history() end, desc = "Command History" },
 			{ "<leader>b", function() require("snacks").picker.buffers() end, desc = "Buffers" },
 			{ "<leader>f", function() require("snacks").picker.files() end, desc = "Files" },
 			{ "<leader>g", function() require("snacks").picker.git_files() end, desc = "Git Files" },
 			{ "<leader>T", function() require("snacks").picker.lsp_symbols() end, desc = "LSP Symbols" },
-			
-			-- Search mappings  
+
+			-- Search mappings
 			{ "gR", function() require("snacks").picker.grep_word() end, desc = "Grep Word", mode = { "n", "x" } },
 			{ "gF", function() require("snacks").picker.files({ pattern = vim.fn.expand('<cword>') }) end, desc = "Find Files with Word" },
 		},
