@@ -82,7 +82,7 @@ end
 local function check_plugin(plugin_name)
 	local ok, _ = pcall(require, plugin_name)
 	if not ok then
-		vim.api.nvim_err_writeln(string.format("Plugin '%s' not found. Please run :PlugInstall", plugin_name))
+		vim.api.nvim_err_writeln(string.format("Plugin '%s' not found. Please run :Lazy install", plugin_name))
 		return false
 	end
 	return true
@@ -362,39 +362,7 @@ vim.keymap.set("n", "<leader>t", function()
 	require("cmp").setup.buffer({ enabled = false })
 end, { desc = "Toggle diagnostics and disable completion" })
 
-require("nvim-treesitter.configs").setup({
-	-- A directory to install the parsers into.
-	-- If this is excluded or nil parsers are installed
-	-- to either the package dir, or the "site" dir.
-	-- If a custom path is used (not nil) it must be added to the runtimepath.
-	-- parser_install_dir = "/some/path/to/store/parsers",
-
-	-- A list of parser names, or "all"
-	ensure_installed = { "typescript", "elixir", "lua", "python", "sql" },
-
-	-- Install parsers synchronously (only applied to `ensure_installed`)
-	sync_install = false,
-
-	-- Automatically install missing parsers when entering buffer
-	auto_install = false,
-
-	-- List of parsers to ignore installing (for "all")
-	ignore_install = { "javascript" },
-
-	highlight = {
-		-- `false` will disable the whole extension
-		enable = true,
-
-		-- list of language that will be disabled
-		disable = { "csv" },
-
-		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-		-- Using this option may slow down your editor, and you may see some duplicate highlights.
-		-- Instead of true it can also be a list of languages
-		additional_vim_regex_highlighting = false,
-	},
-})
+-- Treesitter configured in lazy.lua
 
 -- Auto-change to git root directory
 local function change_to_git_root()
@@ -410,6 +378,67 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
 	group = 'AutoGitRoot',
 	callback = change_to_git_root,
 })
+
+---------------------------
+------PLUGIN CONFIGS-------
+---------------------------
+
+-- Baleia: ANSI escape code colorizer
+local baleia = require("baleia").setup({
+	line_starts_at = 1,
+	colors = {
+		-- Use terminal colors (0-15) for compatibility
+		[0] = "#000000",
+		[1] = "#cc0000",
+		[2] = "#4e9a06",
+		[3] = "#c4a000",
+		[4] = "#3465a4",
+		[5] = "#75507b",
+		[6] = "#06989a",
+		[7] = "#d3d7cf",
+		[8] = "#555753",
+		[9] = "#ef2929",
+		[10] = "#8ae234",
+		[11] = "#fce94f",
+		[12] = "#729fcf",
+		[13] = "#ad7fa8",
+		[14] = "#34e2e2",
+		[15] = "#eeeeec",
+	},
+})
+
+-- Command to colorize current buffer
+vim.api.nvim_create_user_command("BaleiaColorize", function()
+	baleia.once(vim.api.nvim_get_current_buf())
+end, { desc = "Colorize ANSI escape codes in buffer" })
+
+-- Auto-colorize log files
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = { "*.log", "*.ansi" },
+	callback = function()
+		vim.defer_fn(function()
+			baleia.once(vim.api.nvim_get_current_buf())
+		end, 100)
+	end,
+})
+
+-- Persistence: Session management
+-- Sessions auto-save when you quit Neovim
+vim.keymap.set("n", "<leader>qs", function()
+	require("persistence").load()
+end, { desc = "Restore session for cwd" })
+
+vim.keymap.set("n", "<leader>qS", function()
+	require("persistence").select()
+end, { desc = "Select a session to load" })
+
+vim.keymap.set("n", "<leader>ql", function()
+	require("persistence").load({ last = true })
+end, { desc = "Restore last session" })
+
+vim.keymap.set("n", "<leader>qd", function()
+	require("persistence").stop()
+end, { desc = "Stop session auto-save" })
 
 -- Load plugin configurations
 local user = os.getenv("USER") or os.getenv("USERNAME") -- fallback for Windows

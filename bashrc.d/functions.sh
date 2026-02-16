@@ -206,12 +206,20 @@ git_reset_on_origin_hard() {
 
 remove_chat_history_for_good() {
   printf "Are you sure? (type: 'yes' to proceed)\n"
-  read -p "$1>>> " user_input
+  read -p ">>> " user_input
   if [[ $user_input == "yes" ]]; then
-    echo "Deleting chat history"
-    sudo rm -rf $HOME/Library/Messages/chat.db*
-    sudo rm -rf $HOME/Library/Messages/Archive/
-    sudo rm -rf $HOME/Library/Messages/Attachments/
+    echo "Killing Messages processes..."
+    osascript -e 'quit app "Messages"' 2>/dev/null
+    killall imagent 2>/dev/null
+
+    echo "Deleting chat history..."
+    rm -rf "$HOME/Library/Messages/chat.db"*
+    rm -rf "$HOME/Library/Messages/Archive/"
+    rm -rf "$HOME/Library/Messages/Attachments/"
+    rm -rf "$HOME/Library/Messages/SyncedDrafts/"
+    rm -rf "$HOME/Library/Messages/Transfers/"
+
+    echo "Done."
   else
     echo "Canceling"
   fi
@@ -250,3 +258,16 @@ mov2gif() {
 
   echo "Converted $input to $output"
 }
+
+jira_to_claude() {
+  # Full details:    jira_to_claude EPIC-1154 EPIC-1152
+  # Planning mode:   jira_to_claude EPIC-1154 EPIC-1152 --plan
+  # Brief mode:      jira_to_claude EPIC-1152 --brief
+  # Specific issues: jira_to_claude --issue EPIC-8920 EPIC-8921
+  # Filter status:   jira_to_claude EPIC-1152 --status "In Progress"
+  # Output to file:  jira_to_claude EPIC-1152 --plan --output context.md
+
+  "$HOME/Developer/agent-config/scripts/jira-to-claude.sh" "$@"
+}
+
+alias jtc="jira_to_claude"

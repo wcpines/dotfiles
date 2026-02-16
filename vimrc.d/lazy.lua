@@ -1,6 +1,6 @@
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
 		"clone",
@@ -15,7 +15,25 @@ vim.opt.rtp:prepend(lazypath)
 -- Configure lazy.nvim
 require("lazy").setup({
 	-- Syntax, languages, & frameworks
-	{ "PedramNavid/dbtpal" },
+	{
+		"PedramNavid/dbtpal",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		ft = { "sql", "md", "yaml" },
+		keys = {
+			{ "<leader>drf", "<cmd>DbtRun<cr>", desc = "dbt run" },
+			{ "<leader>drp", "<cmd>DbtRunAll<cr>", desc = "dbt run all" },
+			{ "<leader>dtf", "<cmd>DbtTest<cr>", desc = "dbt test" },
+		},
+		config = function()
+			require("dbtpal").setup({
+				path_to_dbt = "dbt",
+				path_to_dbt_project = "",
+				path_to_dbt_profiles_dir = vim.fn.expand("~/.dbt"),
+				extended_path_search = true,
+				protect_compiled_files = true,
+			})
+		end,
+	},
 	{ "chrisbra/csv.vim" },
 	{ "darfink/vim-plist", ft = "plist" },
 	{ "hashivim/vim-terraform" },
@@ -129,8 +147,18 @@ require("lazy").setup({
 		priority = 1000,
 	},
 	{ "elixir-editors/vim-elixir" },
-	{ "vim-scripts/AnsiEsc.vim" },
-	{ "vim-scripts/restore_view.vim" },
+	-- ANSI escape code colorizer (replaces vim-scripts/AnsiEsc.vim)
+	{ "m00qek/baleia.nvim", tag = "v1.4.0" },
+	-- Session/view persistence (replaces vim-scripts/restore_view.vim)
+	{
+		"folke/persistence.nvim",
+		event = "BufReadPre",
+		opts = {
+			dir = vim.fn.stdpath("state") .. "/sessions/",
+			need = 1, -- min buffers to save session
+			branch = true, -- include git branch in session name
+		},
+	},
 
 	-- Misc Enhancements
 	{ "AndrewRadev/splitjoin.vim" },
@@ -207,6 +235,10 @@ require("lazy").setup({
 	-- AI Integration
 	{
 		"folke/snacks.nvim",
+		config = function()
+			require("snacks").setup({})
+			vim.api.nvim_set_hl(0, "SnacksPickerListCursorLine", { link = "Visual" })
+		end,
 		keys = {
 			-- Core pickers
 			{ "<leader>e", function() require("snacks").explorer() end, desc = "Explorer" },
@@ -249,5 +281,11 @@ require("lazy").setup({
 			{ "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
 			{ "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
 		},
+	},
+}, {
+	checker = {
+		enabled = true,
+		notify = true,
+		frequency = 86400, -- check once per day
 	},
 })

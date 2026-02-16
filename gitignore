@@ -78,5 +78,8 @@ failed_records.json
 .env*
 **.envrc.d/**/
 *.claude*
+IMPLEMENTATION_PLAN.md
+HANDOFF.md
 *output/
 .DS_Store
+.ssh*

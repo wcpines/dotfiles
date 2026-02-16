@@ -14,6 +14,9 @@
 [[ -r $HOMEBREW_PREFIX/opt/asdf/asdf.sh ]] &&
   source $HOMEBREW_PREFIX/opt/asdf/asdf.sh
 
+# [[ -r $HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh ]] &&
+#   source $HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh
+
 [[ -r $HOME/.asdf/completions/asdf.bash ]] &&
   source $HOME/.asdf/completions/asdf.bash
 
@@ -26,6 +29,7 @@ else
   export VISUAL='vim'
   export EDITOR="vim"
 fi
+
 
 export BASH_SILENCE_DEPRECATION_WARNING=1 # macos catalina uses zsh
 
@@ -40,6 +44,7 @@ export PATH="/Users/cpines/.okta/bin:$PATH"
 export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 
 # Makes man page reader vim instead of less

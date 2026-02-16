@@ -23,7 +23,7 @@ set nohlsearch                                          " Do not highlight all m
 set noswapfile                                          " I don't think these have ever been useful
 set nowrap                                              " Do not wrap lines of text by default
 set number                                              " Set line numbering
-set rtp+=/usr/local/opt/fzf                             " Add FZF to runtime path for fuzzy finder integration
+" FZF runtime path handled by lazy.nvim
 set ruler                                               " Always show line/column info at bottom
 set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
 set showmatch                                           " Briefly highlight matching bracket when cursor is on one
