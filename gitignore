@@ -83,3 +83,4 @@ HANDOFF.md
 *output/
 .DS_Store
 .ssh*
+.serena/
