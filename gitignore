@@ -76,6 +76,7 @@ failed_records.json
 *op_dotenv
 .projections.json
 .env*
+!.env.example
 **.envrc.d/**/
 *.claude*
 IMPLEMENTATION_PLAN.md

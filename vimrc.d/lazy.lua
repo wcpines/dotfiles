@@ -120,7 +120,53 @@ require("lazy").setup({
 			{ "#", "<Plug>(VisualstarSearch-#)", mode = "x" },
 		},
 	},
-	{ "Dkendal/nvim-alternate" },
+	{
+		"Dkendal/nvim-alternate",
+		config = function()
+			require("nvim-alternate").setup({
+				rules = {
+					-- Elixir: lib <-> test
+					{ glob = { "lib/*.ex", "test/*_test.exs" } },
+					-- Elixir: LiveView <-> HEEx template
+					{ glob = { "lib/*/live/*.ex", "lib/*/live/*.html.heex" } },
+				},
+			})
+
+			-- Helper: open the first alternate with a given command
+			local function open_alternate(cmd)
+				local alts = vim.b.alternates or {}
+				local list = {}
+				for path, rank in pairs(alts) do
+					table.insert(list, { rank = rank, path = path })
+				end
+				table.sort(list, function(a, b) return a.rank < b.rank end)
+
+				if #list == 0 then
+					vim.notify("No alternate file found", vim.log.levels.WARN)
+					return
+				end
+
+				if #list == 1 then
+					vim.cmd(cmd .. " " .. vim.fn.fnameescape(list[1].path))
+				else
+					local paths = vim.tbl_map(function(v) return v.path end, list)
+					vim.ui.select(paths, {
+						format_item = function(path) return vim.fn.fnamemodify(path, ":~:.") end,
+					}, function(choice)
+						if choice then
+							vim.cmd(cmd .. " " .. vim.fn.fnameescape(choice))
+						end
+					end)
+				end
+			end
+
+			-- Projectionist-style commands
+			vim.api.nvim_create_user_command("A", function() open_alternate("edit") end, {})
+			vim.api.nvim_create_user_command("AS", function() open_alternate("split") end, {})
+			vim.api.nvim_create_user_command("AV", function() open_alternate("vsplit") end, {})
+			vim.api.nvim_create_user_command("AT", function() open_alternate("tabedit") end, {})
+		end,
+	},
 
 	-- Display
 	{ "catppuccin/nvim", name = "catppuccin" },

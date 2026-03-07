@@ -271,3 +271,9 @@ jira_to_claude() {
 }
 
 alias jtc="jira_to_claude"
+
+iterm_title() {
+  echo -ne "\033]0;$*\007"
+}
+
+alias it="iterm_title"
