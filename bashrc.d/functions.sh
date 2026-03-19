@@ -277,3 +277,103 @@ iterm_title() {
 }
 
 alias it="iterm_title"
+
+# Fetch failed test details from CircleCI.
+#
+# Requires CIRCLECI_TOKEN and CIRCLECI_PROJECT_SLUG env vars
+# (e.g. CIRCLECI_PROJECT_SLUG="gh/MyOrg/my-repo")
+#
+# Usage:
+#   ci_failures                            # detect failures from current branch's PR
+#   ci_failures <workflow-id>              # show failures from all failed jobs
+#   ci_failures <workflow-id> <job-number> # show failures from a specific job
+#
+ci_failures() {
+  local workflow_id="$1"
+  local job_number="$2"
+
+  if [[ -z "$CIRCLECI_TOKEN" ]]; then
+    echo "Error: CIRCLECI_TOKEN is not set" >&2
+    return 1
+  fi
+
+  if [[ -z "$CIRCLECI_PROJECT_SLUG" ]]; then
+    echo "Error: CIRCLECI_PROJECT_SLUG is not set (e.g. gh/MyOrg/my-repo)" >&2
+    return 1
+  fi
+
+  local api="https://circleci.com/api/v2"
+  local auth=(-H "Circle-Token: $CIRCLECI_TOKEN")
+
+  # No args: find workflow ID from current branch's PR via gh CLI
+  if [[ -z "$workflow_id" ]]; then
+    workflow_id=$(_ci_workflow_from_pr "$api" "${auth[@]}")
+    if [[ -z "$workflow_id" ]]; then
+      echo "Usage: ci_failures [workflow-id] [job-number]" >&2
+      return 1
+    fi
+  fi
+
+  if [[ -z "$job_number" ]]; then
+    local jobs
+    jobs=$(curl -s "${auth[@]}" "$api/workflow/$workflow_id/job" \
+      | jq -r '.items[] | select(.status == "failed") | "\(.job_number)\t\(.name)"')
+
+    if [[ -z "$jobs" ]]; then
+      echo "No failed jobs in workflow $workflow_id"
+      return 0
+    fi
+
+    while IFS=$'\t' read -r num name; do
+      echo "=== $name (job $num) ==="
+      _ci_fetch_tests "$api" "${auth[@]}" "$num"
+      echo
+    done <<< "$jobs"
+  else
+    _ci_fetch_tests "$api" "${auth[@]}" "$job_number"
+  fi
+}
+
+# Find the workflow ID by looking at failed CircleCI checks on the current branch's PR.
+# Goes: gh pr checks → failed ci/circleci job link → job number → CircleCI API → workflow ID
+_ci_workflow_from_pr() {
+  local api="$1"; shift
+  local auth=("$1" "$2"); shift 2
+
+  if ! command -v gh &>/dev/null; then
+    echo "gh CLI not found" >&2
+    return 1
+  fi
+
+  # Get the first failed CircleCI check's link (contains job number)
+  local link
+  link=$(gh pr checks --json name,bucket,link 2>/dev/null \
+    | jq -r '[.[] | select(.bucket == "fail" and (.name | startswith("ci/circleci:")))] | first | .link // empty')
+
+  if [[ -z "$link" ]]; then
+    echo "No failed CircleCI checks on current PR" >&2
+    return 1
+  fi
+
+  # Extract job number from link: https://circleci.com/gh/Org/Repo/12345
+  local job_num="${link##*/}"
+
+  # Look up the workflow ID from the job
+  curl -s "${auth[@]}" "$api/project/$CIRCLECI_PROJECT_SLUG/job/$job_num" \
+    | jq -r '.latest_workflow.id // empty'
+}
+
+_ci_fetch_tests() {
+  local api="$1"; shift
+  local auth=("$1" "$2"); shift 2
+  local job_number="$1"
+
+  curl -s "${auth[@]}" "$api/project/$CIRCLECI_PROJECT_SLUG/$job_number/tests" \
+    | jq -r '
+      [.items[] | select(.result == "failure")] |
+      if length == 0 then "  No test failures (job may have failed for another reason)"
+      else .[] |
+        (.message | capture("(?<file>\\S+_test\\.\\w+:\\d+)") // {file: "unknown"}) as $loc |
+        "  \($loc.file) :: \(.name)\n    \(.message | split("\n") | first)"
+      end'
+}
