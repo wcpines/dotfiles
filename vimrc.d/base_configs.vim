@@ -11,7 +11,7 @@ set path+=**                                            " Add all subdirectories
 set bs=2                                                " Allow backspace over auto-indent, line breaks, and start of insert
 set clipboard^=unnamed,unnamedplus                      " Use system clipboard as the yank register
 set expandtab                                           " Use spaces when tab is hit
-set gcr=n:blinkon0                                      " Turn off cursor blink in normal mode
+set guicursor=n:blinkon0,i-ci-ve:ver25                   " Block cursor in normal, vertical bar in insert
 set hidden                                              " Switch buffers and preserve changes w/o saving
 set ignorecase                                          " Ignore case for search patterns
 set incsearch                                           " Dynamic search (search and refine as you type)
@@ -38,4 +38,5 @@ set textwidth=0                                         " Controls the wrap widt
 set wildignore+=*Zend*,.git,*bundles*                   " Wildmenu ignores these directories and patterns
 set wildmenu                                            " Make use of the status line to show possible completions of command line commands, file names, and more. Allows to cycle forward and backward though the list. This is called the wild menu.
 set wildmode=list:longest                               " On the first tab: a list of completions will be shown and the command will be completed to the longest common command
+set pumborder                                           " Show border around popup completion menu
 " set lazyredraw                                          " Don't redraw during macro execution

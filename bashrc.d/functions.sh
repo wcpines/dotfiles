@@ -365,3 +365,8 @@ _ci_fetch_tests() {
       end'
 }
 
+fi-ls() {
+  local bid="${1:?Usage: fi-ls <business_id> [--recursive]}"
+  shift
+  aws s3 ls "s3://blvd-prod-secure-data-imports/uploads/${bid}/" "$@"
+}

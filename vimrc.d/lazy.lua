@@ -53,7 +53,7 @@ require("lazy").setup({
 				highlight = {
 					enable = true,
 					disable = { "elixir", "csv" },
-					additional_vim_regex_highlighting = { "markdown" },
+	
 				},
 			})
 		end,

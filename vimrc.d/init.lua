@@ -138,12 +138,12 @@ require("mason").setup({
 
 -- Setup Mason LSP Config
 require("mason-lspconfig").setup({
-	ensure_installed = { "ts_ls", "sqlls", "lua_ls" },
+	ensure_installed = { "ts_ls", "sqlls", "lua_ls", "expert" },
 	automatic_enable = true,
 })
 
 -- Global LSP settings for performance
-vim.lsp.set_log_level("warn") -- Reduce log verbosity
+vim.lsp.log.set_level("warn") -- Reduce log verbosity
 vim.diagnostic.config({
 	update_in_insert = false, -- Don't update diagnostics in insert mode
 	severity_sort = true,
@@ -177,7 +177,7 @@ lspconfig.ts_ls.setup({
 
 -- Elixir (Expert - official Elixir LSP)
 vim.lsp.config('expert', {
-	cmd = { vim.fn.expand('~/.local/bin/expert'), '--stdio' },
+	cmd = { 'expert', '--stdio' },
 	root_markers = { 'mix.exs', '.git' },
 	filetypes = { 'elixir', 'eelixir', 'heex' },
 	on_attach = lsp_attach,
@@ -348,10 +348,10 @@ local diagnostics_active = true
 local function toggle_diagnostics()
 	diagnostics_active = not diagnostics_active
 	if diagnostics_active then
-		vim.diagnostic.enable()
+		vim.diagnostic.enable(true)
 		print("Diagnostics enabled")
 	else
-		vim.diagnostic.disable()
+		vim.diagnostic.enable(false)
 		print("Diagnostics disabled")
 	end
 end
