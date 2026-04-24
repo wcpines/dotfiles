@@ -260,14 +260,15 @@ mov2gif() {
 }
 
 jira_to_claude() {
-  # Full details:    jira_to_claude EPIC-1154 EPIC-1152
-  # Planning mode:   jira_to_claude EPIC-1154 EPIC-1152 --plan
-  # Brief mode:      jira_to_claude EPIC-1152 --brief
-  # Specific issues: jira_to_claude --issue EPIC-8920 EPIC-8921
-  # Filter status:   jira_to_claude EPIC-1152 --status "In Progress"
-  # Output to file:  jira_to_claude EPIC-1152 --plan --output context.md
+  # Issue details:   jira_to_claude COPS-10074
+  # From URL:        jira_to_claude https://blvd.atlassian.net/browse/COPS-10074
+  # Epic + children: jira_to_claude --epic EPIC-1154 EPIC-1152
+  # Planning mode:   jira_to_claude --epic EPIC-1154 --plan
+  # Brief mode:      jira_to_claude --epic EPIC-1152 --brief
+  # Filter status:   jira_to_claude --epic EPIC-1152 --status "In Progress"
+  # Output to file:  jira_to_claude --epic EPIC-1152 --plan --output context.md
 
-  "$HOME/Developer/agent-config/scripts/jira-to-claude.sh" "$@"
+  "$HOME/Developer/agent-config/scripts/jira-to-claude.sh" "$@" | tee >(pbcopy)
 }
 
 alias jtc="jira_to_claude"

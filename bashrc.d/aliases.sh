@@ -1,4 +1,5 @@
 #===========================#
+
 #----------Aliases----------#
 #===========================#
 
@@ -43,6 +44,7 @@ alias gdy="git diff --name-only develop | fzf | yank"
 alias gforce="git push --force-with-lease origin HEAD"
 alias go="git-open"
 alias gpld="git pull origin develop"
+alias grbd="git fetch origin develop:develop && git rebase develop"
 alias gplm="git pull origin master"
 alias gpoh="git push origin HEAD"
 alias grod="git rebase --onto develop HEAD~"
@@ -91,3 +93,4 @@ alias yrs="yarn run serve"
 alias yrt="yarn run test"
 alias ys="yarn start"
 alias z="fuzzy_find_clipboard"
+alias wtr="wt remove --no-delete-branch"

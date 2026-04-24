@@ -149,3 +149,8 @@ json_sample_table() {
   fi
 }
 alias sqlite3="/opt/homebrew/opt/sqlite/bin/sqlite3"
+
+get_business(){
+
+  query 'select id, name from businesses;'
+}
