@@ -39,7 +39,7 @@ vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#000000", bg = "NONE" })
 local neosolarized_ok, neosolarized = pcall(require, "NeoSolarized")
 if neosolarized_ok then
 	neosolarized.setup({
-		style = time_based_style, -- "dark" or "light" based on time
+		style = "dark",
 		transparent = false, -- true/false; Enable this to disable setting the background color
 		terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
 		enable_italics = true, -- Italics for different highlight groups (eg. Statement, Condition, Comment, Include, etc.)
@@ -106,28 +106,31 @@ for _, plugin in ipairs(required_plugins) do
 	end
 end
 
--- LSP keymaps
-local function lsp_attach(client, bufnr)
-	-- Disable semantic tokens for all servers to reduce load
-	client.server_capabilities.semanticTokensProvider = nil
+-- LSP keymaps via LspAttach autocmd
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		if not client then return end
 
-	-- Buffer local mappings
-	local opts = { buffer = bufnr, noremap = true, silent = true }
+		-- Disable semantic tokens for all servers to reduce load
+		client.server_capabilities.semanticTokensProvider = nil
 
-	-- LSP keymaps
-	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-	vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-	vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
-	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-	vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-end
+		local opts = { buffer = args.buf, noremap = true, silent = true }
+
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+		vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
+		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+		vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+		vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+	end,
+})
 
 -- Setup Mason
 require("mason").setup({
@@ -152,14 +155,12 @@ vim.diagnostic.config({
 -- LSP capabilities
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
--- Setup LSP servers
-local lspconfig = require("lspconfig")
-
--- TypeScript/JavaScript (using ts_ls instead of deprecated tsserver)
-lspconfig.ts_ls.setup({
-	on_attach = lsp_attach,
-	capabilities = capabilities,
+-- TypeScript/JavaScript
+vim.lsp.config('ts_ls', {
 	cmd = { "typescript-language-server", "--stdio" },
+	root_markers = { "tsconfig.json", "package.json", ".git" },
+	filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+	capabilities = capabilities,
 	settings = {
 		typescript = {
 			inlayHints = {
@@ -180,46 +181,34 @@ vim.lsp.config('expert', {
 	cmd = { 'expert', '--stdio' },
 	root_markers = { 'mix.exs', '.git' },
 	filetypes = { 'elixir', 'eelixir', 'heex' },
-	on_attach = lsp_attach,
 	capabilities = capabilities,
 })
 
-vim.lsp.enable('expert')
-
 -- SQL
-lspconfig.sqlls.setup({
-	on_attach = lsp_attach,
-	capabilities = capabilities,
+vim.lsp.config('sqlls', {
 	cmd = { "sql-language-server", "up", "--method", "stdio" },
-	settings = {
-		sqlls = {
-			-- Add any SQL-specific settings here
-		},
-	},
+	root_markers = { ".git" },
+	filetypes = { "sql" },
+	capabilities = capabilities,
 })
 
 -- Lua
-lspconfig.lua_ls.setup({
-	on_attach = lsp_attach,
-	capabilities = capabilities,
+vim.lsp.config('lua_ls', {
 	cmd = { "lua-language-server" },
+	root_markers = { ".luarc.json", ".git" },
+	filetypes = { "lua" },
+	capabilities = capabilities,
 	settings = {
 		Lua = {
-			runtime = {
-				version = "LuaJIT",
-			},
-			diagnostics = {
-				globals = { "vim" },
-			},
-			workspace = {
-				library = vim.api.nvim_get_runtime_file("", true),
-			},
-			telemetry = {
-				enable = false,
-			},
+			runtime = { version = "LuaJIT" },
+			diagnostics = { globals = { "vim" } },
+			workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+			telemetry = { enable = false },
 		},
 	},
 })
+
+vim.lsp.enable({ 'ts_ls', 'expert', 'sqlls', 'lua_ls' })
 
 -- Setup null-ls for diagnostics and formatting
 local null_ls = require("null-ls")

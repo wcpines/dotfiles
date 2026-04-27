@@ -86,11 +86,7 @@ require("lazy").setup({
 	{ "hrsh7th/cmp-nvim-lua" },
 	{ "hrsh7th/cmp-path" },
 	{ "hrsh7th/nvim-cmp" },
-	{ "saadparwaiz1/cmp_luasnip" },
 
-	-- Snippets
-	{ "L3MON4D3/LuaSnip" },
-	{ "rafamadriz/friendly-snippets" },
 
 	-- Text objects - Fix dependency order
 	{ "kana/vim-textobj-user" }, -- Load this first
@@ -194,7 +190,7 @@ require("lazy").setup({
 	},
 	{ "elixir-editors/vim-elixir" },
 	-- ANSI escape code colorizer (replaces vim-scripts/AnsiEsc.vim)
-	{ "m00qek/baleia.nvim", tag = "v1.4.0" },
+	{ "m00qek/baleia.nvim" },
 	-- Session/view persistence (replaces vim-scripts/restore_view.vim)
 	{
 		"folke/persistence.nvim",
@@ -243,16 +239,6 @@ require("lazy").setup({
 				end,
 			})
 
-			-- Enable TypeScript/JavaScript bracket matching
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-				callback = function()
-					-- Enable matchup for these filetypes
-					vim.b.matchup_matchparen_enabled = 1
-					-- Set match pairs for TypeScript/JavaScript
-					vim.opt_local.matchpairs = "(:),{:},[:],<:>"
-				end,
-			})
 		end,
 	},
 	{ "dhruvasagar/vim-table-mode", ft = { "tsv", "csv", "sql" } },

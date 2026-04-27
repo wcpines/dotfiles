@@ -12,10 +12,6 @@ augroup highlight_yank
     au TextYankPost * silent! lua vim.highlight.on_yank { higroup='IncSearch', timeout=200 }
 augroup END
 
-function! s:find_git_root()
-  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
-
 " Note: fzf-lua mappings replaced by snacks.nvim (see lazy.lua)
 
 " New BD command using snacks picker for buffer deletion

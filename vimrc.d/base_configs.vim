@@ -7,7 +7,6 @@ syntax on                                               " Enable syntax highligh
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
 
 set conceallevel=0                                      " always show syntax for concealable text
-set path+=**                                            " Add all subdirectories to path for :find command
 set bs=2                                                " Allow backspace over auto-indent, line breaks, and start of insert
 set clipboard^=unnamed,unnamedplus                      " Use system clipboard as the yank register
 set expandtab                                           " Use spaces when tab is hit
