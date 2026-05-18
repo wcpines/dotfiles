@@ -2,6 +2,11 @@
 #----------Setup, Exports, and Path----------#
 #============================================#
 
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 [[ -s $HOME/.scm_breeze/scm_breeze.sh ]] &&
   source "$HOME/.scm_breeze/scm_breeze.sh"
 
@@ -68,3 +73,4 @@ export LSCOLORS=ExFxCxDxBxegedabagacad
 
 export BAT_THEME_DARK='Solarized (dark)'
 export BAT_THEME_LIGHT='Solarized (light)'
+

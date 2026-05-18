@@ -52,7 +52,7 @@ require("lazy").setup({
 				modules = {},
 				highlight = {
 					enable = true,
-					disable = { "elixir", "csv" },
+					disable = { "elixir", "csv", "json" },
 	
 				},
 			})
@@ -99,15 +99,15 @@ require("lazy").setup({
 
 	-- Search & file nav
 	-- { "airblade/vim-rooter" },
-	{ "henrik/vim-indexed-search" },
-	{
-		"junegunn/fzf",
-		build = function()
-			vim.fn["fzf#install"]()
-		end,
-	},
-	{ "ibhagwan/fzf-lua" },
-	{ "mhinz/vim-grepper" },
+	-- { "henrik/vim-indexed-search" },
+	-- {
+	-- 	"junegunn/fzf",
+	-- 	build = function()
+	-- 		vim.fn["fzf#install"]()
+	-- 	end,
+	-- },
+	-- { "ibhagwan/fzf-lua" },
+	-- { "mhinz/vim-grepper" },
 	{
 		"subnut/visualstar.vim",
 		event = "VeryLazy",
@@ -207,38 +207,10 @@ require("lazy").setup({
 	{
 		"andymass/vim-matchup",
 		init = function()
-			vim.g.matchup_treesitter_enabled = 1
+			vim.g.matchup_treesitter_enabled = 0
 			vim.g.matchup_matchparen_deferred = 1
 			vim.g.matchup_matchparen_hi_surround_always = 1
-			-- Enable matchup for Elixir file types
 			vim.g.matchup_override_vimtex = 1
-		end,
-		config = function()
-			-- Enable Elixir do..end matching
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = { "elixir", "eelixir" },
-				callback = function()
-					vim.b.match_words = table.concat({
-						"\\<do\\>:\\<end\\>",
-						"\\<def\\>:\\<end\\>",
-						"\\<defp\\>:\\<end\\>",
-						"\\<defmodule\\>:\\<end\\>",
-						"\\<defprotocol\\>:\\<end\\>",
-						"\\<defimpl\\>:\\<end\\>",
-						"\\<case\\>:\\<end\\>",
-						"\\<cond\\>:\\<end\\>",
-						"\\<receive\\>:\\<end\\>",
-						"\\<try\\>:\\<rescue\\>:\\<catch\\>:\\<after\\>:\\<end\\>",
-						"\\<if\\>:\\<else\\>:\\<end\\>",
-						"\\<unless\\>:\\<else\\>:\\<end\\>",
-						"\\<with\\>:\\<else\\>:\\<end\\>",
-						"\\<fn\\>:\\<end\\>",
-						"\\<quote\\>:\\<end\\>",
-						"\\<for\\>:\\<end\\>",
-					}, ",")
-				end,
-			})
-
 		end,
 	},
 	{ "dhruvasagar/vim-table-mode", ft = { "tsv", "csv", "sql" } },
@@ -247,22 +219,32 @@ require("lazy").setup({
 	{ "mattn/webapi-vim" },
 	{ "mcasper/vim-infer-debugger" },
 	{ "mzlogin/vim-markdown-toc", ft = "markdown" },
-	{ "pbrisbin/vim-mkdir" },
-	{ "skywind3000/asyncrun.vim" },
+	-- { "pbrisbin/vim-mkdir" },
+	-- { "skywind3000/asyncrun.vim" },
 	{ "tommcdo/vim-exchange" },
 	{ "tpope/vim-abolish" },
 	{ "tpope/vim-dadbod" },
-	{ "tpope/vim-endwise" },
+	-- { "tpope/vim-endwise" },
 	{ "tpope/vim-fugitive" },
 	{ "tpope/vim-repeat" },
 	{ "tpope/vim-rhubarb" },
 	{ "tpope/vim-surround" },
 	{ "tpope/vim-vinegar" },
 	{ "troydm/zoomwintab.vim" },
-	{ "tweekmonster/startuptime.vim" },
-	{ "vim-test/vim-test" },
-	{ "vimlab/split-term.vim" },
+	-- { "tweekmonster/startuptime.vim" },
+	-- { "vim-test/vim-test" },
+	-- { "vimlab/split-term.vim" },
 	{ "wellle/targets.vim" },
+	{
+		"philippdrebes/jsonpath.nvim",
+		ft = "json",
+		config = function()
+			local jsonpath = require("jsonpath")
+			jsonpath.setup()
+			vim.keymap.set("n", "<leader>jp", function() jsonpath.show_json_path() end, { desc = "Show JSON Path" })
+			vim.keymap.set("n", "<leader>jy", function() jsonpath.yank_json_path() end, { desc = "Yank JSON Path" })
+		end,
+	},
 
 	-- AI Integration
 	{
@@ -288,30 +270,6 @@ require("lazy").setup({
 			-- Search mappings
 			{ "gR", function() require("snacks").picker.grep_word() end, desc = "Grep Word", mode = { "n", "x" } },
 			{ "gF", function() require("snacks").picker.files({ pattern = vim.fn.expand('<cword>') }) end, desc = "Find Files with Word" },
-		},
-	},
-	{
-		"coder/claudecode.nvim",
-		dependencies = { "folke/snacks.nvim" },
-		config = true,
-		keys = {
-			{ "<leader>c", nil, desc = "Claude Code" },
-			{ "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-			{ "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
-			{ "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-			{ "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-			{ "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
-			{ "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-			{ "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-			{
-				"<leader>cs",
-				"<cmd>ClaudeCodeTreeAdd<cr>",
-				desc = "Add file",
-				ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
-			},
-			-- Diff management
-			{ "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-			{ "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
 		},
 	},
 }, {

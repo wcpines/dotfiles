@@ -80,8 +80,12 @@ failed_records.json
 **.envrc.d/**/
 *.claude*
 IMPLEMENTATION_PLAN.md
+PLAN.md
 HANDOFF.md
 *output/
 .DS_Store
 .ssh*
 .serena/
+HANDOFF.md
+IMPLEMENTATION_PLAN.md
+PLAN.md
