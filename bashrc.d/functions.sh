@@ -2,6 +2,28 @@
 #----------Functions----------#
 #=============================#
 
+# Open files in nvim, accepting `path:line[:col]` syntax (e.g. from grep,
+# stack traces, compiler errors). Trailing colons are tolerated.
+unalias e 2>/dev/null
+function e {
+  local args=() file line col
+  for arg in "$@"; do
+    if [[ "$arg" == *:* && "$arg" != -* ]]; then
+      IFS=':' read -r file line col _ <<< "$arg"
+      if [[ -e "$file" && "$line" =~ ^[0-9]+$ ]]; then
+        if [[ "$col" =~ ^[0-9]+$ ]]; then
+          args+=("+call cursor($line,$col)" "$file")
+        else
+          args+=("+$line" "$file")
+        fi
+        continue
+      fi
+    fi
+    args+=("$arg")
+  done
+  nvim "${args[@]}"
+}
+
 list_by_port() {
   # list processes by port number
   lsof -wni :$1
@@ -171,18 +193,18 @@ check_logs() {
 }
 
 kib_start() {
-  $(asdf which elasticsearch) -p /tmp/elasticsearch-pid -d
-  echo "[STARTED] Elasticsearch $(asdf current elasticsearch)"
-  nohup $(echo $(asdf which kibana) --log-file $(asdf where kibana)/kibana.log) >/dev/null &
-  echo "[STARTED] Kibana $(asdf current kibana)"
+  $(mise which elasticsearch) -p /tmp/elasticsearch-pid -d
+  echo "[STARTED] Elasticsearch $(mise current elasticsearch)"
+  nohup $(echo $(mise which kibana) --log-file $(mise where kibana)/kibana.log) >/dev/null &
+  echo "[STARTED] Kibana $(mise current kibana)"
 }
 
 kib_stop() {
   kill -SIGTERM $(cat /tmp/elasticsearch-pid | sed 's/%//')
-  echo "[STOPPED] Elasticsearch $(asdf current elasticsearch)"
+  echo "[STOPPED] Elasticsearch $(mise current elasticsearch)"
 
-  kill $(ps aux | grep "$(asdf where kibana)" | awk '{print $2}')
-  echo "[STOPPED] Kibana $(asdf current kibana)"
+  kill $(ps aux | grep "$(mise where kibana)" | awk '{print $2}')
+  echo "[STOPPED] Kibana $(mise current kibana)"
 }
 
 to_csv() {
@@ -371,3 +393,11 @@ fi-ls() {
   shift
   aws s3 ls "s3://blvd-prod-secure-data-imports/uploads/${bid}/" "$@"
 }
+
+git_open() {
+  local branch
+  branch="$(git symbolic-ref --short HEAD 2>/dev/null)" || return
+  gh browse --branch "$branch"
+}
+
+alias go="git_open"

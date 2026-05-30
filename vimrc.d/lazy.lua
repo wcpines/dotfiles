@@ -42,23 +42,36 @@ require("lazy").setup({
 	-- { "neowit/vim-force.com" },
 	{
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		lazy = false,
 		build = ":TSUpdate",
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = { "typescript", "elixir", "lua", "python", "sql", "bash" },
-				sync_install = false,
-				auto_install = true,
-				ignore_install = { "javascript" },
-				modules = {},
-				highlight = {
-					enable = true,
-					disable = { "elixir", "csv", "json" },
-	
-				},
+			local ensure = { "typescript", "elixir", "lua", "python", "sql", "bash" }
+			local installed = require("nvim-treesitter").get_installed("parsers")
+			local missing = {}
+			for _, lang in ipairs(ensure) do
+				if not vim.tbl_contains(installed, lang) then
+					table.insert(missing, lang)
+				end
+			end
+			if #missing > 0 then
+				require("nvim-treesitter").install(missing)
+			end
+
+			local disable = { elixir = true, csv = true, json = true }
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					local ft = vim.bo[args.buf].filetype
+					if disable[ft] then return end
+					local lang = vim.treesitter.language.get_lang(ft)
+					if lang and pcall(vim.treesitter.language.add, lang) then
+						pcall(vim.treesitter.start, args.buf, lang)
+					end
+				end,
 			})
 		end,
 	},
-	{ "nvim-treesitter/nvim-treesitter-textobjects" },
+	{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
 	{ "preservim/vim-markdown" },
 	-- {
 	--	"prettier/vim-prettier",
@@ -75,6 +88,15 @@ require("lazy").setup({
 	{ "stevearc/conform.nvim" },
 	{ "nvimtools/none-ls.nvim" },
 	{ "neovim/nvim-lspconfig" },
+	{
+		"folke/lazydev.nvim",
+		ft = "lua",
+		opts = {
+			library = {
+				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			},
+		},
+	},
 	{ "nvim-lua/plenary.nvim" },
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
@@ -216,6 +238,7 @@ require("lazy").setup({
 	{ "dhruvasagar/vim-table-mode", ft = { "tsv", "csv", "sql" } },
 	{ "godlygeek/tabular" },
 	{ "junegunn/goyo.vim", ft = "markdown" },
+
 	{ "mattn/webapi-vim" },
 	{ "mcasper/vim-infer-debugger" },
 	{ "mzlogin/vim-markdown-toc", ft = "markdown" },

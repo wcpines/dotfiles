@@ -202,7 +202,6 @@ vim.lsp.config('lua_ls', {
 		Lua = {
 			runtime = { version = "LuaJIT" },
 			diagnostics = { globals = { "vim" } },
-			workspace = { library = vim.api.nvim_get_runtime_file("", true) },
 			telemetry = { enable = false },
 		},
 	},
@@ -218,8 +217,6 @@ null_ls.setup({
 		-- diagnostics
 		null_ls.builtins.diagnostics.codespell,
 		null_ls.builtins.diagnostics.credo,
-		null_ls.builtins.diagnostics.rubocop,
-		null_ls.builtins.diagnostics.yamllint,
 	},
 })
 
@@ -234,9 +231,7 @@ require("conform").setup({
 		html = { "prettier" },
 		javascript = { "prettier" },
 		json = { "jq_format", "prettier" },
-		python = { "black" },
-		rspec = { "rubocop" },
-		ruby = { "rubocop" },
+		python = { "ruff_format", "ruff_organize_imports" },
 		rust = { "rustfmt" },
 		scss = { "prettier" },
 		lua = { "stylua" },

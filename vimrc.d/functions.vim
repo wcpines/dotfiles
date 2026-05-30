@@ -17,7 +17,7 @@
 command! Src source ~/.vimrc
 command! CurlFmt call FormatCurl()
 command! SqlArgs call SqlArgs()
-command! Mk silent! !open -a "/Applications/Marked 2.app" "%:p"
+command! Mk silent! !open -a "/Applications/Marked.app" "%:p"
 command! Ts execute "tabe ~/scratch/scratch.ts"
 command! Json execute "tabe ~/scratch/scratch.json"
 command! Sql execute "tabe ~/scratch/scratch.sql"

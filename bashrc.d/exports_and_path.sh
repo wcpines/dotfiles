@@ -16,14 +16,16 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] &&
   source "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
 
-[[ -r $HOMEBREW_PREFIX/opt/asdf/asdf.sh ]] &&
-  source $HOMEBREW_PREFIX/opt/asdf/asdf.sh
+# asdf — disabled in favor of mise (kept commented so it's easy to revert)
+# [[ -r $HOMEBREW_PREFIX/opt/asdf/asdf.sh ]] &&
+#   source $HOMEBREW_PREFIX/opt/asdf/asdf.sh
+# [[ -r $HOME/.asdf/completions/asdf.bash ]] &&
+#   source $HOME/.asdf/completions/asdf.bash
 
-# [[ -r $HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh ]] &&
-#   source $HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh
-
-[[ -r $HOME/.asdf/completions/asdf.bash ]] &&
-  source $HOME/.asdf/completions/asdf.bash
+# mise — drop-in replacement for asdf; reads .tool-versions natively
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
 
 if [[ -n $NVIM_LISTEN_ADDRESS ]]; then
   export VISUAL="nvr -cc split --remote-wait +'set bufhidden=wipe'"
@@ -43,7 +45,7 @@ export STARSHIP_CONFIG="$HOME/.starship.toml"
 export GIT_MERGE_AUTOEDIT='no'
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
 
-export PATH="$HOME/.asdf/shims:$PATH"
+# export PATH="$HOME/.asdf/shims:$PATH"  # disabled: mise activate handles shims
 export PATH="/Users/cpines/.okta/bin:$PATH"
 export PATH="/Users/cpines/.okta/bin:$PATH"
 export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
