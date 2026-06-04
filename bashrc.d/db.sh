@@ -10,14 +10,25 @@ get_db_type() {
     echo "postgres"
   fi
 }
+
+# Pick the postgres database based on current project
+get_pg_db() {
+  if [[ $(pwd) == *onboarding-services* ]]; then
+    echo "onboarding_service_dev"
+  else
+    echo "sched_development"
+  fi
+}
+
 # Generic query function
 query() {
   local db_type=$(get_db_type)
   case $db_type in
   postgres)
-    echo "DB: $POSTGRES"
+    local pg_db=$(get_pg_db)
+    echo "DB: $pg_db"
     printf "RUNNING:\n$@\n"
-    psql "$DB_CONNECTION_STRING" -c "$@"
+    psql -d "$pg_db" -c "$@"
     ;;
   sqlite)
     echo "DB: $LITEDB"
