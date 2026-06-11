@@ -22,6 +22,15 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # [[ -r $HOME/.asdf/completions/asdf.bash ]] &&
 #   source $HOME/.asdf/completions/asdf.bash
 
+# --- PATH prepends (later lines win, so they end up earlier on PATH) ---
+# Done before `mise activate` so (a) mise itself is found, and (b) mise's
+# shims sit at the very front and beat any homebrew-installed runtimes.
+export PATH="$HOME/.okta/bin:$PATH"
+export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
 # mise — drop-in replacement for asdf; reads .tool-versions natively
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate bash)"
@@ -44,15 +53,6 @@ export STARSHIP_CONFIG="$HOME/.starship.toml"
 
 export GIT_MERGE_AUTOEDIT='no'
 export USR_PATHS="/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin"
-
-# export PATH="$HOME/.asdf/shims:$PATH"  # disabled: mise activate handles shims
-export PATH="/Users/cpines/.okta/bin:$PATH"
-export PATH="/Users/cpines/.okta/bin:$PATH"
-export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-PATH="/opt/homebrew/opt/curl/bin:$PATH"
-
 
 # Makes man page reader vim instead of less
 export MANPAGER='col -bx | nvim -c ":set ft=man nonu nolist" -c ":IndentLinesDisable" -R -'
