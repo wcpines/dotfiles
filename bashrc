@@ -43,4 +43,5 @@ eval "$(direnv hook bash)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init bash)"; fi
 
-[ -s "/Users/colby/.scm_breeze/scm_breeze.sh" ] && source "/Users/colby/.scm_breeze/scm_breeze.sh"
+[ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"
+
