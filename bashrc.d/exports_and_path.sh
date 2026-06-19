@@ -7,9 +7,6 @@
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-[[ -s $HOME/.scm_breeze/scm_breeze.sh ]] &&
-  source "$HOME/.scm_breeze/scm_breeze.sh"
-
 [[ -r ~/.fzf.bash ]] &&
   source ~/.fzf.bash
 
@@ -25,6 +22,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # --- PATH prepends (later lines win, so they end up earlier on PATH) ---
 # Done before `mise activate` so (a) mise itself is found, and (b) mise's
 # shims sit at the very front and beat any homebrew-installed runtimes.
+# Docker Compose v2 is installed by Homebrew's `docker-compose` formula, but
+# exposed as `docker compose` through the Docker CLI plugin symlink at:
+#   ~/.docker/cli-plugins/docker-compose -> /opt/homebrew/opt/docker-compose/bin/docker-compose
+# Prefer `docker compose`; do not rely on the old `docker-compose` PATH command.
 export PATH="$HOME/.okta/bin:$PATH"
 export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
