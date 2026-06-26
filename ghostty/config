@@ -1,0 +1,33 @@
+# --- Theme: Solarized-style with auto light/dark ---
+# List themes: `ghostty +list-themes`
+theme = light:solarized-light.ghostty,dark:solarized-dark.ghostty
+
+cursor-style = block
+shell-integration-features = no-cursor
+
+# Make window chrome follow macOS light/dark as well
+window-theme = system
+
+# --- Font (tweak to taste) ---
+# font-family = JetBrainsMono Nerd Font
+font-family = FiraCode Nerd Font Mono
+font-size = 20
+bold-color = bright
+
+# --- Scrollback and scrollbars ---
+# 10 MiB scrollback per terminal surface. Ghostty measures this in bytes.
+# scrollback-limit = 10485760
+
+# Native macOS scrollbars ("system" respects system scrollbar settings)
+scrollbar = system
+
+# --- Tabs and splits behavior ---
+# Save/restore windows, tabs, and splits between launches
+window-save-state = always
+
+# Make new windows inherit the previously focused window's directory
+window-inherit-working-directory = true
+
+# --- Quality-of-life ---
+copy-on-select = clipboard
+mouse-hide-while-typing = true

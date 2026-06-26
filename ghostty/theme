@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config="${GHOSTTY_CONFIG_FILE:-$HOME/dotfiles/ghostty/config}"
+
+usage() {
+  echo "usage: ghostty/theme dark|light|auto|toggle" >&2
+}
+
+theme_line_for() {
+  case "$1" in
+    dark) echo "theme = solarized-dark.ghostty" ;;
+    light) echo "theme = solarized-light.ghostty" ;;
+    auto) echo "theme = light:solarized-light.ghostty,dark:solarized-dark.ghostty" ;;
+    *) return 1 ;;
+  esac
+}
+
+set_theme() {
+  local theme_line="$1"
+
+  python3 - "$config" "$theme_line" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1]).expanduser()
+theme_line = sys.argv[2]
+text = path.read_text()
+lines = text.splitlines()
+for index, line in enumerate(lines):
+    if line.strip().startswith("theme ="):
+        lines[index] = theme_line
+        break
+else:
+    lines.insert(0, theme_line)
+path.write_text("\n".join(lines) + "\n")
+PY
+
+  ghostty +validate-config --config-file="$config" >/dev/null
+
+  # Reload the active Ghostty window. If another app has focus, use Cmd+Shift+, manually.
+  osascript -e 'tell application "System Events" to keystroke "," using {command down, shift down}' >/dev/null 2>&1 \
+    || echo "Reload Ghostty with Cmd+Shift+,"
+}
+
+mode="${1:-}"
+case "$mode" in
+  dark|light|auto)
+    set_theme "$(theme_line_for "$mode")"
+    ;;
+  toggle)
+    if rg -q '^theme = solarized-dark\.ghostty$' "$config"; then
+      set_theme "$(theme_line_for light)"
+    elif rg -q '^theme = solarized-light\.ghostty$' "$config"; then
+      set_theme "$(theme_line_for dark)"
+    elif [[ $(osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode' 2>/dev/null) == "true" ]]; then
+      set_theme "$(theme_line_for light)"
+    else
+      set_theme "$(theme_line_for dark)"
+    fi
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
