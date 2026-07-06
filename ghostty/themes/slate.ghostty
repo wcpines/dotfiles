@@ -1,0 +1,24 @@
+# Slate theme for Ghostty
+background = 212121
+foreground = 35b1d2
+cursor-color = 87d384
+selection-background = 0f3754
+selection-foreground = 2dffbf
+
+# ANSI color palette
+palette = 0=#212121
+palette = 1=#e1a8bf
+palette = 2=#81d779
+palette = 3=#c5c9c6
+palette = 4=#254b26
+palette = 5=#a481d2
+palette = 6=#14ac9d
+palette = 7=#02c5e0
+palette = 8=#ffffff
+palette = 9=#ffcdd9
+palette = 10=#beffa8
+palette = 11=#d0cccc
+palette = 12=#79b0d2
+palette = 13=#c5a7d8
+palette = 14=#8cdfe0
+palette = 15=#e0e0e0
