@@ -64,24 +64,9 @@ local function setup_enhanced_colors()
 	end
 	
 	-- Override the default Colors command
-	vim.api.nvim_create_user_command('Colors', function(opts)
-		local colors = get_all_colors()
-		require('fzf-lua').fzf_exec(colors, {
-			actions = {
-				['default'] = function(selected)
-					if selected and selected[1] then
-						vim.cmd('colo ' .. selected[1])
-					end
-				end,
-			},
-			previewer = false,
-			prompt = 'Colors> ',
-			winopts = {
-				height = 0.6,
-				width = 0.5,
-			}
-		})
-	end, { bang = true, desc = 'Enhanced Colors command with fzf-lua' })
+	vim.api.nvim_create_user_command('Colors', function()
+		require('snacks').picker.colorschemes()
+	end, { bang = true, desc = 'Pick colorscheme with Snacks' })
 end
 
 

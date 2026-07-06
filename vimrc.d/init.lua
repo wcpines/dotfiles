@@ -6,6 +6,11 @@
 ---@diagnostic disable: undefined-global
 local vim = vim
 
+-- Load matchit after lazy.nvim has initialized. Lazy rewrites `runtimepath`, so
+-- loading matchit earlier can leave `%` mapped to a function that is no longer
+-- on the runtime path.
+vim.cmd([[packadd matchit]])
+
 -- Configure split borders for better visibility
 vim.opt.fillchars = {
 	horiz = "━",

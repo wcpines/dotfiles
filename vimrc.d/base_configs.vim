@@ -5,6 +5,7 @@
 set belloff=all                                         " Disable all bell sounds (error, visual, and audio)
 syntax on                                               " Enable syntax highlighting
 filetype plugin indent on                               " Filetype detection[ON] plugin[ON] indent[ON].This command will use indentation scripts located in the indent folder of your vim installation.
+silent! packadd matchit                                " Built-in % matching for language block keywords.
 
 set conceallevel=0                                      " always show syntax for concealable text
 set bs=2                                                " Allow backspace over auto-indent, line breaks, and start of insert
@@ -23,9 +24,12 @@ set noswapfile                                          " I don't think these ha
 set nowrap                                              " Do not wrap lines of text by default
 set number                                              " Set line numbering
 " FZF runtime path handled by lazy.nvim
-set ruler                                               " Always show line/column info at bottom
+set noruler                                             " Avoid extra status redraw work; statusline already shows position if needed
+set noshowcmd                                           " Avoid extra command-area redraw work
+set matchpairs=(:),{:},[:],<:>                          " Basic % matching for brackets and angle brackets
 set shiftwidth=2                                        " Number of characters for indentation made in normal mode ('>)
 set showmatch                                           " Briefly highlight matching bracket when cursor is on one
+set matchtime=3                                         " Keep match highlight brief
 set smartcase                                           " Respect cases in search when mixed case detected
 set smartindent                                         " Changes indent based on file extension
 set softtabstop=2                                       " Number of spaces that feel like a tab when editing (backspace deletes 2 spaces)

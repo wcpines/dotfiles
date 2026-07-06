@@ -31,6 +31,7 @@ export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/share/mise/installs/node/24.18.0/bin:$PATH"
 
 # mise — drop-in replacement for asdf; reads .tool-versions natively
 if command -v mise >/dev/null 2>&1; then

@@ -226,14 +226,11 @@ require("lazy").setup({
 
 	-- Misc Enhancements
 	{ "AndrewRadev/splitjoin.vim" },
+	-- Disabled for performance. Built-in matchit + matchpairs handles the basics.
+	-- Runtime profiling showed vim-matchup spending seconds during cursor movement.
 	{
 		"andymass/vim-matchup",
-		init = function()
-			vim.g.matchup_treesitter_enabled = 0
-			vim.g.matchup_matchparen_deferred = 1
-			vim.g.matchup_matchparen_hi_surround_always = 1
-			vim.g.matchup_override_vimtex = 1
-		end,
+		enabled = false,
 	},
 	{ "dhruvasagar/vim-table-mode", ft = { "tsv", "csv", "sql" } },
 	{ "godlygeek/tabular" },
