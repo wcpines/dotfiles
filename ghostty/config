@@ -1,6 +1,6 @@
 # --- Theme: Solarized-style with auto light/dark ---
 # List themes: `ghostty +list-themes`
-theme = solarized-dark.ghostty
+theme = solarized-light.ghostty
 
 cursor-style = block
 shell-integration-features = no-cursor
