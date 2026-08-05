@@ -9,7 +9,7 @@ function e {
   local args=() file line col
   for arg in "$@"; do
     if [[ "$arg" == *:* && "$arg" != -* ]]; then
-      IFS=':' read -r file line col _ <<< "$arg"
+      IFS=':' read -r file line col _ <<<"$arg"
       if [[ -e "$file" && "$line" =~ ^[0-9]+$ ]]; then
         if [[ "$col" =~ ^[0-9]+$ ]]; then
           args+=("+call cursor($line,$col)" "$file")
@@ -281,19 +281,26 @@ mov2gif() {
   echo "Converted $input to $output"
 }
 
-jira_to_claude() {
-  # Issue details:   jira_to_claude COPS-10074
-  # From URL:        jira_to_claude https://blvd.atlassian.net/browse/COPS-10074
-  # Epic + children: jira_to_claude --epic EPIC-1154 EPIC-1152
-  # Planning mode:   jira_to_claude --epic EPIC-1154 --plan
-  # Brief mode:      jira_to_claude --epic EPIC-1152 --brief
-  # Filter status:   jira_to_claude --epic EPIC-1152 --status "In Progress"
-  # Output to file:  jira_to_claude --epic EPIC-1152 --plan --output context.md
+jira_to_agent() {
+  # Issue details:   jira_to_agent COPS-10074
+  # From URL:        jira_to_agent https://blvd.atlassian.net/browse/COPS-10074
+  # Epic + children: jira_to_agent --epic EPIC-1154 EPIC-1152
+  # Planning mode:   jira_to_agent --epic EPIC-1154 --plan
+  # Brief mode:      jira_to_agent --epic EPIC-1152 --brief
+  # Filter status:   jira_to_agent --epic EPIC-1152 --status "In Progress"
+  # Output to file:  jira_to_agent --epic EPIC-1152 --plan --output context.md
 
-  "$HOME/Developer/agent-config/scripts/jira-to-claude.sh" "$@" | tee >(pbcopy)
+  "$HOME/Developer/agent-config/scripts/jira-to-agent.sh" "$@" | tee >(pbcopy)
 }
 
-alias jtc="jira_to_claude"
+alias jtc="jira_to_agent"
+
+jira_create() {
+  summary=$1
+  jira issue create -t Story -s "$summary" --no-input --raw
+}
+
+alias jc=jira_create
 
 iterm_title() {
   echo -ne "\033]0;$*\007"

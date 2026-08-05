@@ -46,7 +46,7 @@ require("lazy").setup({
 		lazy = false,
 		build = ":TSUpdate",
 		config = function()
-			local ensure = { "typescript", "elixir", "lua", "python", "sql", "bash" }
+			local ensure = { "typescript", "elixir", "heex", "lua", "python", "sql", "bash" }
 			local installed = require("nvim-treesitter").get_installed("parsers")
 			local missing = {}
 			for _, lang in ipairs(ensure) do
