@@ -302,6 +302,26 @@ jira_create() {
 
 alias jc=jira_create
 
+linear_to_agent() {
+  # Issue details:   linear_to_agent ENG-123
+  # From URL:        linear_to_agent https://linear.app/workspace/issue/ENG-123/issue-title
+  # Brief mode:      linear_to_agent ENG-123 --brief
+  # Planning mode:   linear_to_agent ENG-123 --plan
+  # Output to file:  linear_to_agent ENG-123 --plan --output context.md
+
+  "$HOME/Developer/agent-config/scripts/linear-to-agent.sh" "$@" | tee >(pbcopy)
+}
+
+alias lta="linear_to_agent"
+
+linear_create() {
+  local title="$1"
+  shift
+  linear issue create --title "$title" --no-interactive "$@"
+}
+
+alias lc="linear_create"
+
 iterm_title() {
   echo -ne "\033]0;$*\007"
 }

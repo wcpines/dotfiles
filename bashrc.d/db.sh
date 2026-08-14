@@ -11,13 +11,45 @@ get_db_type() {
   fi
 }
 
-# Pick the postgres database based on current project
+# Return success when the current directory is onboarding-services or a child directory.
+in_onboarding_services() {
+  [[ $PWD == "$HOME/Developer/onboarding-services" || $PWD == "$HOME/Developer/onboarding-services/"* ]]
+}
+
+# Pick the Postgres database based on the current project.
 get_pg_db() {
-  if [[ $(pwd) == *onboarding-services* ]]; then
+  if in_onboarding_services; then
     echo "onboarding_service_dev"
   else
     echo "sched_development"
   fi
+}
+
+# Run psql against the database for the current project.
+# onboarding-services reaches its Docker Compose database through the host port
+# forward (127.0.0.1:5433). sched uses the local macOS Postgres instance.
+pg_exec() {
+  local pg_db="$1"
+  shift
+
+  if in_onboarding_services; then
+    PGPASSWORD=postgres psql \
+      --no-password \
+      --host 127.0.0.1 \
+      --port 5433 \
+      --username postgres \
+      --dbname "$pg_db" \
+      "$@"
+  else
+    psql -d "$pg_db" "$@"
+  fi
+}
+
+# Open an interactive psql session for the database in the current project.
+# This replaces the local_db alias from ~/.env.sh.
+unalias local_db 2>/dev/null
+local_db() {
+  pg_exec "$(get_pg_db)" "$@"
 }
 
 # Generic query function
@@ -27,8 +59,8 @@ query() {
   postgres)
     local pg_db=$(get_pg_db)
     echo "DB: $pg_db"
-    printf "RUNNING:\n$@\n"
-    psql -d "$pg_db" -c "$@"
+    printf "RUNNING:\n%s\n" "$*"
+    pg_exec "$pg_db" -c "$*"
     ;;
   sqlite)
     echo "DB: $LITEDB"
@@ -161,7 +193,18 @@ json_sample_table() {
 }
 alias sqlite3="/opt/homebrew/opt/sqlite/bin/sqlite3"
 
-get_business(){
-
+get_business() {
   query 'select id, name from businesses;'
+}
+
+get_locs() {
+  business_id=$1
+  query "SELECT b.id          AS businesss_id,
+       b.name        AS business_name,
+       l.id          AS location_id,
+       l.external_id AS location_external_id,
+       l.name        AS location_name
+      FROM locations l
+         JOIN businesses b ON b.id = l.business_id
+      WHERE b.id = '$business_id';"
 }
