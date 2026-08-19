@@ -46,8 +46,11 @@ require("lazy").setup({
 		lazy = false,
 		build = ":TSUpdate",
 		config = function()
-			local ensure = { "typescript", "elixir", "heex", "lua", "python", "sql", "bash" }
-			local installed = require("nvim-treesitter").get_installed("parsers")
+			local treesitter = require("nvim-treesitter")
+			treesitter.setup({ install_dir = vim.fn.stdpath("data") .. "/site" })
+
+			local ensure = { "typescript", "elixir", "heex", "lua", "python", "sql", "bash", "gitcommit" }
+			local installed = treesitter.get_installed("parsers")
 			local missing = {}
 			for _, lang in ipairs(ensure) do
 				if not vim.tbl_contains(installed, lang) then
@@ -55,25 +58,56 @@ require("lazy").setup({
 				end
 			end
 			if #missing > 0 then
-				require("nvim-treesitter").install(missing)
+				treesitter.install(missing)
 			end
 
 			local disable = { elixir = true, csv = true, json = true }
+			local function configure_syntax(buf)
+				local ft = vim.bo[buf].filetype
+				if disable[ft] then
+					vim.bo[buf].syntax = ft
+					return
+				end
+
+				local lang = vim.treesitter.language.get_lang(ft)
+				local query_ok, highlights = false, nil
+				if lang then
+					query_ok, highlights = pcall(vim.treesitter.query.get, lang, "highlights")
+				end
+				if query_ok and highlights and pcall(vim.treesitter.language.add, lang) and pcall(vim.treesitter.start, buf, lang) then
+					return
+				end
+
+				vim.bo[buf].syntax = ft
+			end
+
 			vim.api.nvim_create_autocmd("FileType", {
-				callback = function(args)
-					local ft = vim.bo[args.buf].filetype
-					if disable[ft] then
-						vim.bo[args.buf].syntax = ft
-						return
-					end
+				callback = function(args) configure_syntax(args.buf) end,
+			})
 
-					local lang = vim.treesitter.language.get_lang(ft)
-					if lang and pcall(vim.treesitter.language.add, lang) and pcall(vim.treesitter.start, args.buf, lang) then
-						return
-					end
+			vim.api.nvim_create_user_command("TSSEnable", function()
+				configure_syntax(vim.api.nvim_get_current_buf())
+			end, { desc = "Enable Tree-sitter syntax for the current buffer" })
 
-					vim.bo[args.buf].syntax = ft
-				end,
+			vim.api.nvim_create_user_command("TSSDisable", function()
+				local buf = vim.api.nvim_get_current_buf()
+				vim.treesitter.stop(buf)
+				vim.bo[buf].syntax = vim.bo[buf].filetype
+			end, { desc = "Disable Tree-sitter syntax for the current buffer" })
+
+			-- The initial buffer's FileType event can occur before lazy.nvim loads.
+			local function configure_loaded_buffers()
+				for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+					if vim.api.nvim_buf_is_loaded(buf) then
+						configure_syntax(buf)
+					end
+				end
+			end
+
+			configure_loaded_buffers()
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "TSUpdate",
+				callback = configure_loaded_buffers,
 			})
 		end,
 	},
