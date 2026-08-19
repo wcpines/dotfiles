@@ -4,15 +4,19 @@ In this repo there are a few configs I use across machines, a set of macos setti
 
 
 ### Bootstrapping a new Mac
-If you want to use the setup script in this repo:
 
-1. Pull down the bootstrap files (_stored in private gist_)
+1. Download `init/setup.sh` from the private bootstrap location.
 
-2. Fill out `env_vars.sh` with your information
+2. Run `bash setup.sh`.
 
-3. Run the setup file (`setup.sh`)
+3. The script installs Homebrew, opens GitHub's browser-based login flow, and
+   clones this repository over SSH. Complete that login from any available
+   device. 1Password does not need to be installed first.
 
-4. Profit
+4. The script installs the Brewfile, links the dotfiles, installs the global
+   Mise tools, and applies the macOS defaults.
+
+5. Restart the Mac to apply all macOS settings.
 
 ### Assumptions
 

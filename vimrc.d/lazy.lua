@@ -62,11 +62,17 @@ require("lazy").setup({
 			vim.api.nvim_create_autocmd("FileType", {
 				callback = function(args)
 					local ft = vim.bo[args.buf].filetype
-					if disable[ft] then return end
-					local lang = vim.treesitter.language.get_lang(ft)
-					if lang and pcall(vim.treesitter.language.add, lang) then
-						pcall(vim.treesitter.start, args.buf, lang)
+					if disable[ft] then
+						vim.bo[args.buf].syntax = ft
+						return
 					end
+
+					local lang = vim.treesitter.language.get_lang(ft)
+					if lang and pcall(vim.treesitter.language.add, lang) and pcall(vim.treesitter.start, args.buf, lang) then
+						return
+					end
+
+					vim.bo[args.buf].syntax = ft
 				end,
 			})
 		end,

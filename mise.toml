@@ -1,0 +1,10 @@
+[tools]
+elixir = "1.18.4-otp-27"
+erlang = "27.3.4.2"
+just = "1.26.0"
+node = "24.18.0"
+"npm:@earendil-works/pi-coding-agent" = "0.84.2"
+"npm:corepack" = "0.35.0"
+terraform = "1.11.2"
+typos = "1.22.3"
+yarn = "1.22.5"

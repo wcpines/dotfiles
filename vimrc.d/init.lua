@@ -184,7 +184,7 @@ vim.lsp.config('ts_ls', {
 -- Elixir (Expert - official Elixir LSP)
 vim.lsp.config('expert', {
 	cmd = { 'expert', '--stdio' },
-	root_markers = { 'mix.exs', '.git' },
+	root_markers = { 'mix.exs' },
 	filetypes = { 'elixir', 'eelixir', 'heex' },
 	capabilities = capabilities,
 })
@@ -211,8 +211,6 @@ vim.lsp.config('lua_ls', {
 		},
 	},
 })
-
-vim.lsp.enable({ 'ts_ls', 'expert', 'sqlls', 'lua_ls' })
 
 -- Setup null-ls for diagnostics and formatting
 local null_ls = require("null-ls")

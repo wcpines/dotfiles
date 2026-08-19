@@ -1,92 +1,85 @@
-# !/bin/bash
+#!/usr/bin/env bash
 
+set -euo pipefail
 
-# Ask for the administrator password upfront
+DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_REPOSITORY="wcpines/dotfiles"
+
+# Ask for the administrator password upfront.
 sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until setup has finished
+# Keep the sudo credential valid until setup finishes.
 while true; do
-	sudo -n true
+	sudo -n true || exit
 	sleep 60
 	kill -0 "$$" || exit
 done 2>/dev/null &
 
-chsh -s /bin/bash
+install_homebrew() {
+	if ! command -v brew >/dev/null 2>&1; then
+		echo "Installing Homebrew"
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	fi
 
-ENV_VARS_FILE=$HOME/env_vars.sh
-source $ENV_VARS_FILE
+	if [[ -x /opt/homebrew/bin/brew ]]; then
+		eval "$(/opt/homebrew/bin/brew shellenv)"
+	elif [[ -x /usr/local/bin/brew ]]; then
+		eval "$(/usr/local/bin/brew shellenv)"
+	else
+		echo "Homebrew was not installed successfully." >&2
+		exit 1
+	fi
+}
 
-echo "Retreiving your dotfiles from github"
+install_homebrew
 
-mkdir $HOME/dotfiles
-cd $HOME/dotfiles
-git init
-git pull https://$GITHUB_ACCESS_TOKEN@github.com/wcpines/dotfiles.git
-
-echo "Running symlinker for your dotfiles"
-
-eval $(grep "files=" ./init/symlink_script.sh)
-echo "grabbing $files"
-
-cd
-sh $HOME/dotfiles/init/symlink_script.sh
-
-echo "Installing Homebrew"
-
-if [[ -z $(which brew) ]]; then
-	echo "curling https://raw.githubusercontent.com/Homebrew/install/master/install"
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-	echo "Already installed ✅"
+if [[ "${SHELL:-}" != "/bin/bash" ]]; then
+	chsh -s /bin/bash
 fi
 
-# Update homebrew recipes
-echo "Updating homebrew..."
-brew update
+if [[ -d "$DOTFILES_DIR/.git" ]]; then
+	echo "Updating existing dotfiles checkout"
+	git -C "$DOTFILES_DIR" pull --ff-only
+else
+	if [[ -e "$DOTFILES_DIR" ]]; then
+		echo "$DOTFILES_DIR exists but is not a Git checkout. Move it aside and run setup again." >&2
+		exit 1
+	fi
 
-echo "installing apps and tools in Brewfile"
-brew bundle -v --file= $HOME/dotfiles/Brewfile
+	echo "Sign in to GitHub to clone your private dotfiles repository."
+	brew install gh
+	gh auth status --hostname github.com >/dev/null 2>&1 || gh auth login --hostname github.com --git-protocol ssh --web
+	gh repo clone "$DOTFILES_REPOSITORY" "$DOTFILES_DIR"
+fi
 
-echo "Setting OSX defaults"
-echo "This may take a moment"
+echo "Linking dotfiles"
+bash "$DOTFILES_DIR/init/symlink_script.sh"
 
-sh $HOME/dotfiles/init/macos
+echo "Installing apps and tools from Brewfile"
+brew bundle --verbose --file="$DOTFILES_DIR/Brewfile"
 
-echo "Adding asdf plugins"
+echo "Applying macOS defaults"
+bash "$DOTFILES_DIR/init/macos"
 
-asdf plugin-add erlang &&
-	asdf plugin-add elixir &&
-	asdf plugin-add postgres &&
-	asdf plugin-add python &&
-	asdf plugin-add nodejs &&
-	asdf plugin-add yarn &&
-	asdf install
+echo "Installing Mise-managed tools, including Node and Pi"
+mise trust "$DOTFILES_DIR/mise.toml"
+mise install --yes
 
+echo "Installing SCM Breeze"
+if [[ ! -d "$HOME/.scm_breeze/.git" ]]; then
+	git clone https://github.com/scmbreeze/scm_breeze.git "$HOME/.scm_breeze"
+	"$HOME/.scm_breeze/install.sh"
+fi
 
-echo "Installing SCM_Breeze"
+echo "Creating a Bash profile when needed"
+if [[ ! -e "$HOME/.bash_profile" ]]; then
+	printf '%s\n' '[[ -f ~/.bashrc ]] && source ~/.bashrc' >"$HOME/.bash_profile"
+fi
 
-git clone https://github.com/scmbreeze/scm_breeze.git ~/.scm_breeze
-~/.scm_breeze/install.sh
-source ~/.bashrc
-
-
-echo "Creating a .bash_profile"
-echo "This will source your bashrc/settings for each new shell session"
-
-touch $HOME/.bash_profile
-echo "[[ -f ~/.bashrc ]] && source ~/.bashrc" >$HOME/.bash_profile
-
-echo "Bash profile says...
-$(cat $HOME/.bash_profile)"
-
-echo "Enabling terminal/iterm italics & colors"
-
-TERMINFO=$HOME/.terminfo
-rm -rf "$TERMINFO"
-
-tmp=$(mktemp)
-
-cat >"$tmp" <<EOF
+echo "Enabling terminal italics and colors"
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+cat >"$tmp" <<'EOF'
 xterm-256color|xterm with 256 colors and italic,
     kbs=\177,
     sitm=\E[3m, ritm=\E[23m,
@@ -97,52 +90,26 @@ tmux-256color|tmux with 256 colors and italic,
     smso=\E[7m, rmso=\E[27m,
     use=screen-256color,
 EOF
-
 tic -x "$tmp"
 
-echo "Getting solarized theme"
+mkdir -p "$HOME/.config/nvim"
+if [[ ! -f "$HOME/.config/nvim/init.vim" ]]; then
+	printf '%s\n' 'source ~/.vimrc' >"$HOME/.config/nvim/init.vim"
+fi
 
-echo "retrieving zip file"
-wget -O $HOME/Downloads/solarized.zip "http://ethanschoonover.com/solarized/files/solarized.zip"
-
-echo "unzipping"
-cd $HOME/Downloads
-unzip $HOME/Downloads/solarized.zip
-rm -f solarized.zip
-cd
-
-echo "Adding git-open"
-npm install --global git-open
-
-echo "Installing neovim extras"
-
-gem install neovim
-pip3 install neovim
-npm install neovim
-
-echo "updating neovim config file"
-[[ -f $HOME/.config/nvim/init.vim ]] || touch $HOME/.config/nvim/init.vim
-
-echo "writing config"
-echo "source ~/.vimrc" >> $HOME/.config/nvim/init.vim
-
-echo "installing fzf shortcuts"
-$(brew --prefix)/opt/fzf/install
-
+echo "Installing fzf key bindings without modifying shell configuration files"
+"$(brew --prefix)/opt/fzf/install" --all --no-update-rc
 
 echo "Manual steps remaining:
-1) Cloud storage and 1password sync
+1) Sync cloud storage and 1Password
 2) Install Vim plugins
-4) Import program settings from cloud sync
-	- alfred
-	- btt
-	- dash
-	- karibiner
-  - iterm2
-5) Set SSH keys
-6) Pull desired repos
-7) Edit solarized spellcheck colors:
-  exe "hi! SpellBad"       .s:fmt_curl   .s:fg_red    .s:bg_base02    .s:sp_red
-"
-echo "It's now recommended you restart your computer"
-echo "Done!🎆"
+3) Import app settings from cloud sync:
+   - Alfred
+   - BetterTouchTool
+   - Dash
+   - Karabiner
+   - iTerm2
+4) Set up SSH keys if GitHub did not create one during login
+5) Pull desired repositories"
+echo "Restart your computer to apply all macOS settings."
+echo "Done!"

@@ -10,8 +10,9 @@ set -euo pipefail
 
 dir="$HOME/dotfiles"
 olddir="$HOME/dotfiles_old"
-files="bashrc vimrc ctags gitignore iex.exs tool-versions psqlrc starship.toml ideavimrc"
+files="bashrc vimrc ctags gitignore iex.exs psqlrc starship.toml ideavimrc"
 config_dirs="ghostty"
+config_files="mise.toml"
 backup_timestamp="$(date +%Y%m%d%H%M%S)"
 
 ##########
@@ -62,4 +63,9 @@ done
 mkdir -p "$HOME/.config"
 for config_dir in $config_dirs; do
 	symlink_if_needed "$dir/$config_dir" "$HOME/.config/$config_dir"
+done
+
+for config_file in $config_files; do
+	mkdir -p "$HOME/.config/${config_file%.toml}"
+	symlink_if_needed "$dir/$config_file" "$HOME/.config/${config_file%.toml}/config.toml"
 done
