@@ -73,8 +73,7 @@ alias myip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*'"
 alias o="open"
 alias os="cd $HOME/Developer/onboarding-services/"
 alias phx="mix phx.server"
-alias pic="pi -c"
-alias pir="pi -r"
+
 alias ralph="bash $HOME/Developer/agent-config/loop/loop.sh"
 alias rgd="rip_grep_delta"
 alias rgf="rip_grep_files"
@@ -105,3 +104,8 @@ alias yrs="yarn run serve"
 alias yrt="yarn run test"
 alias ys="yarn start"
 alias z="fuzzy_find_clipboard"
+
+alias pibare="pi -nc --no-extensions --no-skills --no-prompt-templates --no-themes"
+alias pic="pi -c"
+alias pir="pi -r"
+
