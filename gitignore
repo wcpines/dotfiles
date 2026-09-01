@@ -70,9 +70,9 @@ test*sh
 .rgignore
 .serena/
 .ssh*
-HANDOFF.md
+HANDOFF*.md
 IMPLEMENTATION_PLAN.md
-PLAN.md
+PLAN*.md
 get_times.js
 redis_helper.js
 rez.txt

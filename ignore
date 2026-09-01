@@ -1,0 +1,4 @@
+# Keep branch-specific session context visible to search tools even though the
+# global Git ignore file excludes it.
+!PLAN*.md
+!HANDOFF*.md
