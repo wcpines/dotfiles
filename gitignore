@@ -74,6 +74,8 @@ HANDOFF*.md
 IMPLEMENTATION_PLAN.md
 PLAN*.md
 get_times.js
+# Ghostty's theme picker writes the selected local theme here.
+ghostty/auto/
 redis_helper.js
 rez.txt
 scratch*

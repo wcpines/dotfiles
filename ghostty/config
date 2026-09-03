@@ -1,6 +1,11 @@
-# --- Theme: Solarized-style with auto light/dark ---
-# List themes: `ghostty +list-themes`
+# --- Theme ---
+# Run `ghostty +list-themes`, then press `w` to select a theme.
+# The picker writes the selected theme to this optional included file.
 theme = solarized-light.ghostty
+config-file = ?auto/theme.ghostty
+
+# Open the native theme picker in the focused terminal.
+command-palette-entry = title:"Pick Ghostty Theme",description:"Open the native Ghostty theme picker.",action:"text:ghostty +list-themes\r"
 
 cursor-style = block
 shell-integration-features = no-cursor
