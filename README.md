@@ -18,6 +18,32 @@ In this repo there are a few configs I use across machines, a set of macos setti
 
 5. Restart the Mac to apply all macOS settings.
 
+### Karabiner-Elements
+
+The `karabiner/` directory is the tracked Karabiner-Elements configuration.
+The link script links it to `~/.config/karabiner`.
+
+Use the Karabiner-Elements app to edit the configuration.
+Then review and commit the changes in this repository.
+Karabiner automatic backups are local recovery files and are not tracked.
+
+### Rectangle
+
+The `rectangle/RectangleConfig.json` file is the tracked Rectangle configuration.
+Rectangle does not accept a symlink for its import file.
+
+During setup, `init/prepare_rectangle_config.sh` copies the tracked file to Rectangle's one-time import location.
+When Rectangle starts, select **Apply** to import it.
+Rectangle renames the import file after it applies the configuration.
+
+If you change Rectangle settings, export the configuration from Rectangle settings to `rectangle/RectangleConfig.json`.
+Then review and commit the change.
+
+### BetterTouchTool archive
+
+`bettertouchtool/pre-migration.bttpreset` is the exported BetterTouchTool configuration before the migration.
+It is an archive for rollback and reference.
+
 ### Assumptions
 
 `setup.sh` is built to work on *this repo* or a repo that conforms to the (exact) structure of files in this one.  If you want to use it for your own bootstrapping, I recommend reading through the script and changing anything you may need to. For a more general purpose and less opinionated bootstrap approach, check out Mike McQuaid's [strap](https://github.com/MikeMcQuaid/strap).

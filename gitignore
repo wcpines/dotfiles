@@ -76,6 +76,8 @@ PLAN*.md
 get_times.js
 # Ghostty's theme picker writes the selected local theme here.
 ghostty/auto/
+# Karabiner writes automatic recovery snapshots here.
+karabiner/automatic_backups/
 redis_helper.js
 rez.txt
 scratch*

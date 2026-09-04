@@ -58,6 +58,9 @@ bash "$DOTFILES_DIR/init/symlink_script.sh"
 echo "Installing apps and tools from Brewfile"
 brew bundle --verbose --file="$DOTFILES_DIR/Brewfile"
 
+echo "Preparing Rectangle configuration"
+bash "$DOTFILES_DIR/init/prepare_rectangle_config.sh"
+
 echo "Applying macOS defaults"
 bash "$DOTFILES_DIR/init/macos"
 
@@ -105,11 +108,10 @@ echo "Manual steps remaining:
 2) Install Vim plugins
 3) Import app settings from cloud sync:
    - Alfred
-   - BetterTouchTool
    - Dash
-   - Karabiner
    - iTerm2
-4) Set up SSH keys if GitHub did not create one during login
-5) Pull desired repositories"
+4) Launch Rectangle and select Apply when it asks to apply the prepared configuration
+5) Set up SSH keys if GitHub did not create one during login
+6) Pull desired repositories"
 echo "Restart your computer to apply all macOS settings."
 echo "Done!"

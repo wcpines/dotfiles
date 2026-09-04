@@ -11,7 +11,7 @@ set -euo pipefail
 dir="$HOME/dotfiles"
 olddir="$HOME/dotfiles_old"
 files="bashrc vimrc ctags gitignore ignore iex.exs psqlrc starship.toml ideavimrc"
-config_dirs="ghostty"
+config_dirs="ghostty karabiner"
 config_files="mise.toml"
 backup_timestamp="$(date +%Y%m%d%H%M%S)"
 

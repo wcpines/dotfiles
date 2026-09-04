@@ -262,8 +262,8 @@ cask "1password"
 cask "1password-cli"
 # Application launcher and productivity software
 cask "alfred"
-# Tool to customise input devices and automate computer systems
-cask "bettertouchtool"
+# Move and resize windows with keyboard shortcuts
+cask "rectangle"
 # Web browser focusing on privacy
 cask "brave-browser"
 # API documentation browser and code snippet manager
