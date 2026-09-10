@@ -83,7 +83,7 @@ rez.txt
 scratch*
 scratch.exs
 scratch.ts
-testing*
+/testing*
 time_q.md
 todo.txt
 .pi-subagents/
