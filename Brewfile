@@ -161,6 +161,8 @@ brew "unibilium"
 brew "neovim"
 # HTTP/2 C Library
 brew "nghttp2"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
 # Modern shell for the GitHub era
 brew "nushell"
 # Secure Reliable Transport
@@ -262,8 +264,6 @@ cask "1password"
 cask "1password-cli"
 # Application launcher and productivity software
 cask "alfred"
-# Move and resize windows with keyboard shortcuts
-cask "rectangle"
 # Web browser focusing on privacy
 cask "brave-browser"
 # API documentation browser and code snippet manager
@@ -288,6 +288,8 @@ cask "marked-app"
 cask "postgres-app"
 # VPN client focusing on security
 cask "protonvpn"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"
 # Plugin for AWS CLI to start and end sessions that connect to managed instances
 cask "session-manager-plugin"
 # Command-line client for connecting to Snowflake
@@ -299,3 +301,4 @@ mas "iReal Pro", id: 409035833
 mas "Numbers", id: 409203825
 mas "Okta Verify", id: 490179405
 mas "Xcode", id: 497799835
+npm "@anthropic-ai/claude-code"
