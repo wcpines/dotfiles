@@ -42,6 +42,13 @@ rip_grep_ignore_case() {
 	rg -i $1
 }
 
+alias rgd="rip_grep_delta"
+alias rgf="rip_grep_files"
+alias rgg="rip_grep_glob_search"
+alias rgi="rip_grep_ignore_case"
+alias rgl="rip_grep_glob_search_list"
+alias rgm="rip_grep_migrations"
+
 yank_last_list() {
 	rg -l $1 | yank
 }
@@ -111,6 +118,8 @@ find_replace() {
 history_rg() {
 	history | rg $@
 }
+
+alias hg="history_rg"
 
 # edit a csv in place
 rgcsv() {

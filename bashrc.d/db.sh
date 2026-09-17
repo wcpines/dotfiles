@@ -105,6 +105,8 @@ desc_table() {
   esac
 }
 
+alias dt="desc_table"
+
 # Find tables
 find_tables() {
   local table_name=$1
@@ -118,6 +120,8 @@ find_tables() {
     ;;
   esac
 }
+
+alias ft="find_tables"
 
 # Find columns
 find_columns() {
@@ -141,6 +145,8 @@ find_columns() {
     ;;
   esac
 }
+
+alias fic="find_columns"
 
 unique_tables() {
   # for use with find_columns

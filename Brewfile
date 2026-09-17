@@ -1,11 +1,10 @@
 tap "1password/tap", trusted: true
 tap "datadog-labs/pack", trusted: true
-tap "fsouza/prettierd", trusted: true
 tap "hashicorp/tap", trusted: true
 tap "hoophq/brew", "https://github.com/hoophq/brew", trusted: true
 tap "localstack/tap", trusted: true
 tap "lucapette/tap", trusted: true
-tap "my-monkeys/tap"
+tap "my-monkeys/tap", trusted: true
 tap "neovim/neovim", trusted: true
 tap "schpet/tap"
 tap "snowflakedb/snowflake-cli", trusted: true
@@ -248,7 +247,7 @@ brew "zlib"
 # Go-based command-line wrapper for easy interaction with Datadog APIs
 brew "datadog-labs/pack/pup"
 # prettier, on SPEED!
-brew "fsouza/prettierd/prettierd"
+brew "prettierd"
 # Terraform
 brew "hashicorp/tap/terraform"
 # Hoop allows acessing any infra-structure resource easily and secure.
@@ -298,7 +297,5 @@ cask "snowflake-snowsql"
 cask "tresorit"
 mas "InYourFace", id: 1476964367
 mas "iReal Pro", id: 409035833
-mas "Numbers", id: 409203825
 mas "Okta Verify", id: 490179405
 mas "Xcode", id: 497799835
-npm "@anthropic-ai/claude-code"

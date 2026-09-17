@@ -42,6 +42,8 @@ scratch() {
   nvim "$HOME/Tresorit/Colby/weight_room/scratch.$1"
 }
 
+alias json="scratch json"
+
 git_repos() {
   curl -L \
     -H "Authorization: token $GITHUB_SECRET" \
@@ -118,6 +120,8 @@ edit_searched_files() {
 
   rg -l $search | xargs nvim
 }
+
+alias esf="edit_searched_files"
 
 stop_and_frisk() {
   git status --porcelain | awk '{print $2}' | xargs rubocop -a
@@ -221,10 +225,14 @@ git_current_branch() {
   git rev-parse --abbrev-ref HEAD
 }
 
+alias gcrb="git_current_branch"
+
 git_reset_on_origin_hard() {
   current_branch=$(git_current_branch)
   git reset "origin/$current_branch" --hard
 }
+
+alias groh="git_reset_on_origin_hard"
 
 remove_chat_history_for_good() {
   printf "Are you sure? (type: 'yes' to proceed)\n"

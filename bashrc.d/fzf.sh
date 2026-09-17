@@ -26,3 +26,6 @@ fuzzy_find_clipboard() {
 	echo -n $(pbpaste) | gsed "s/[^[:alpha:]]//g" | pbcopy
 	fzf_file_opener $(pbpaste)
 }
+
+alias fo="fzf_file_opener"
+alias z="fuzzy_find_clipboard"
