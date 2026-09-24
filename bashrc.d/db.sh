@@ -11,16 +11,29 @@ get_db_type() {
   fi
 }
 
-# Return success when the current directory is onboarding-services or a child directory.
+# Return success in a project's main checkout, a Worktrunk worktree, or a child directory.
+in_project() {
+  local project_root="$HOME/Developer/$1"
+
+  [[ $PWD == "$project_root" || $PWD == "$project_root/"* || $PWD == "$project_root."* ]]
+}
+
 in_onboarding_services() {
-  [[ $PWD == "$HOME/Developer/onboarding-services" || $PWD == "$HOME/Developer/onboarding-services/"* ]]
+  in_project "onboarding-services"
+}
+
+in_sched() {
+  in_project "sched"
 }
 
 # Pick the Postgres database based on the current project.
 get_pg_db() {
   if in_onboarding_services; then
     echo "onboarding_service_dev"
+  elif in_sched; then
+    echo "sched_development"
   else
+    # Keep the historical default for directories outside these repositories.
     echo "sched_development"
   fi
 }

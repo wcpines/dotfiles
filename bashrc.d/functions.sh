@@ -423,12 +423,6 @@ _ci_fetch_tests() {
       end'
 }
 
-fi-ls() {
-  local bid="${1:?Usage: fi-ls <business_id> [--recursive]}"
-  shift
-  aws s3 ls "s3://blvd-prod-secure-data-imports/uploads/${bid}/" "$@"
-}
-
 git_open() {
   local branch
   branch="$(git symbolic-ref --short HEAD 2>/dev/null)" || return
@@ -436,3 +430,19 @@ git_open() {
 }
 
 alias go="git_open"
+
+wtr() {
+  if declare -F exec_scmb_expand_args >/dev/null; then
+    exec_scmb_expand_args wt remove --no-delete-branch "$@"
+  else
+    wt remove --no-delete-branch "$@"
+  fi
+}
+
+wts() {
+  if declare -F exec_scmb_expand_args >/dev/null; then
+    exec_scmb_expand_args wt switch "$@"
+  else
+    wt switch "$@"
+  fi
+}
