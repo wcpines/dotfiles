@@ -436,3 +436,19 @@ git_open() {
 }
 
 alias go="git_open"
+
+wtr() {
+  if declare -F exec_scmb_expand_args >/dev/null; then
+    exec_scmb_expand_args wt remove --no-delete-branch "$@"
+  else
+    wt remove --no-delete-branch "$@"
+  fi
+}
+
+wts() {
+  if declare -F exec_scmb_expand_args >/dev/null; then
+    exec_scmb_expand_args wt switch "$@"
+  else
+    wt switch "$@"
+  fi
+}
